@@ -1,0 +1,787 @@
+/* ===================================================
+   INVENTORY.CSS — WarZ Style
+   LEFT = Backpack | RIGHT = Stash
+   =================================================== */
+
+#panel-inventory {
+  flex-direction: row;
+  gap: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+.inv-layout {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ===================================================
+   LEFT — BACKPACK
+   =================================================== */
+.inv-bp-panel {
+  width: 270px;
+  min-width: 0;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: rgba(0,0,0,0.35);
+  border-right: 1px solid rgba(255,255,255,0.07);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.08) transparent;
+}
+
+.inv-panel-title {
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: rgba(255,255,255,0.4);
+  padding: 6px 14px 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
+  text-align: center;
+}
+
+/* ── Equip Slots: 5 ช่องแนวนอน ── */
+.bp-equip-section {
+  padding: 12px 12px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}
+
+.bp-equip-title {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: rgba(255,255,255,0.22);
+  font-weight: 700;
+  margin-bottom: 9px;
+  text-transform: uppercase;
+}
+
+.bp-equip-slots {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 4px;
+}
+
+.bp-equip-slot {
+  flex: 1;
+  min-width: 0;
+  height: 52px;
+  flex-shrink: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border-radius: 7px;
+  border: 1.5px dashed rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.02);
+  cursor: default;
+  position: relative;
+  transition: all 0.15s;
+  overflow: hidden;
+}
+
+.bp-equip-slot.filled {
+  border-style: solid;
+  cursor: pointer;
+  background: rgba(255,255,255,0.04);
+}
+.bp-equip-slot.filled:hover {
+  border-color: rgba(239,83,80,0.6) !important;
+  background: rgba(239,83,80,0.08);
+}
+.bp-equip-slot.filled:hover .bp-equip-remove { opacity: 1; }
+
+
+.bp-equip-placeholder {
+  font-size: 18px;
+  opacity: 0.18;
+  line-height: 1;
+}
+.bp-equip-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+.bp-equip-icon img { width: 22px; height: 22px; object-fit: contain; }
+
+.bp-equip-label {
+  font-size: 6px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.02em;
+  text-align: center;
+  line-height: 1.2;
+  padding: 0 2px;
+}
+.bp-equip-slot.filled .bp-equip-label { color: rgba(255,255,255,0.8); }
+
+.bp-equip-remove {
+  position: absolute;
+  top: 2px; right: 3px;
+  font-size: 7px;
+  color: rgba(239,83,80,0.8);
+  opacity: 0;
+  transition: opacity 0.15s;
+  font-weight: 900;
+}
+
+/* ── Items Grid ── */
+.bp-items-section {
+  padding: 10px 12px 16px;
+  flex: 1;
+}
+
+.bp-items-title {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: rgba(255,255,255,0.22);
+  font-weight: 700;
+  margin-bottom: 9px;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bp-items-count {
+  font-size: 9px;
+  color: rgba(255,255,255,0.3);
+  font-family: monospace;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+.bp-items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+  gap: 5px;
+}
+
+.bp-item-slot {
+  width: 52px;
+  height: 52px;
+  border-radius: 7px;
+  border: 1.5px dashed rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.015);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  position: relative;
+  cursor: default;
+  transition: all 0.15s;
+  overflow: hidden;
+}
+
+.bp-item-slot.filled {
+  border-style: solid;
+  cursor: pointer;
+  background: rgba(255,255,255,0.04);
+}
+.bp-item-slot.filled:hover {
+  border-color: rgba(239,83,80,0.55) !important;
+  background: rgba(239,83,80,0.08);
+  transform: scale(1.05);
+}
+.bp-item-slot.filled:hover .bp-item-remove { opacity: 1; }
+
+
+.bp-item-icon { font-size: 18px; line-height: 1; }
+.bp-item-icon img { width: 22px; height: 22px; object-fit: contain; }
+
+.bp-item-name {
+  font-size: 6px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: rgba(255,255,255,0.5);
+  text-align: center;
+  line-height: 1.2;
+  padding: 0 2px;
+}
+.bp-item-qty {
+  position: absolute;
+  bottom: 2px; right: 3px;
+  font-size: 7px;
+  font-weight: 700;
+  color: #81c784;
+  background: rgba(0,0,0,0.6);
+  padding: 0 3px;
+  border-radius: 2px;
+}
+.bp-item-remove {
+  position: absolute;
+  top: 2px; right: 3px;
+  font-size: 7px;
+  color: rgba(239,83,80,0.8);
+  opacity: 0;
+  transition: opacity 0.15s;
+  font-weight: 900;
+}
+
+/* ===================================================
+   RIGHT — STASH
+   =================================================== */
+.inv-stash-panel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: rgba(0,0,0,0.15);
+}
+
+/* stash body: grid + detail side by side */
+.inv-stash-body {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.inv-stash-hint {
+  font-size: 8px;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 0.04em;
+  padding: 0 14px 6px;
+  flex-shrink: 0;
+}
+
+.inv-stash-grid {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 52px);
+  grid-auto-rows: 52px;
+  gap: 5px;
+  padding: 6px 10px 16px;
+  overflow-y: auto;
+  align-content: start;
+  justify-items: start;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.08) transparent;
+}
+
+.inv-stash-empty {
+  grid-column: 1/-1;
+  text-align: center;
+  padding: 40px 16px;
+  color: rgba(255,255,255,0.18);
+  font-size: 11px;
+  line-height: 2;
+}
+.inv-stash-empty-icon { font-size: 24px; margin-bottom: 6px; opacity: 0.3; }
+.inv-stash-empty span { font-size: 10px; opacity: 0.55; }
+
+.inv-stash-card {
+  background: rgba(255,255,255,0.03);
+  border: 1.5px solid rgba(255,255,255,0.09);
+  border-radius: 7px;
+  padding: 5px 4px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  min-height: 52px;
+  flex-shrink: 0;
+  justify-content: center;
+  overflow: hidden;
+}
+.inv-stash-card:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.28);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+}
+.inv-stash-card.in-bp {
+  border-color: rgba(76,175,80,0.45) !important;
+  background: rgba(76,175,80,0.05);
+}
+.inv-stash-card.in-bp:hover {
+  border-color: rgba(76,175,80,0.7) !important;
+  background: rgba(76,175,80,0.10);
+}
+.inv-stash-card.depleted {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.inv-stash-card.depleted:hover { transform: none; box-shadow: none; }
+
+
+.inv-stash-inbp-badge {
+  position: absolute;
+  top: 4px; left: 5px;
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  color: #81c784;
+  background: rgba(76,175,80,0.2);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.inv-stash-icon { font-size: 18px; line-height: 1; pointer-events: none; }
+.inv-stash-icon img { width: 22px; height: 22px; object-fit: contain; pointer-events: none; }
+.inv-stash-qty {
+  position: absolute;
+  bottom: 2px; right: 3px;
+  font-size: 7px;
+  font-weight: 700;
+  color: #81c784;
+  background: rgba(0,0,0,0.6);
+  padding: 0 3px;
+  border-radius: 2px;
+  pointer-events: none;
+}
+.inv-stash-name    { pointer-events: none; }
+.inv-stash-badge   { pointer-events: none; }
+.inv-stash-drag-hint { pointer-events: none; }
+.inv-stash-inbp-badge { pointer-events: none; }
+
+.inv-stash-name {
+  font-size: 6px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: rgba(255,255,255,0.8);
+  text-align: center;
+  line-height: 1.2;
+  padding: 0 2px;
+}
+  font-size: 5.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  opacity: 0.35;
+  margin-top: 1px;
+}
+
+.inv-stash-badge {
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+  margin-top: 1px;
+}
+.inv-qty-bp    { font-size: 6px; color: #81c784; font-weight: 700; }
+.inv-qty-avail { font-size: 8px; font-weight: 700; color: #81c784; }
+.inv-qty-avail.zero { color: rgba(239,83,80,0.7); }
+.inv-qty-sep   { font-size: 7px; color: rgba(255,255,255,0.2); }
+.inv-qty-total { font-size: 7px; color: rgba(255,255,255,0.3); font-weight: 700; }
+
+/* ===================================================
+   DRAG & DROP
+   =================================================== */
+
+/* ghost element ที่ติดเมาส์ตอน drag */
+#bp-drag-ghost {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  background: rgba(20, 20, 30, 0.92);
+  border: 1.5px solid rgba(255,255,255,0.25);
+  border-radius: 8px;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #fff;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.5);
+  white-space: nowrap;
+  transform: translate(-50%, -110%);
+}
+
+/* stash card ตอน dragging */
+.inv-stash-card.dragging {
+  opacity: 0.45;
+  transform: scale(0.96);
+}
+
+/* equip slot เมื่อ drag over */
+.bp-equip-slot.drag-over {
+  border-color: rgba(100,181,246,0.8) !important;
+  background: rgba(100,181,246,0.12) !important;
+  transform: scale(1.06);
+}
+
+/* items grid เมื่อ drag over */
+.bp-items-grid.drag-over-grid {
+  background: rgba(100,181,246,0.06);
+  border-radius: 8px;
+  outline: 1.5px dashed rgba(100,181,246,0.4);
+}
+
+/* hint text บน stash card */
+.inv-stash-drag-hint {
+  font-size: 5.5px;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 0.03em;
+  margin-top: 1px;
+  text-align: center;
+}
+.inv-stash-card:hover .inv-stash-drag-hint {
+  color: rgba(100,181,246,0.55);
+}
+
+/* ===================================================
+   QUANTITY POPUP
+   =================================================== */
+#bp-qty-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bp-qty-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+}
+
+.bp-qty-box {
+  position: relative;
+  background: #1a1d27;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 22px 28px 20px;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.7);
+}
+
+.bp-qty-title {
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.85);
+}
+
+.bp-qty-avail {
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.04em;
+}
+.bp-qty-avail b { color: #81c784; font-weight: 700; }
+
+.bp-qty-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bp-qty-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.07);
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.12s;
+  line-height: 1;
+}
+.bp-qty-btn:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.3); }
+
+.bp-qty-input {
+  width: 64px;
+  text-align: center;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 5px 0;
+  outline: none;
+}
+.bp-qty-input:focus { border-color: rgba(100,181,246,0.6); }
+/* ซ่อน spin buttons */
+.bp-qty-input::-webkit-inner-spin-button,
+.bp-qty-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+.bp-qty-actions {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.bp-qty-cancel {
+  flex: 1;
+  padding: 8px 0;
+  border-radius: 7px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.5);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.12s;
+  letter-spacing: 0.05em;
+}
+.bp-qty-cancel:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8); }
+
+.bp-qty-confirm {
+  flex: 1;
+  padding: 8px 0;
+  border-radius: 7px;
+  border: none;
+  background: linear-gradient(135deg, #1976d2, #1565c0);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.12s;
+  letter-spacing: 0.06em;
+}
+.bp-qty-confirm:hover { background: linear-gradient(135deg, #1e88e5, #1976d2); box-shadow: 0 2px 10px rgba(25,118,210,0.45); }
+
+/* ===================================================
+   STASH CATEGORY TABS
+   =================================================== */
+.inv-cat-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding: 5px 8px 5px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}
+
+.inv-cat-btn {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 6px;
+  border-radius: 5px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.03);
+  color: rgba(255,255,255,0.45);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all 0.13s;
+  white-space: nowrap;
+}
+.inv-cat-btn:hover {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.8);
+  border-color: rgba(255,255,255,0.22);
+}
+.inv-cat-btn.active {
+  background: rgba(100,181,246,0.15);
+  border-color: rgba(100,181,246,0.5);
+  color: #90caf9;
+}
+
+.inv-cat-icon { font-size: 10px; line-height: 1; }
+.inv-cat-name { font-size: 8px; }
+
+/* ── BP item dragging ── */
+.bp-item-slot.filled.dragging {
+  opacity: 0.4;
+  transform: scale(0.93);
+}
+
+/* ── Stash panel เป็น drop zone รับของจาก BP ── */
+.inv-stash-grid.stash-drop-active {
+  outline: 2px dashed rgba(239,83,80,0.55);
+  border-radius: 8px;
+  background: rgba(239,83,80,0.05);
+}
+
+/* ===================================================
+   ITEM DETAIL PANEL (right side of stash)
+   =================================================== */
+.inv-item-detail {
+  width: 160px;
+  min-width: 160px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 10px 16px;
+  border-left: 1px solid rgba(255,255,255,0.07);
+  background: rgba(0,0,0,0.25);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.08) transparent;
+}
+
+/* placeholder when nothing selected */
+.inv-detail-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 8px;
+  color: rgba(255,255,255,0.15);
+  text-align: center;
+}
+.inv-detail-empty-icon { font-size: 28px; opacity: 0.25; }
+.inv-detail-empty-text { font-size: 8px; letter-spacing: 0.06em; line-height: 1.8; }
+
+/* item detail content */
+.inv-detail-icon {
+  font-size: 36px;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.inv-detail-icon img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(255,255,255,0.15));
+}
+
+.inv-detail-name {
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.9);
+  text-align: center;
+  margin-bottom: 3px;
+  line-height: 1.3;
+}
+
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.inv-detail-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255,255,255,0.07);
+  margin: 8px 0;
+}
+
+.inv-detail-desc {
+  font-size: 8px;
+  color: rgba(255,255,255,0.4);
+  text-align: center;
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+
+/* stat rows */
+.inv-detail-stats {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+.inv-detail-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.inv-detail-stat-key {
+  font-size: 7.5px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.inv-detail-stat-val {
+  font-size: 8.5px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.75);
+  font-family: monospace;
+}
+.inv-detail-stat-val.green { color: #81c784; }
+.inv-detail-stat-val.blue  { color: #64b5f6; }
+
+/* qty in stash */
+.inv-detail-qty-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-top: 4px;
+}
+.inv-detail-qty-label {
+  font-size: 7px;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.inv-detail-qty-num {
+  font-size: 22px;
+  font-weight: 700;
+  color: #81c784;
+  font-family: 'Black Ops One', sans-serif;
+  line-height: 1;
+}
+
+/* add to bp button */
+.inv-detail-add-btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 7px 0;
+  border-radius: 7px;
+  border: none;
+  background: linear-gradient(135deg, rgba(100,181,246,0.25), rgba(100,181,246,0.15));
+  border: 1px solid rgba(100,181,246,0.35);
+  color: #90caf9;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-transform: uppercase;
+}
+.inv-detail-add-btn:hover {
+  background: linear-gradient(135deg, rgba(100,181,246,0.4), rgba(100,181,246,0.25));
+  border-color: rgba(100,181,246,0.6);
+  color: #fff;
+  box-shadow: 0 2px 12px rgba(100,181,246,0.2);
+}
+.inv-detail-add-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* highlight selected stash card */
+.inv-stash-card.selected {
+  outline: 2px solid rgba(100,181,246,0.7);
+  outline-offset: 1px;
+  background: rgba(100,181,246,0.1) !important;
+}
+
+/* qty badge บน equip slot (med stack) */
+.bp-equip-qty {
+  position: absolute;
+  bottom: 2px; right: 3px;
+  font-size: 7px; font-weight: 700;
+  color: #81c784;
+  background: rgba(0,0,0,0.6);
+  padding: 0 3px; border-radius: 2px;
+  pointer-events: none;
+}

@@ -1,0 +1,166 @@
+/* ===== LOADING SCREEN ===== */
+
+#loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: var(--dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  pointer-events: all;
+  opacity: 1;
+  transition: opacity 0.35s ease;
+}
+
+#loading-screen.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Grid overlay เหมือน .screen::before */
+#loading-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Glow bg */
+#loading-screen .ls-glow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(76,175,80,0.08) 0%, transparent 70%);
+  pointer-events: none;
+  animation: pulse 4s ease-in-out infinite;
+}
+
+/* Logo */
+#loading-screen .ls-logo {
+  font-family: 'Black Ops One', sans-serif;
+  font-size: clamp(36px, 8vw, 64px);
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 10px;
+}
+#loading-screen .ls-logo .white { color: #ffffff !important; }
+#loading-screen .ls-logo .green { color: var(--green); }
+#loading-screen .ls-logo .red   { color: var(--red); }
+
+/* Transition label  e.g.  LOGIN → LOBBY */
+#loading-screen .ls-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(11px, 2.5vw, 14px);
+  letter-spacing: 0.25em;
+  color: var(--muted);
+  text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 48px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#loading-screen .ls-label .ls-arrow {
+  color: var(--green);
+  font-size: 16px;
+}
+
+/* Progress bar wrapper */
+#loading-screen .ls-bar-wrap {
+  position: relative;
+  z-index: 1;
+  width: clamp(260px, 55vw, 420px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Track */
+#loading-screen .ls-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 99px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Fill */
+#loading-screen .ls-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--green) 0%, #81c784 100%);
+  transition: width 0.08s linear;
+  position: relative;
+}
+
+/* Shimmer on fill */
+#loading-screen .ls-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.35) 50%, transparent 100%);
+  background-size: 60% 100%;
+  animation: shimmer 1.1s linear infinite;
+}
+@keyframes shimmer {
+  0%   { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Percentage text */
+#loading-screen .ls-pct {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#loading-screen .ls-pct-num {
+  font-family: 'Black Ops One', sans-serif;
+  font-size: clamp(22px, 5vw, 36px);
+  color: var(--green2);
+  line-height: 1;
+  tabular-nums: true;
+}
+#loading-screen .ls-pct-unit {
+  font-family: 'Black Ops One', sans-serif;
+  font-size: clamp(11px, 2.5vw, 15px);
+  color: var(--muted);
+  align-self: flex-end;
+  margin-bottom: 3px;
+}
+
+/* Status text */
+#loading-screen .ls-status {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(10px, 2vw, 13px);
+  color: var(--muted);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  height: 16px;
+}
+
+/* Corner decorations */
+#loading-screen .ls-corner {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-color: var(--green);
+  border-style: solid;
+  opacity: 0.4;
+}
+#loading-screen .ls-corner.tl { top: 24px; left: 24px; border-width: 2px 0 0 2px; }
+#loading-screen .ls-corner.tr { top: 24px; right: 24px; border-width: 2px 2px 0 0; }
+#loading-screen .ls-corner.bl { bottom: 24px; left: 24px; border-width: 0 0 2px 2px; }
+#loading-screen .ls-corner.br { bottom: 24px; right: 24px; border-width: 0 2px 2px 0; }

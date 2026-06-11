@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <!-- PWA: ซ่อน browser UI -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="THEPLAYZ">
+  <meta name="theme-color" content="#0a0c12">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>THEPLAYZ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Rajdhani:wght@500;600;700&display=swap">
+  <script src="js/loader.js"></script>
+  <link rel="stylesheet" href="css/loading.css">
+  <link rel="stylesheet" href="css/world_select.css">
+</head>
+<body>
+
+  <!-- ROTATE SCREEN -->
+  <div id="rotate-screen">
+    <div class="rotate-icon">📱</div>
+    <div class="rotate-text">ROTATE YOUR DEVICE</div>
+    <div class="rotate-sub">เกมนี้รองรับแนวนอนเท่านั้น</div>
+  </div>
+
+  <!-- ===== AUTH ===== -->
+  <div id="auth-screen" class="screen">
+    <div class="main">
+      <div class="glow"></div>
+      <div class="auth-logo"><span class="white">THE</span><span class="green">PLAY</span><span class="red">Z</span></div>
+
+      <div class="auth-box">
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tab-login">LOGIN</button>
+          <button class="auth-tab" id="tab-register">REGISTER</button>
+        </div>
+
+        <!-- LOGIN -->
+        <div id="form-login">
+          <div class="auth-field">
+            <label>Email</label>
+            <input type="email" id="login-email" placeholder="your@email.com" autocomplete="email">
+          </div>
+          <div class="auth-field">
+            <label>Password</label>
+            <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+          </div>
+          <div class="auth-error" id="login-error"></div>
+          <button class="btn-auth" id="btn-login">LOGIN</button>
+        </div>
+
+        <!-- REGISTER -->
+        <div id="form-register" style="display:none;">
+          <div class="auth-field">
+            <label>Username</label>
+            <input type="text" id="reg-name" placeholder="YourName" autocomplete="username">
+          </div>
+          <div class="auth-field">
+            <label>Email</label>
+            <input type="email" id="reg-email" placeholder="your@email.com" autocomplete="email">
+          </div>
+          <div class="auth-field">
+            <label>Password</label>
+            <input type="password" id="reg-pass" placeholder="min 6 characters" autocomplete="new-password">
+          </div>
+          <div class="auth-error" id="reg-error"></div>
+          <button class="btn-auth" id="btn-register">CREATE ACCOUNT</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== LOBBY ===== -->
+  <div id="lobby" class="screen" style="display:none;">
+    <nav>
+      <button class="nav-btn" id="nav-character">CHARACTER</button>
+      <button class="nav-btn" id="nav-inventory">INVENTORY</button>
+      <button class="nav-btn" id="nav-gacha">GACHA</button>
+      <button class="nav-btn" id="nav-shop">SHOP</button>
+      <button class="nav-btn play-nav" id="nav-play">PLAY</button>
+      <button class="nav-btn nav-settings" id="nav-settings">⚙ SETTINGS</button>
+    </nav>
+
+    <!-- PANEL: PLAY -->
+    <div class="lobby-panel active" id="panel-play">
+      <!-- filled by world_select.js WorldSelect.render() -->
+    </div>
+
+    <!-- PANEL: SHOP -->
+    <div class="lobby-panel" id="panel-shop">
+      <div class="wz-shop-layout">
+        <!-- Top: category tabs (horizontal) + currency -->
+        <div class="wz-shop-topbar">
+          <div class="wz-cat-bar" id="shop-cat-bar">
+            <!-- filled by shop.js -->
+          </div>
+          <div class="wz-shop-currency">
+            <div class="wz-currency-pill money">
+              <span>💵</span>
+              <span id="shop-money">0</span>
+              <span class="wz-currency-unit">$</span>
+            </div>
+            <div class="wz-currency-pill point">
+              <span>💎</span>
+              <span id="shop-point">0</span>
+              <span class="wz-currency-unit">PT</span>
+            </div>
+          </div>
+        </div>
+        <!-- Bottom: grid + detail -->
+        <div class="wz-shop-body">
+          <div class="wz-grid-wrap">
+            <div class="wz-shop-grid" id="shop-grid"></div>
+          </div>
+          <div class="wz-detail-panel" id="shop-detail">
+            <div class="wz-detail-empty">เลือกไอเทมเพื่อดูรายละเอียด</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: GACHA -->
+    <div class="lobby-panel" id="panel-gacha">
+      <!-- filled by gacha.js -->
+    </div>
+
+    <!-- PANEL: INVENTORY -->
+    <div class="lobby-panel" id="panel-inventory">
+      <div class="inv-layout">
+
+        <!-- LEFT: Backpack -->
+        <div class="inv-bp-panel">
+          <div class="inv-panel-title">🎒 กระเป๋า</div>
+
+          <!-- Equip Slots -->
+          <div class="bp-equip-section">
+            <div class="bp-equip-title">EQUIP SLOTS</div>
+            <div class="bp-equip-slots" id="bp-equip-slots">
+              <!-- filled by backpack.js -->
+            </div>
+          </div>
+
+          <!-- Items Grid 20 slots -->
+          <div class="bp-items-section">
+            <div class="bp-items-title">
+              <span>ITEMS</span>
+              <span class="bp-items-count" id="bp-items-count">0 / 20</span>
+            </div>
+            <div class="bp-items-grid" id="bp-items-grid">
+              <!-- filled by backpack.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Stash -->
+        <div class="inv-stash-panel">
+          <div class="inv-panel-title">📦 คลัง</div>
+          <div class="inv-cat-bar" id="inv-cat-bar"></div>
+          <div class="inv-stash-hint">คลิกไอเทมเพื่อใส่ กระเป๋า • ลากเพื่อ Equip</div>
+          <div class="inv-stash-body">
+            <div class="inv-stash-grid" id="inv-stash-grid">
+              <!-- filled by inventory.js -->
+            </div>
+            <!-- Item Detail Panel -->
+            <div class="inv-item-detail" id="inv-item-detail">
+              <div class="inv-detail-empty">
+                <div class="inv-detail-empty-icon">🔍</div>
+                <div class="inv-detail-empty-text">คลิกไอเทม<br>เพื่อดูรายละเอียด</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- PANEL: CHARACTER -->
+    <div class="lobby-panel" id="panel-character">
+
+      <!-- Preview + Stats sidebar -->
+      <div class="char-layout">
+        <div class="char-sidebar">
+          <div class="char-preview-wrap" id="char-preview">
+            <!-- filled by character.js -->
+          </div>
+          <div class="char-stats-wrap" id="char-stats">
+            <!-- stat bars filled by character.js -->
+          </div>
+        </div>
+
+        <div class="char-main">
+          <!-- Character tabs -->
+          <div class="char-tabs">
+            <button class="char-tab active" data-ctab="chars">👤 CHARACTERS</button>
+            <button class="char-tab" data-ctab="skills">⚡ SKILLS</button>
+          </div>
+
+          <!-- Characters grid -->
+          <div class="char-section active" id="char-section-chars">
+            <div class="char-grid" id="char-grid"></div>
+          </div>
+
+          <!-- Skills (ว่างไว้ก่อน) -->
+          <div class="char-section" id="char-section-skills">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PANEL: SETTINGS -->
+    <div class="lobby-panel" id="panel-settings">
+      <div class="settings-wrap">
+        <div class="settings-title">⚙ SETTINGS</div>
+        <div class="settings-card">
+          <div class="settings-row">
+            <span class="settings-label">เล่นเป็น</span>
+            <span class="settings-value" id="display-name"></span>
+          </div>
+          <div class="settings-divider"></div>
+          <button class="settings-btn-logout" id="btn-logout">LOGOUT</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end #lobby -->
+  <div id="toast"></div>
+
+  <!-- ===== GAME ===== -->
+  <canvas id="gameCanvas" style="display:none;"></canvas>
+  <div id="joystick-zone" style="display:none;">
+    <div id="joystick-base"><div id="joystick-knob"></div></div>
+  </div>
+  <button id="sprint-btn" style="display:none;">🏃</button>
+
+  <!-- Pickup Button (กลางล่าง ซ้ายเล็กน้อย) -->
+  <button id="pickup-btn" style="display:none;"
+          onpointerdown="if(window.startPickupHold)window.startPickupHold()"
+          onpointerup="if(window.stopPickupHold)window.stopPickupHold()"
+          onpointercancel="if(window.stopPickupHold)window.stopPickupHold()"
+          onpointerleave="if(window.stopPickupHold)window.stopPickupHold()">
+    <svg class="pickup-ring-svg" viewBox="0 0 60 60">
+      <circle class="pickup-ring-bg" cx="30" cy="30" r="24"/>
+      <circle class="pickup-ring-fg" id="pickup-progress-ring" cx="30" cy="30" r="24"/>
+    </svg>
+    <span class="pickup-icon">📦</span>
+  </button>
+  <div id="attack-zone" style="display:none;">
+    <div id="attack-base"><div id="attack-knob"></div></div>
+  </div>
+
+  <!-- Back to lobby button (in-game) -->
+
+  <!-- ===== IN-GAME BACKPACK PANEL ===== -->
+  <div id="ingame-bp-overlay" style="display:none;">
+    <div id="ingame-bp-panel">
+      <div class="igbp-header">
+        <span class="igbp-title">🎒 กระเป๋า</span>
+        <span class="igbp-count" id="igbp-count-badge">0 / 20</span>
+        <button class="igbp-close" onclick="Backpack.closePanel()">✕</button>
+      </div>
+      <div class="igbp-body">
+
+        <!-- LEFT: Backpack -->
+        <div class="igbp-col igbp-col-left">
+          <!-- Equip slots -->
+          <div class="igbp-equip-section">
+            <div class="igbp-section-label">EQUIP</div>
+            <div class="igbp-equip-row" id="igbp-equip-slots"></div>
+          </div>
+
+          <!-- Items grid -->
+          <div class="igbp-items-section">
+            <div class="igbp-section-label">ITEMS</div>
+            <div class="igbp-items-grid" id="igbp-items-grid"></div>
+            <div class="igbp-drop-hint">ลากไอเทมออกนอกกระเป๋าเพื่อทิ้งลงพื้น</div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Item info -->
+        <div class="igbp-col igbp-col-right">
+          <div class="igbp-section-label">ITEM INFO</div>
+          <div id="igbp-info-content" class="igbp-info-content">
+            <div class="igbp-info-empty">เลือกไอเทมเพื่อดูรายละเอียด</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- In-game BP toggle button (ซ้ายบน ใต้ LOBBY) -->
+  <button id="btn-ingame-bp" style="display:none;" onclick="Backpack.togglePanel()">🎒</button>
+
+  <!-- Reload Button (ขวาล่าง เหนือปุ่มยิง เดียวกับ sprint) -->
+  <button id="reload-btn" style="display:none;">🔄</button>
+
+  <!-- Bandage Button (ขวาล่าง ถัดจาก reload) -->
+  <button id="bandage-btn" style="display:none;"><img src="assets/items/bandage.png" style="width:22px;height:22px;object-fit:contain;pointer-events:none;"></button>
+
+  <!-- HP HUD (ซ้ายล่าง) -->
+  <div id="hp-hud" style="display:none;">
+    <div id="hp-count"><span id="hp-cur">100</span><span class="hp-sep">/</span><span id="hp-max">100</span></div>
+    <div id="hp-divider"></div>
+    <div id="hp-bar-track"><div id="hp-bar-fill"></div></div>
+  </div>
+
+  <!-- Body Armor HUD (ติดขวา hp-hud) -->
+  <div id="armor-body-hud" style="display:none;">
+    <img class="armor-slot-img" id="armor-body-img" src="" alt="body" />
+    <div class="armor-slot-pct" id="armor-body-pct">-</div>
+  </div>
+
+  <!-- Head Armor HUD (ติดขวา body armor hud) -->
+  <div id="armor-head-hud" style="display:none;">
+    <img class="armor-slot-img" id="armor-head-img" src="" alt="head" />
+    <div class="armor-slot-pct" id="armor-head-pct">-</div>
+  </div>
+
+  <!-- Reputation HUD (มุมขวาบน) -->
+  <div id="reputation-hud" style="display:none;">
+    <img id="hud-reputation-icon" src="" alt="rep" style="width:28px;height:28px;vertical-align:middle;margin-right:4px;" />
+    <span id="hud-reputation-label" style="font-size:11px;opacity:0.8;margin-right:4px;"></span>
+    <span id="hud-reputation" style="font-size:13px;font-weight:bold;">+0</span>
+  </div>
+
+  <!-- Reputation change popup -->
+  <div id="rep-change-popup" style="position:fixed;top:60px;right:16px;z-index:9999;pointer-events:none;"></div>
+
+  <!-- Gun Icon HUD (ซ้ายของ ammo-hud) -->
+  <div id="gun-icon-hud" style="display:none;">
+    <img id="gun-icon-img" src="" alt="gun" />
+  </div>
+
+  <!-- Ammo HUD -->
+  <div id="ammo-hud" style="display:none;">
+    <div id="ammo-count"><span id="ammo-cur">5</span><span class="ammo-sep">/</span><span id="ammo-max">5</span></div>
+    <div id="ammo-divider"></div>
+    <div id="ammo-stats">
+      <span class="ammo-stat-val" id="stat-gun-name">-</span>
+      <span class="ammo-stat-sep">|</span>
+      <span class="ammo-stat-label">ดาเมจ:</span>
+      <span class="ammo-stat-val" id="stat-damage">-</span>
+    </div>
+  </div>
+
+  <button id="btn-back-lobby">
+    🏠
+  </button>
+
+  <!-- Countdown overlay -->
+  <div id="back-overlay">
+    <button class="back-close-btn" id="btn-close-back">✕</button>
+    <div class="back-top-label">ออกจากเกม</div>
+
+    <div class="back-timer-wrap">
+      <svg class="back-ring-svg" viewBox="0 0 80 80">
+        <circle class="back-ring-track" cx="40" cy="40" r="35"/>
+        <circle class="back-ring-fill" id="ring-fg" cx="40" cy="40" r="35"/>
+      </svg>
+      <div class="back-num" id="countdown-num">5</div>
+    </div>
+
+    <div class="back-hint">ห้ามเคลื่อนที่หรือกระทำใด ๆ</div>
+
+    <button class="back-confirm-btn" id="btn-cancel-back">
+      <span class="back-confirm-icon">✓</span>
+      ยืนยัน
+    </button>
+  </div>
+
+  <!-- ===== SCRIPTS ===== -->
+  <!-- Config & items (no dependencies) -->
+  <script src="js/config_weapon.js"></script>
+  <script src="js/config_armor.js"></script>
+  <script src="js/loading.js"></script>
+  <script src="js/config_money.js"></script>
+  <script src="js/config_shop.js"></script>
+  <script src="js/config_reputation.js"></script>
+  <script src="js/config_gacha.js"></script>
+  <script src="js/config_character.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/model_character.js"></script>
+  <script src="js/items.js"></script>
+
+  <!-- Money system (depends on config_money) -->
+  <script src="js/money.js"></script>
+  <!-- Reputation system (depends on config_reputation) -->
+  <script src="js/reputation.js"></script>
+  <script src="js/stash.js"></script>
+
+  <!-- Lobby systems (depends on config_shop, items, money, stash) -->
+  <script src="js/shop.js"></script>
+  <script src="js/backpack.js"></script>
+  <!-- ingame_bp.js removed: InGameBP is now part of backpack.js -->
+  <script src="js/inventory.js"></script>
+  <script src="js/character.js"></script>
+  <script src="js/config_world.js"></script>
+  <script src="js/world_select.js"></script>
+  <script src="js/gacha.js"></script>
+  <script src="js/lobby.js"></script>
+
+  <!-- Auth — ES module, must come last (uses Shop, Inventory, showScreen) -->
+  <script type="module" src="js/auth.js"></script>
+
+  <!-- DEBUG: แสดง error บนหน้าจอ (ลบออกเมื่อแก้เสร็จ) -->
+  <div id="err-log" style="position:fixed;bottom:0;left:0;right:0;max-height:40vh;overflow-y:auto;background:rgba(0,0,0,0.92);color:#f55;font-size:11px;padding:8px;z-index:99999;display:none;"></div>
+  <script src="js/error-log.js"></script>
+
+  <!-- Socket.io (โหลดจาก server, ใช้แค่บน production) -->
+  <script>
+    if (true) {
+      document.write('<script src="/socket.io/socket.io.js"><\/script>');
+    }
+  </script>
+  <script src="js/network.js"></script>
+
+  <script src="js/sounds.js"></script>
+  <script src="js/armor.js"></script>
+  <script src="js/bandage.js"></script>
+
+  <!-- ===== PWA: Service Worker ===== -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => {
+            console.log('[PWA] Service Worker registered:', reg.scope);
+
+            // แจ้งผู้เล่นเมื่อมีอัปเดตใหม่
+            reg.addEventListener('updatefound', () => {
+              const newWorker = reg.installing;
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  // มี SW ใหม่พร้อมใช้ — แสดง toast แจ้งผู้เล่น
+                  if (typeof window.showToast === 'function') {
+                    window.showToast('🔄 มีอัปเดตใหม่ — รีโหลดเพื่อรับเวอร์ชันล่าสุด', 'info');
+                  }
+                }
+              });
+            });
+          })
+          .catch(err => console.warn('[PWA] Service Worker registration failed:', err));
+      });
+    }
+  </script>
+</body>
+</html>

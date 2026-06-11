@@ -1,0 +1,47 @@
+// ===== GAME STATE =====
+const { randomUUID } = require('crypto');
+const fs = require('fs');
+const path = require('path');
+
+const WORLD_IDS = ['safezone', 'airport', 'snow'];
+const SAVE_FILE = path.join(__dirname, 'drops_save.json');
+
+const players = {};
+WORLD_IDS.forEach(id => { players[id] = {}; });
+
+const WORLD = 6000;
+const socketWorld = {};
+
+// ── World Drops ──────────────────────────────────────────────
+const world_drops = {};
+WORLD_IDS.forEach(id => { world_drops[id] = []; });
+
+// โหลด drops จากไฟล์ตอน server start
+function loadDrops() {
+  try {
+    if (fs.existsSync(SAVE_FILE)) {
+      const data = JSON.parse(fs.readFileSync(SAVE_FILE, 'utf8'));
+      WORLD_IDS.forEach(id => {
+        if (data[id]) world_drops[id] = data[id];
+      });
+      console.log(`Loaded ${WORLD_IDS.map(id => world_drops[id].length).reduce((a,b)=>a+b,0)} drops from save.`);
+    }
+  } catch(e) {
+    console.log('Could not load drops save:', e.message);
+  }
+}
+
+// บันทึก drops ลงไฟล์
+function saveDrops() {
+  try {
+    fs.writeFileSync(SAVE_FILE, JSON.stringify(world_drops));
+  } catch(e) {
+    console.log('Could not save drops:', e.message);
+  }
+}
+
+loadDrops();
+
+function newDropId() { return 'drop_' + randomUUID(); }
+
+module.exports = { players, WORLD, WORLD_IDS, socketWorld, world_drops, newDropId, saveDrops };

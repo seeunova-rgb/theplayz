@@ -1,0 +1,971 @@
+/* ===== LOBBY ===== */
+#lobby nav {
+  display: flex; background: var(--dark2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0; position: relative; z-index: 2;
+}
+.nav-btn {
+  flex: 1; padding: 9px 0;
+  background: none; border: none;
+  border-right: 1px solid var(--border);
+  color: var(--muted);
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 10px; letter-spacing: 0.12em;
+  cursor: pointer; position: relative; transition: color 0.2s;
+}
+.nav-btn:last-child { border-right: none; }
+.nav-btn::after {
+  content: ''; position: absolute;
+  bottom: 0; left: 50%; width: 0; height: 2px;
+  background: var(--green); transform: translateX(-50%);
+  transition: width 0.25s;
+}
+.nav-btn.play-nav { color: var(--green2); }
+.nav-btn.play-nav::after { width: 60%; background: var(--green2); }
+.nav-btn.inactive { opacity: 0.45; cursor: not-allowed; }
+
+#lobby .main {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; position: relative;
+}
+
+.corner { position: absolute; width: 18px; height: 18px; opacity: 0.12; }
+.corner-tl { top: 10px; left: 10px; border-top: 2px solid var(--text); border-left: 2px solid var(--text); }
+.corner-tr { top: 10px; right: 10px; border-top: 2px solid var(--text); border-right: 2px solid var(--text); }
+.corner-bl { bottom: 10px; left: 10px; border-bottom: 2px solid var(--text); border-left: 2px solid var(--text); }
+.corner-br { bottom: 10px; right: 10px; border-bottom: 2px solid var(--text); border-right: 2px solid var(--text); }
+
+/* user info top-right */
+.user-info {
+  position: absolute; top: 0; right: 0;
+  padding: 6px 14px;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; letter-spacing: 0.06em; color: var(--muted);
+  z-index: 3;
+}
+.user-info span { color: var(--green2); font-weight: 700; }
+.btn-logout {
+  background: none; border: 1px solid var(--border);
+  color: var(--muted); font-family: 'Rajdhani', sans-serif;
+  font-size: 11px; letter-spacing: 0.1em;
+  padding: 4px 10px; border-radius: 3px; cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-logout:hover { border-color: var(--red); color: var(--red); }
+
+.logo-wrap { text-align: center; animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) both; }
+.logo-sub { font-size: 8px; letter-spacing: 0.35em; color: var(--muted); text-transform: uppercase; margin-bottom: 5px; font-weight: 600; }
+
+.play-wrap { margin-top: 20px; animation: fadeUp 0.8s 0.2s cubic-bezier(0.16,1,0.3,1) both; }
+.btn-play { background: none; border: none; cursor: pointer; padding: 0; outline: none; position: relative; }
+.btn-play-inner {
+  display: flex; align-items: center; gap: 9px;
+  padding: 10px 30px; background: var(--green);
+  color: #fff; font-family: 'Black Ops One', sans-serif;
+  font-size: 13px; letter-spacing: 0.15em;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  transition: background 0.15s, transform 0.15s;
+  position: relative; overflow: hidden;
+}
+.btn-play-inner::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%);
+}
+.btn-play:hover .btn-play-inner { background: var(--green2); transform: translateY(-2px); }
+.btn-play:active .btn-play-inner { transform: translateY(1px); }
+.btn-play::after {
+  content: ''; position: absolute; inset: -6px;
+  background: var(--green); filter: blur(16px);
+  opacity: 0; z-index: -1; transition: opacity 0.3s;
+}
+.btn-play:hover::after { opacity: 0.3; }
+.btn-play-icon {
+  width: 0; height: 0; border-style: solid;
+  border-width: 5px 0 5px 9px;
+  border-color: transparent transparent transparent #fff;
+  flex-shrink: 0;
+}
+  font-family: 'Black Ops One', sans-serif;
+  font-size: clamp(28px, 6vw, 52px);
+  line-height: 0.9; color: var(--text);
+  position: relative; display: inline-block;
+}
+.logo span.green { color: var(--green); display: inline-block; }
+.logo span.red   { color: var(--red); display: inline-block; animation: flicker 6s infinite; }
+@keyframes flicker {
+  0%,95%,100% { opacity: 1; } 96% { opacity: 0.3; } 97% { opacity: 1; } 98% { opacity: 0.5; }
+}
+.logo-shadow {
+  position: absolute; inset: 0;
+  font-family: 'Black Ops One', sans-serif;
+  font-size: clamp(28px, 6vw, 52px);
+  line-height: 0.9; color: var(--green);
+  filter: blur(18px); opacity: 0.15;
+  pointer-events: none; z-index: -1;
+}
+
+.status {
+  margin-top: 14px; display: flex; align-items: center; gap: 6px;
+  font-size: 10px; letter-spacing: 0.08em; color: var(--muted);
+  animation: fadeUp 0.8s 0.35s cubic-bezier(0.16,1,0.3,1) both;
+}
+.dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #4caf50; box-shadow: 0 0 6px #4caf50;
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== LOBBY PANELS ===== */
+.lobby-panel {
+  display: none; flex: 1;
+  flex-direction: column;
+  width: 100%; max-width: 900px;
+  margin: 0 auto; padding: 12px 10px;
+  animation: fadeUp 0.4s cubic-bezier(0.16,1,0.3,1) both;
+  overflow: hidden;
+  min-height: 0;
+}
+.lobby-panel.active { display: flex; }
+
+/* currency moved inside shop panel */
+
+/* ===== SHOP (WarZ Style) ===== */
+
+/* ── Shop layout: column (topbar → body) ── */
+.wz-shop-layout {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  height: 100%;
+}
+
+/* Top bar: cat tabs (left) + currency (right) */
+.wz-shop-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.35);
+  border-bottom: 1px solid var(--border);
+  padding: 0 12px 0 0;
+}
+
+/* Category tabs — horizontal */
+.wz-cat-bar {
+  display: flex;
+  flex-direction: row;
+  gap: 3px;
+  padding: 5px 7px;
+  flex: 1;
+}
+
+.wz-cat-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid transparent;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: rgba(255,255,255,0.4);
+  white-space: nowrap;
+}
+.wz-cat-btn:hover {
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.7);
+  border-color: rgba(255,255,255,0.1);
+}
+.wz-cat-btn.active {
+  background: rgba(76,175,80,0.15);
+  border-color: rgba(76,175,80,0.45);
+  color: var(--green2);
+}
+.wz-cat-icon { font-size: 13px; line-height: 1; }
+.wz-cat-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+/* Currency — inside shop, right side of topbar */
+.wz-shop-currency {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.wz-currency-pill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 3px 9px;
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 10px;
+}
+.wz-currency-pill.money { color: #ffd54f; border-color: rgba(255,213,79,0.25); }
+.wz-currency-pill.point { color: #ce93d8; border-color: rgba(206,147,216,0.25); }
+.wz-currency-unit { font-size: 9px; opacity: 0.5; }
+
+/* Body: grid + detail */
+.wz-shop-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Item grid — เลื่อนได้เฉพาะส่วนนี้ tab ค้างอยู่ข้างบน */
+.wz-grid-wrap {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
+  min-height: 0;
+}
+
+.wz-shop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 52px);
+  gap: 5px;
+}
+
+.wz-empty {
+  grid-column: 1/-1;
+  text-align: center;
+  padding: 32px 16px;
+  color: rgba(255,255,255,0.2);
+  font-size: 11px;
+  font-style: italic;
+}
+
+/* Item slot card */
+.wz-item-slot {
+  position: relative;
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 7px;
+  padding: 5px 4px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  transition: all 0.15s;
+  width: 52px;
+  height: 52px;
+  justify-content: center;
+}
+.wz-item-slot:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.25);
+  transform: translateY(-2px);
+}
+.wz-item-slot.selected {
+  background: rgba(76,175,80,0.12);
+  border-color: rgba(76,175,80,0.6);
+  box-shadow: 0 0 10px rgba(76,175,80,0.2);
+}
+
+/* Rarity borders */
+
+.wz-item-icon { font-size: 18px; line-height: 1; }
+.wz-item-icon img { width: 22px; height: 22px; object-fit: contain; }
+.wz-item-name {
+  font-size: 6px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-align: center;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.2;
+  padding: 0 2px;
+}
+.wz-item-qty {
+  position: absolute;
+  bottom: 2px;
+  right: 3px;
+  font-size: 7px;
+  font-weight: 700;
+  color: #81c784;
+  background: rgba(0,0,0,0.5);
+  padding: 0 3px;
+  border-radius: 2px;
+}
+
+/* Detail panel (right side) */
+.wz-detail-panel {
+  width: 150px;
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.4);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+
+.wz-detail-scroll {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 10px 14px;
+  gap: 7px;
+}
+
+.wz-detail-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: rgba(255,255,255,0.2);
+  font-size: 10px;
+  padding: 14px;
+  line-height: 1.6;
+}
+
+.wz-detail-icon {
+  font-size: 32px;
+  line-height: 1;
+  padding: 8px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 9px;
+  border: 1.5px solid rgba(255,255,255,0.1);
+  width: 100%;
+  text-align: center;
+}
+.wz-detail-icon img { width: 44px; height: 44px; object-fit: contain; }
+
+.wz-detail-name {
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--text);
+  text-align: center;
+}
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+/* ── weapon stat bars ── */
+.wz-weapon-stats {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 10px 0 8px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  margin-bottom: 4px;
+}
+.wz-stat-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.wz-stat-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.45);
+  width: 54px;
+  flex-shrink: 0;
+  text-align: right;
+}
+.wz-stat-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.wz-stat-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.4s cubic-bezier(0.16,1,0.3,1);
+  box-shadow: 0 0 6px currentColor;
+}
+
+.wz-detail-owned {
+  font-size: 9px;
+  color: #81c784;
+  background: rgba(76,175,80,0.1);
+  border: 1px solid rgba(76,175,80,0.25);
+  border-radius: 4px;
+  padding: 3px 8px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Quantity row — popup style */
+.wz-qty-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding-top: 8px;
+}
+.wz-qty-btn {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.14);
+  color: rgba(255,255,255,0.8);
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.12s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.wz-qty-btn:hover {
+  background: rgba(255,255,255,0.14);
+  color: #fff;
+  border-color: rgba(255,255,255,0.3);
+}
+/* ตัวเลข qty — แตะเพื่อเปิด popup */
+.wz-qty-display {
+  flex: 1;
+  height: 30px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 6px;
+  color: #fff;
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.wz-qty-display:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.35);
+}
+
+/* Buy row — price left, button right */
+.wz-buy-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+/* Total price */
+.wz-total-price {
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.wz-total-price.money { color: #ffd54f; }
+.wz-total-price.point { color: #ce93d8; }
+.wz-unit-price {
+  display: block;
+  font-size: 8px;
+  opacity: 0.55;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+/* Buy button */
+.wz-btn-buy {
+  flex: 1;
+  padding: 7px 0;
+  border: none;
+  border-radius: 5px;
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.wz-btn-buy.money {
+  background: linear-gradient(135deg, #f9a825, #ffd54f);
+  color: #000;
+}
+.wz-btn-buy.money:hover { background: linear-gradient(135deg, #ffd54f, #ffe082); }
+.wz-btn-buy.point {
+  background: linear-gradient(135deg, #7b1fa2, #ce93d8);
+  color: #fff;
+}
+.wz-btn-buy.point:hover { background: linear-gradient(135deg, #9c27b0, #e1bee7); }
+.wz-btn-buy.disabled,
+.wz-btn-buy:disabled {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.25);
+  cursor: not-allowed;
+}
+.wz-btn-buy:active:not(:disabled) { transform: scale(0.97); }
+
+/* toast (keep as is) */
+#toast {
+  position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: rgba(20,30,20,0.95); border: 1px solid var(--border);
+  color: var(--text); font-family: 'Rajdhani', sans-serif;
+  font-size: 14px; font-weight: 600; letter-spacing: 0.06em;
+  padding: 12px 24px; border-radius: 6px; z-index: 999;
+  opacity: 0; transition: opacity 0.25s, transform 0.25s; pointer-events: none;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast.success { border-color: rgba(76,175,80,0.5); color: var(--green2); }
+#toast.error   { border-color: rgba(239,83,80,0.5); color: var(--red); }
+
+/* lobby main panel (PLAY tab) */
+#panel-play { align-items: center; justify-content: center; overflow: hidden; }
+
+/* ===== NAV SETTINGS BUTTON ===== */
+.nav-btn.nav-settings {
+  flex: 0 0 auto;
+  padding: 9px 16px;
+  color: rgba(255,255,255,0.35);
+  font-size: 10px;
+  border-right: none;
+}
+.nav-btn.nav-settings:hover { color: rgba(255,255,255,0.7); }
+.nav-btn.nav-settings.play-nav { color: var(--green2); }
+
+/* ===== SETTINGS PANEL ===== */
+#panel-settings {
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  max-width: 340px;
+}
+
+.settings-title {
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.18em;
+  color: rgba(255,255,255,0.55);
+}
+
+.settings-card {
+  width: 100%;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  gap: 12px;
+}
+
+.settings-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.06em;
+}
+
+.settings-value {
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 13px;
+  color: var(--green2);
+  letter-spacing: 0.08em;
+}
+
+.settings-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.07);
+  margin: 0 18px;
+}
+
+.settings-btn-logout {
+  margin: 14px 18px;
+  padding: 10px 0;
+  background: rgba(239,83,80,0.08);
+  border: 1px solid rgba(239,83,80,0.3);
+  border-radius: 6px;
+  color: var(--red);
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.settings-btn-logout:hover {
+  background: rgba(239,83,80,0.18);
+  border-color: rgba(239,83,80,0.6);
+}
+
+/* ===== GACHA ===== */
+.gacha-layout {
+  display: flex; flex-direction: column;
+  width: 100%; height: 100%;
+  gap: 8px; position: relative; overflow: hidden;
+}
+
+.gacha-topbar {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 2px 2px 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+
+.gacha-title {
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 14px; letter-spacing: 2px; color: #fff;
+}
+
+.gacha-currency {
+  display: flex; align-items: center; gap: 4px;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px; padding: 2px 8px;
+}
+.gc-label { font-size: 12px; }
+.gc-val { font-family: 'Black Ops One', sans-serif; font-size: 12px; color: #fff; }
+
+/* ── Cards ── */
+.gacha-cards {
+  display: flex; flex-direction: column;
+  gap: 8px; overflow-y: auto; flex: 1;
+}
+
+.gacha-card {
+  background: rgba(0,0,0,0.45);
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+  overflow: hidden;
+}
+
+.gacha-card-header {
+  display: flex; align-items: center;
+  gap: 8px; padding: 7px 12px;
+  border-bottom: 2px solid;
+  background: rgba(0,0,0,0.3);
+}
+.gacha-card-icon { width: 26px; height: 26px; object-fit: contain; }
+.gacha-card-name {
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 11px; letter-spacing: 1.5px; color: #fff;
+}
+
+/* ── Pool preview (เล็กลง) ── */
+.gacha-pool-preview {
+  display: flex; flex-wrap: wrap;
+  gap: 5px; padding: 7px 10px;
+}
+
+.gacha-pool-item {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 1px; width: 48px; padding: 6px 2px 5px;
+  background: rgba(0,0,0,0.4);
+  border: 1.5px solid; border-radius: 7px;
+  position: relative;
+}
+.gacha-pool-icon { font-size: 14px; line-height: 1; }
+.gacha-pool-icon img { width: 26px; height: 26px; object-fit: contain; }
+.gacha-pool-qty {
+  position: absolute; bottom: 2px; right: 3px;
+  font-family: 'Black Ops One', sans-serif; font-size: 7px; color: #fff;
+  background: rgba(0,0,0,0.6); padding: 0 2px; border-radius: 2px;
+}
+
+/* ── Footer ── */
+.gacha-card-footer {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  gap: 8px;
+}
+
+.gacha-spin-count-row {
+  display: flex; flex-wrap: wrap; gap: 3px; max-width: 200px;
+}
+
+.gacha-count-btn {
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.6);
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 9px; padding: 3px 7px;
+  border-radius: 6px; cursor: pointer;
+  transition: all 0.12s;
+  -webkit-tap-highlight-color: transparent;
+}
+.gacha-count-btn.active {
+  background: rgba(255,215,0,0.15);
+  border-color: rgba(255,215,0,0.6);
+  color: #ffd700;
+  box-shadow: 0 0 6px rgba(255,215,0,0.3);
+}
+.gacha-count-btn:active { transform: scale(0.92); }
+
+.gacha-footer-right {
+  display: flex; align-items: center; gap: 8px;
+}
+
+.gacha-price {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px; font-weight: 700;
+  color: rgba(255,255,255,0.6);
+  white-space: nowrap;
+}
+
+.gacha-spin-btn {
+  background: rgba(255,215,0,0.12);
+  border: 1.5px solid rgba(255,215,0,0.5);
+  color: #ffd700;
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 10px; letter-spacing: 1px;
+  padding: 6px 14px; border-radius: 7px;
+  cursor: pointer; transition: all 0.12s;
+  -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
+}
+.gacha-spin-btn:active { transform: scale(0.93); background: rgba(255,215,0,0.25); }
+
+/* ── Spin overlay ── */
+.gacha-spin-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.92);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 14px; z-index: 200;
+  animation: fadeUp 0.2s ease both;
+}
+
+.gacha-spin-box {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 6px; width: 100%;
+}
+
+.gacha-spin-marker {
+  width: 2px; height: 12px;
+  background: #ffd700;
+  box-shadow: 0 0 7px rgba(255,215,0,0.8);
+  border-radius: 2px;
+}
+
+.gacha-spin-window {
+  width: 100%; max-width: 400px; height: 76px;
+  overflow: hidden;
+  border-top: 2px solid rgba(255,215,0,0.4);
+  border-bottom: 2px solid rgba(255,215,0,0.4);
+}
+
+.gacha-strip {
+  display: flex; gap: 4px;
+  padding: 4px; will-change: transform;
+}
+
+.gacha-strip-item {
+  flex-shrink: 0; width: 64px; height: 68px;
+  background: rgba(0,0,0,0.6);
+  border: 2px solid; border-radius: 7px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  position: relative;
+}
+.gacha-strip-icon { font-size: 22px; line-height: 1; }
+.gacha-strip-icon img { width: 36px; height: 36px; object-fit: contain; }
+.gacha-strip-qty {
+  position: absolute; bottom: 2px; right: 3px;
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 7px; color: #fff;
+}
+
+/* ── Result single ── */
+.gacha-spin-result {
+  display: flex; justify-content: center;
+  animation: fadeUp 0.3s ease both;
+}
+
+.gacha-result-box {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 6px;
+  padding: 14px 28px;
+  background: rgba(0,0,0,0.75);
+  border: 2px solid; border-radius: 12px;
+  animation: gachaPop 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes gachaPop {
+  from { transform: scale(0.7); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+.gacha-result-label { display: none; }
+.gacha-result-icon { font-size: 44px; line-height: 1; }
+.gacha-result-icon img { width: 56px; height: 56px; object-fit: contain; }
+.gacha-result-name { font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700; color: #fff; text-align: center; }
+
+/* ── Result multi (×5 / ×10) ── */
+.gacha-result-multi {
+  display: flex; flex-wrap: wrap;
+  justify-content: center; gap: 5px;
+  max-width: 380px;
+  animation: gachaPop 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+.gacha-result-mini {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 2px;
+  width: 60px; padding: 5px 3px 4px;
+  background: rgba(0,0,0,0.7);
+  border: 1.5px solid; border-radius: 8px;
+}
+.gacha-result-mini-rar { font-family: 'Black Ops One', sans-serif; font-size: 6px; letter-spacing: 0.5px; }
+.gacha-result-mini-icon { font-size: 20px; line-height: 1; }
+.gacha-result-mini-icon img { width: 32px; height: 32px; object-fit: contain; }
+.gacha-result-mini-name { font-family: 'Rajdhani', sans-serif; font-size: 7px; font-weight: 700; color: #fff; text-align: center; line-height: 1.2; }
+
+/* ── Close btn ── */
+.gacha-close-btn {
+  background: rgba(255,255,255,0.07);
+  border: 1.5px solid rgba(255,255,255,0.22);
+  color: rgba(255,255,255,0.75);
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700; font-size: 12px; letter-spacing: 1px;
+  padding: 8px 24px; border-radius: 9px;
+  cursor: pointer; transition: all 0.13s;
+  -webkit-tap-highlight-color: transparent;
+}
+.gacha-close-btn:active { transform: scale(0.95); }
+
+/* ── Toast ── */
+.gacha-toast {
+  position: fixed; top: 56px; left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.85);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff; font-family: 'Rajdhani', sans-serif;
+  font-size: 12px; font-weight: 700;
+  padding: 6px 18px; border-radius: 18px;
+  z-index: 9999; pointer-events: none;
+  animation: fadeUp 0.2s ease both;
+}
+
+/* ===== GACHA MULTI OVERLAY (circle loader + popup) ===== */
+.gacha-multi-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.92);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 14px; z-index: 200;
+  animation: fadeUp 0.2s ease both;
+}
+
+/* ── Ring loader ── */
+.gacha-loader-wrap {
+  display: flex; align-items: center; justify-content: center;
+  position: relative; width: 140px; height: 140px;
+}
+
+.gacha-ring {
+  width: 140px; height: 140px;
+  transform: rotate(-90deg);
+}
+
+.gacha-ring-bg {
+  fill: none;
+  stroke: rgba(255,255,255,0.08);
+  stroke-width: 8;
+}
+
+.gacha-ring-fill {
+  fill: none;
+  stroke: #ffd700;
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 327;
+  stroke-dashoffset: 327;
+  filter: drop-shadow(0 0 6px rgba(255,215,0,0.7));
+  transition: stroke-dashoffset 0.05s linear;
+}
+
+.gacha-ring-pct {
+  position: absolute;
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 22px; color: #ffd700;
+  letter-spacing: 1px;
+}
+
+/* ── Multi result popup ── */
+.gacha-multi-popup {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 12px;
+  background: rgba(10,10,10,0.97);
+  border: 1.5px solid rgba(255,215,0,0.25);
+  border-radius: 14px;
+  padding: 16px 14px;
+  width: 100%; max-width: 420px;
+  max-height: 80vh; overflow: hidden;
+  animation: gachaPop 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+.gacha-popup-title {
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 13px; letter-spacing: 2px; color: #ffd700;
+}
+
+.gacha-popup-grid {
+  display: flex; flex-wrap: wrap;
+  justify-content: center; gap: 5px;
+  overflow-y: auto; max-height: 55vh;
+  padding: 2px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+
+.gacha-popup-item {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 2px;
+  width: 62px; padding: 6px 3px 5px;
+  background: rgba(0,0,0,0.7);
+  border: 1.5px solid; border-radius: 8px;
+  position: relative;
+}
+
+.gacha-popup-icon { font-size: 20px; line-height: 1; }
+.gacha-popup-icon img { width: 32px; height: 32px; object-fit: contain; }
+
+.gacha-popup-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 7px; font-weight: 700; color: #fff;
+  text-align: center; line-height: 1.2;
+}
+
+.gacha-popup-count {
+  position: absolute; top: 2px; right: 4px;
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 8px;
+  background: rgba(0,0,0,0.7); padding: 0 3px; border-radius: 3px;
+}

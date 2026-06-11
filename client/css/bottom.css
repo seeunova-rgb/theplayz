@@ -1,0 +1,190 @@
+/* ===== HP HUD (ซ้ายล่าง, mirror ของ ammo-hud) ===== */
+#hp-hud {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  background: rgba(0,0,0,0.65);
+  border-top: 2px solid rgba(80,200,80,0.6);
+  border-right: 2px solid rgba(80,200,80,0.6);
+  border-top-right-radius: 14px;
+  padding: 3px 6px 3px;
+  z-index: 1000;
+  pointer-events: none;
+  min-width: 120px;
+}
+
+#hp-count {
+  font-family: "Black Ops One", sans-serif;
+  font-size: 11px;
+  color: #80e080;
+  line-height: 1;
+  letter-spacing: 1px;
+  width: 100%;
+  text-align: center;
+}
+#hp-cur  { color: #80e080; }
+.hp-sep  { color: rgba(255,255,255,0.35); margin: 0 4px; }
+#hp-max  { color: #80e080; }
+
+#hp-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(80,200,80,0.4);
+}
+
+#hp-bar-track {
+  width: 100%;
+  height: 5px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+#hp-bar-fill {
+  height: 100%;
+  width: 100%;
+  background: #80e080;
+  border-radius: 3px;
+  transition: width 0.15s ease, background 0.3s ease;
+  box-shadow: 0 0 5px rgba(80,200,80,0.6);
+}
+
+
+#ammo-hud {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  background: rgba(0,0,0,0.65);
+  border-top: 2px solid rgba(80,200,80,0.6);
+  border-left: 2px solid rgba(80,200,80,0.6);
+  border-top-left-radius: 14px;
+  padding: 3px 6px 3px;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+/* แถวกระสุน */
+#ammo-count {
+  font-family: "Black Ops One", sans-serif;
+  font-size: 11px;
+  color: #80e080;
+  line-height: 1;
+  letter-spacing: 1px;
+  width: 100%;
+  text-align: center;
+}
+#ammo-cur  { color: #80e080; }
+.ammo-sep  { color: rgba(255,255,255,0.35); margin: 0 4px; }
+#ammo-max  { color: #80e080; }
+
+/* เส้นคั่น */
+#ammo-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(80,200,80,0.4);
+}
+
+/* แถว stats */
+#ammo-stats {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  justify-content: center;
+}
+.ammo-stat-sep {
+  color: rgba(255,255,255,0.3);
+  font-size: 8px;
+}
+.ammo-stat-label {
+  font-family: "Rajdhani", sans-serif;
+  font-size: 7px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.5px;
+}
+.ammo-stat-val {
+  font-family: "Black Ops One", sans-serif;
+  font-size: 7px;
+  color: rgba(180,255,180,0.9);
+}
+
+
+
+
+/* ===== Armor HUD — แยก 2 กล่องอิสระ (body / head) ===== */
+#armor-body-hud,
+#armor-head-hud {
+  position: fixed;
+  bottom: 0;
+  /* left ถูก set ด้วย JS */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 4px 7px 3px;
+  background: rgba(0,0,0,0.65);
+  border-top:   2px solid rgba(80,200,80,0.6);
+  border-left:  2px solid rgba(80,200,80,0.6);
+  border-right: 2px solid rgba(80,200,80,0.6);
+  border-top-left-radius:  14px;
+  border-top-right-radius: 14px;
+  z-index: 1000;
+  pointer-events: none;
+  min-width: 42px;
+}
+
+.armor-slot-img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  image-rendering: auto;
+  filter: drop-shadow(0 0 3px rgba(80,200,80,0.4));
+  display: block;
+}
+
+.armor-slot-pct {
+  font-family: "Black Ops One", sans-serif;
+  font-size: 9px;
+  color: #80e080;
+  line-height: 1;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+#gun-icon-hud {
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.65);
+  border-top: 2px solid rgba(80,200,80,0.6);
+  border-left: 2px solid rgba(80,200,80,0.6);
+  border-right: 2px solid rgba(80,200,80,0.6);
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+  padding: 3px 7px;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+#gun-icon-img {
+  height: 36px;
+  width: auto;
+  max-width: 60px;
+  object-fit: contain;
+  image-rendering: auto;
+  display: block;
+  filter: drop-shadow(0 0 3px rgba(80,200,80,0.4));
+}

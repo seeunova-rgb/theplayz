@@ -1,0 +1,522 @@
+/* ===== BACK TO LOBBY BUTTON ===== */
+#btn-back-lobby {
+  position: fixed;
+  top: 14px; left: 14px;
+  z-index: 200;
+  display: none;
+  align-items: center; justify-content: center;
+  width: 40px; height: 36px;
+  background: rgba(10,12,15,0.82);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 6px;
+  font-size: 18px;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition: border-color 0.2s, background 0.2s;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+#btn-back-lobby:hover {
+  border-color: rgba(239,83,80,0.5);
+  background: rgba(10,12,15,0.95);
+}
+
+/* ===== COUNTDOWN OVERLAY ===== */
+/* ===== BACK OVERLAY ===== */
+#back-overlay {
+  position: fixed; inset: 0;
+  z-index: 300;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  background: rgba(0,0,0,0.82);
+  backdrop-filter: blur(8px);
+  font-family: 'Black Ops One', sans-serif;
+  pointer-events: all;
+}
+#back-overlay.active { display: flex; }
+
+/* ── X close button (มุมบนขวา) ── */
+.back-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.45);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+.back-close-btn:active {
+  background: rgba(255,255,255,0.14);
+  border-color: rgba(255,255,255,0.4);
+  color: #fff;
+  transform: scale(0.93);
+}
+/* ซ่อน X หลังจากกดยืนยันแล้ว */
+#back-overlay.confirmed .back-close-btn {
+  display: none;
+}
+
+/* ── Top label ── */
+.back-top-label {
+  font-size: 11px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+}
+
+/* ── Timer ring ── */
+.back-timer-wrap {
+  position: relative;
+  width: 90px;
+  height: 90px;
+}
+.back-ring-svg {
+  width: 90px;
+  height: 90px;
+  transform: rotate(-90deg);
+}
+.back-ring-track {
+  fill: none;
+  stroke: rgba(255,255,255,0.06);
+  stroke-width: 3;
+}
+.back-ring-fill {
+  fill: none;
+  stroke: rgba(255,255,255,0.65);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 220;
+  stroke-dashoffset: 0;
+}
+.back-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  color: #fff;
+  letter-spacing: -1px;
+}
+
+/* ── Hint ── */
+.back-hint {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+}
+
+/* ── Confirm button ── */
+.back-confirm-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 30px;
+  background: rgba(255,255,255,0.07);
+  border: 1.5px solid rgba(255,255,255,0.22);
+  border-radius: 50px;
+  color: rgba(255,255,255,0.75);
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+.back-confirm-btn:active:not(.locked) {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.5);
+  color: #fff;
+  transform: scale(0.96);
+}
+.back-confirm-btn.locked {
+  opacity: 0.3;
+  pointer-events: none;
+}
+.back-confirm-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+
+
+
+/* ===== IN-GAME BACKPACK ===== */
+
+/* Toggle button (ซ้ายบน ติดกับ LOBBY) */
+#btn-ingame-bp {
+  position: fixed;
+  top: 14px; left: 62px;
+  z-index: 200;
+  display: none;
+  align-items: center; justify-content: center;
+  width: 40px; height: 36px;
+  background: rgba(10,12,15,0.82);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 6px;
+  font-size: 18px;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition: border-color 0.2s, background 0.2s;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+#btn-ingame-bp:hover  { border-color: rgba(76,175,80,0.5); background: rgba(10,12,15,0.95); }
+#btn-ingame-bp.active { border-color: rgba(76,175,80,0.7); background: rgba(76,175,80,0.15); }
+
+/* Overlay — กลางจอ, คลิกนอก panel → ปิด */
+#ingame-bp-overlay {
+  position: fixed; inset: 0;
+  z-index: 180;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  pointer-events: all;
+}
+#ingame-bp-overlay.visible #ingame-bp-panel {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+/* Panel หลัก — Compact Tactical Glass */
+#ingame-bp-panel {
+  width: min(460px, 94vw);
+  max-height: 80vh;
+  background: rgba(10, 14, 20, 0.55);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.45),
+              inset 0 1px 0 rgba(255,255,255,0.07);
+  transform: translateY(12px) scale(0.97);
+  opacity: 0;
+  transition: transform 0.22s cubic-bezier(0.16,1,0.3,1), opacity 0.18s;
+  pointer-events: all;
+}
+
+/* Header */
+.igbp-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 12px 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
+}
+.igbp-title {
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: rgba(255,255,255,0.75);
+  flex: 1;
+}
+.igbp-count {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.05em;
+  color: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.05);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+.igbp-close {
+  background: none; border: none;
+  color: rgba(255,255,255,0.25);
+  font-size: 13px; cursor: pointer;
+  width: 22px; height: 22px;
+  border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+  transition: color 0.15s, background 0.15s;
+  margin-left: 2px;
+}
+.igbp-close:hover { color: #ef5350; background: rgba(239,83,80,0.12); }
+
+/* Body — two columns: backpack (left) | item info (right) */
+.igbp-body {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  overflow-y: auto;
+  max-height: calc(80vh - 44px);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.08) transparent;
+}
+
+.igbp-col { display: flex; flex-direction: column; }
+.igbp-col-left  { flex: 1; min-width: 0; }
+.igbp-col-right {
+  flex: 0 0 180px;
+  min-width: 0;
+  border-left: 1px solid rgba(255,255,255,0.06);
+  padding: 9px 8px;
+}
+
+.igbp-section-label {
+  font-size: 8px; font-weight: 700;
+  letter-spacing: 0.18em;
+  color: rgba(255,255,255,0.2);
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+
+/* ── Equip row ── */
+.igbp-equip-section {
+  padding: 9px 10px 7px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  flex-shrink: 0;
+}
+.igbp-equip-row {
+  display: flex;
+  gap: 5px;
+}
+.igbp-equip-slot {
+  flex: 1;
+  height: 48px;
+  border-radius: 9px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.15s, background 0.15s;
+  overflow: hidden;
+}
+.igbp-equip-slot:hover {
+  border-color: rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.06);
+}
+.igbp-equip-slot.filled {
+  border-color: rgba(74,222,128,0.30);
+  background: rgba(74,222,128,0.07);
+}
+.igbp-equip-slot.filled:hover {
+  border-color: rgba(74,222,128,0.55);
+  background: rgba(74,222,128,0.13);
+}
+.igbp-equip-slot.filled:hover .igbp-equip-remove { color: rgba(239,83,80,0.7); }
+
+.igbp-equip-remove {
+  position: absolute; top: 3px; right: 4px;
+  font-size: 7px; font-weight: 900;
+  color: rgba(239,83,80,0);
+  transition: color 0.15s;
+}
+.igbp-equip-ph   { font-size: 20px; opacity: 0.18; line-height: 1; }
+.igbp-equip-icon { font-size: 20px; line-height: 1; }
+.igbp-equip-icon img { width: 26px; height: 26px; object-fit: contain; }
+.igbp-equip-name {
+  font-size: clamp(5px, 1.8vw, 7.5px); font-weight: 700;
+  letter-spacing: 0.03em;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  text-align: center;
+  width: 100%;
+  padding: 0 3px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+.igbp-equip-slot.filled .igbp-equip-name { color: rgba(74,222,128,0.7); }
+
+/* ── Items grid ── */
+.igbp-items-section { padding: 6px 8px 8px; }
+.igbp-items-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+.igbp-item-slot {
+  height: 46px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.025);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  position: relative;
+  transition: border-color 0.15s, background 0.15s;
+  overflow: hidden;
+}
+.igbp-item-slot.filled {
+  border-color: rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.05);
+  cursor: pointer;
+}
+.igbp-item-slot.filled:hover {
+  border-color: rgba(255,255,255,0.22);
+  background: rgba(255,255,255,0.09);
+}
+.igbp-item-slot.filled:hover .igbp-item-remove { color: rgba(239,83,80,0.7); }
+
+.igbp-item-remove {
+  position: absolute; top: 2px; right: 3px;
+  font-size: 7px; font-weight: 900;
+  color: rgba(239,83,80,0);
+  transition: color 0.15s;
+}
+.igbp-item-icon      { font-size: 18px; line-height: 1; }
+.igbp-item-icon img  { width: 22px; height: 22px; object-fit: contain; }
+.igbp-item-name {
+  font-size: 6.5px; font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.04em;
+  text-align: center;
+  max-width: 90%; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap;
+}
+.igbp-item-qty {
+  position: absolute; top: 3px; right: 4px;
+  font-size: 8px; font-weight: 700;
+  color: #fbbf24; line-height: 1;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
+
+/* ── Drag states ── */
+.igbp-equip-slot.igbp-dragging,
+.igbp-item-slot.igbp-dragging  { opacity: 0.4; transform: scale(0.93); }
+
+.igbp-equip-slot.igbp-drag-over {
+  border-color: rgba(100,181,246,0.85) !important;
+  background: rgba(100,181,246,0.14) !important;
+  transform: scale(1.06);
+}
+
+.igbp-items-grid.igbp-grid-over {
+  outline: 1px dashed rgba(100,181,246,0.4);
+  border-radius: 8px;
+  background: rgba(100,181,246,0.05);
+}
+
+/* ── Item info column (lobby-style stat bars) ── */
+.igbp-info-content { padding: 2px 0 4px; display: flex; flex-direction: column; align-items: center; }
+.igbp-info-empty {
+  font-size: 9px;
+  color: rgba(255,255,255,0.25);
+  text-align: center;
+  padding: 14px 6px;
+}
+.igbp-info-icon {
+  font-size: 26px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.igbp-info-icon img {
+  width: 36px; height: 36px; object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(255,255,255,0.15));
+}
+.igbp-info-name {
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.9);
+  text-align: center;
+  margin-bottom: 4px;
+}
+.igbp-info-divider {
+  width: 100%; height: 1px;
+  background: rgba(255,255,255,0.07);
+  margin: 5px 0;
+}
+.igbp-stats-wrap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 1px;
+}
+.igbp-stat-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.igbp-stat-label {
+  font-size: 7px;
+  letter-spacing: 0.04em;
+  color: rgba(255,255,255,0.35);
+  width: 28px;
+  flex-shrink: 0;
+}
+.igbp-stat-track {
+  flex: 1;
+  height: 3px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.igbp-stat-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+.igbp-stat-val {
+  font-size: 7.5px;
+  color: rgba(255,255,255,0.5);
+  width: 18px;
+  text-align: right;
+  flex-shrink: 0;
+  font-family: monospace;
+}
+.igbp-info-qty-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  margin-top: 2px;
+}
+.igbp-info-qty-label {
+  font-size: 6.5px;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.igbp-info-qty-num {
+  font-size: 16px;
+  font-weight: 700;
+  color: #81c784;
+  font-family: 'Black Ops One', sans-serif;
+  line-height: 1;
+}
+
+/* ── Drop hint ── */
+.igbp-drop-hint {
+  margin-top: 6px;
+  font-size: 7.5px;
+  letter-spacing: 0.05em;
+  color: rgba(255,255,255,0.18);
+  text-align: center;
+}
+
+/* ── Drag-out-to-drop ── */
+.igbp-item-slot.igbp-drag-out-ready {
+  outline: 1px dashed rgba(239,83,80,0.55);
+}
+#ingame-bp-overlay.igbp-drop-armed #ingame-bp-panel {
+  box-shadow: 0 0 0 2px rgba(239,83,80,0.45), 0 8px 32px rgba(0,0,0,0.45);
+}

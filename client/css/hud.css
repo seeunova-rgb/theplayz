@@ -1,0 +1,464 @@
+/* ===== GAME CANVAS ===== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #000; overflow: hidden; }
+canvas { display: block; }
+
+/* ===== Move Joystick (ซ้ายล่าง) ===== */
+#joystick-zone {
+  position: fixed;
+  left: 0; bottom: 0;
+  width: 35vw; height: 35vw;
+  max-width: 160px; max-height: 160px;
+}
+
+#joystick-base {
+  position: fixed;
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transition: opacity 0.1s;
+  pointer-events: none;
+}
+
+#joystick-knob {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  pointer-events: none;
+}
+
+/* ===== Attack Joystick (ขวาล่าง ล็อคตำแหน่ง) ===== */
+#attack-zone {
+  position: fixed;
+  right: 0; bottom: 0;
+  width: 35vw; height: 35vw;
+  max-width: 160px; max-height: 160px;
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  pointer-events: none;
+}
+
+#attack-base {
+  position: absolute;
+  right: 32px; bottom: 32px;
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: rgba(239,83,80,0.12);
+  border: 2px solid rgba(239,83,80,0.4);
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: all;
+  touch-action: none;
+  transition: border-color 0.1s, background 0.1s;
+}
+
+#attack-base:active,
+#attack-base.active {
+  background: rgba(239,83,80,0.25);
+  border-color: rgba(239,83,80,0.8);
+}
+
+#attack-knob {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ff7961, #ef5350);
+  box-shadow: 0 0 10px rgba(239,83,80,0.5);
+  pointer-events: none;
+  transition: box-shadow 0.1s;
+}
+
+/* ===== Sprint Button ===== */
+#sprint-btn {
+  position: fixed;
+  left: 16px; bottom: 128px;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 2px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.5);
+  font-size: 20px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  z-index: 50;
+}
+#sprint-btn.on {
+  background: rgba(76,175,80,0.25);
+  border-color: #4caf50;
+  box-shadow: 0 0 12px rgba(76,175,80,0.4);
+}
+
+/* ===== DEATH OVERLAY ===== */
+#death-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  animation: deathFadeIn 0.35s ease;
+}
+
+@keyframes deathFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.death-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 36px 48px 32px;
+  background: linear-gradient(160deg, rgba(18,12,12,0.97), rgba(10,8,8,0.97));
+  border: 1.5px solid rgba(220, 50, 50, 0.45);
+  border-radius: 20px;
+  box-shadow: 0 0 60px rgba(180,30,30,0.3), inset 0 0 40px rgba(0,0,0,0.5);
+  min-width: 280px;
+  animation: deathScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes deathScale {
+  from { transform: scale(0.75); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+.death-skull {
+  font-size: 56px;
+  filter: drop-shadow(0 0 12px rgba(239,68,68,0.6));
+  animation: deathSkullPop 0.5s 0.05s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes deathSkullPop {
+  from { transform: scale(0) rotate(-15deg); opacity: 0; }
+  to   { transform: scale(1) rotate(0deg);   opacity: 1; }
+}
+
+.death-title {
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 38px;
+  color: #ef4444;
+  letter-spacing: 0.14em;
+  text-shadow: 0 0 24px rgba(239,68,68,0.65);
+  margin-top: -4px;
+}
+
+.death-killer {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.04em;
+}
+.death-killer span {
+  color: #fbbf24;
+  font-weight: 700;
+}
+
+/* ── Divider ── */
+.death-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  margin: 2px 0;
+}
+
+/* ── Action buttons ── */
+.death-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.death-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 22px;
+  border-radius: 12px;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s, background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  min-width: 100px;
+}
+
+.death-btn:active {
+  transform: scale(0.95);
+}
+
+.death-btn-icon {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.death-btn-label {
+  line-height: 1;
+}
+
+/* Respawn — เขียว */
+.death-btn-respawn {
+  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(34, 197, 94, 0.45);
+  color: #86efac;
+}
+.death-btn-respawn:hover {
+  background: rgba(34, 197, 94, 0.22);
+  border-color: rgba(34, 197, 94, 0.75);
+  box-shadow: 0 0 18px rgba(34,197,94,0.3);
+  transform: translateY(-2px);
+}
+
+/* Lobby — เทา/ขาว */
+.death-btn-lobby {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: rgba(255,255,255,0.7);
+}
+.death-btn-lobby:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 14px rgba(255,255,255,0.1);
+  transform: translateY(-2px);
+}
+
+/* ===== PICKUP BUTTON ===== */
+#pickup-btn {
+  position: fixed;
+  /* กลางหน้าจอแนวนอน ชิดล่าง (เหนือ joystick เล็กน้อย) */
+  bottom: 44px;
+  left: 50%;
+  transform: translateX(-50%);
+  width:  60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(245, 197, 24, 0.10);
+  border: 2px solid rgba(245, 197, 24, 0.45);
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+  /* ซ่อนโดย game.js ถ้าไม่มี drop ใกล้ */
+}
+
+#pickup-btn:active,
+#pickup-btn.holding {
+  background: rgba(245, 197, 24, 0.22);
+  border-color: rgba(245, 197, 24, 0.85);
+  box-shadow: 0 0 18px rgba(245, 197, 24, 0.4);
+}
+
+.pickup-icon {
+  position: absolute;
+  font-size: 22px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* SVG วงแหวน progress */
+.pickup-ring-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);   /* เริ่มจากบน */
+  pointer-events: none;
+}
+
+.pickup-ring-bg {
+  fill: none;
+  stroke: rgba(245, 197, 24, 0.15);
+  stroke-width: 4;
+}
+
+.pickup-ring-fg {
+  fill: none;
+  stroke: #f5c518;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray:  150.796;   /* 2π×24 */
+  stroke-dashoffset: 150.796;   /* เริ่มต้นว่าง */
+  transition: stroke-dashoffset 0.05s linear;
+  filter: drop-shadow(0 0 4px rgba(245, 197, 24, 0.7));
+}
+
+/* ===== RELOAD BUTTON (ขวาล่าง — mirror ของ sprint-btn) ===== */
+#reload-btn {
+  position: fixed;
+  right: 16px; bottom: 128px;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 2px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.5);
+  font-size: 20px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  z-index: 50;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+#reload-btn.reloading {
+  background: rgba(251,191,36,0.2);
+  border-color: #fbbf24;
+  box-shadow: 0 0 12px rgba(251,191,36,0.45);
+  animation: reload-spin 0.6s linear infinite;
+}
+#reload-btn:active {
+  transform: scale(0.9);
+}
+@keyframes reload-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ===== BANDAGE BUTTON (ขวาล่าง — ถัดจาก reload-btn ขึ้นไป) ===== */
+#bandage-btn {
+  position: fixed;
+  right: 16px; bottom: 184px;   /* reload อยู่ที่ 128px + 44px btn + 12px gap = 184px */
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 2px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.5);
+  font-size: 20px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, opacity 0.15s;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  z-index: 50;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+#bandage-btn:active {
+  transform: scale(0.9);
+}
+
+/* cooldown state */
+#bandage-btn.on-cooldown {
+  opacity: 0.45;
+  border-color: rgba(255,255,255,0.1);
+  cursor: not-allowed;
+}
+
+/* cooldown countdown label */
+#bandage-btn::after {
+  content: attr(data-cd);
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.45);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ready state — เรืองเขียวนิดๆ */
+#bandage-btn:not(.on-cooldown) {
+  border-color: rgba(129,199,132,0.4);
+  box-shadow: 0 0 8px rgba(129,199,132,0.2);
+}
+
+/* qty badge บนปุ่ม bandage */
+.bandage-qty {
+  position: absolute;
+  top: 2px; right: 4px;
+  font-size: 8px; font-weight: 700;
+  color: #81c784;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  pointer-events: none;
+  line-height: 1;
+}
+
+/* ===== REPUTATION HUD ===== */
+#reputation-hud {
+  position: fixed;
+  top: 12px; right: 12px;
+  display: flex; align-items: center;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  padding: 4px 10px;
+  color: #fff;
+  font-family: 'Rajdhani', sans-serif;
+  z-index: 100;
+  pointer-events: none;
+  gap: 2px;
+}
+
+#hud-reputation-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+#hud-reputation-label {
+  font-size: 11px;
+  opacity: 0.75;
+  letter-spacing: 0.5px;
+}
+
+#hud-reputation {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* ===== REP CHANGE POPUP ===== */
+#rep-change-popup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.rep-change-anim {
+  display: block;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+  animation: repSlideUp 2s ease-out forwards;
+  white-space: nowrap;
+}
+
+.rep-change-anim.fade-out {
+  opacity: 0;
+  transition: opacity 0.8s;
+}
+
+@keyframes repSlideUp {
+  0%   { transform: translateY(0px);  opacity: 1; }
+  60%  { transform: translateY(-20px); opacity: 1; }
+  100% { transform: translateY(-36px); opacity: 0; }
+}
