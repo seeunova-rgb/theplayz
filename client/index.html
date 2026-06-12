@@ -238,6 +238,19 @@
           <div class="settings-divider"></div>
           <button class="settings-btn-logout" id="btn-logout">LOGOUT</button>
         </div>
+
+        <!-- KEY BINDINGS CARD -->
+        <div class="settings-title" style="margin-top:4px;">⌨ KEY BINDINGS</div>
+        <div class="settings-card" id="keybind-card">
+          <!-- rows สร้างโดย keybinds.js -->
+        </div>
+        <button class="keybind-reset-btn" id="keybind-reset-btn">↺ รีเซ็ตเป็นค่าเริ่มต้น</button>
+
+        <!-- MUSIC PLAYER CARD -->
+        <div class="settings-title" style="margin-top:4px;">🎵 MUSIC</div>
+        <div class="settings-card" id="music-settings-player">
+          <div style="padding:14px 18px;color:rgba(255,255,255,0.25);font-size:11px;">กำลังโหลด...</div>
+        </div>
       </div>
     </div>
 
@@ -330,6 +343,9 @@
 
   <!-- In-game Shop button (Premium only, ถัดจากกระเป๋า) -->
   <button id="btn-ingame-shop" style="display:none;" onclick="InGameShop.toggle()">🛒</button>
+
+  <!-- Music Mini-player (In-game, ซ้ายบน ใต้กระเป๋า) -->
+  <div id="music-mini-player" style="display:none;"></div>
 
   <!-- Reload Button (ขวาล่าง เหนือปุ่มยิง เดียวกับ sprint) -->
   <button id="reload-btn" style="display:none;">🔄</button>
@@ -435,6 +451,8 @@
   <script src="js/world_select.js"></script>
   <script src="js/gacha.js"></script>
   <script src="js/ranking.js"></script>
+  <script src="js/keybinds.js"></script>
+  <script src="js/music.js"></script>
   <script src="js/lobby.js"></script>
 
   <!-- Auth — ES module, must come last (uses Shop, Inventory, showScreen) -->

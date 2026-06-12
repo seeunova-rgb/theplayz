@@ -268,11 +268,18 @@ const Gacha = (() => {
         const jitter = Math.floor(Math.random() * 24) - 12;
         stripEl.style.transition = 'transform 3.8s cubic-bezier(0.12, 0.8, 0.2, 1)';
         stripEl.style.transform  = `translateX(-${targetX + jitter}px)`;
+        // เสียงหมุนแบบ loop ตามการ์ดที่เลื่อน
+        if (typeof Sounds !== 'undefined') Sounds.playLoop('gacha_1', 0.8);
       }));
 
       setTimeout(() => {
         if (typeof Stash !== 'undefined') {
           results.forEach(r => Stash.add(r.itemId, r.qty));
+        }
+        // หยุดเสียงหมุน แล้วเล่นเสียงได้รับไอเทม
+        if (typeof Sounds !== 'undefined') {
+          Sounds.stopLoop('gacha_1');
+          Sounds.play('gacha_2', 0.9);
         }
         _showResult(results, resultEl, closeBtn);
       }, 4000);
@@ -288,6 +295,9 @@ const Gacha = (() => {
       overlay.style.display = 'flex';
       loaderWrap.style.display = 'flex';
       popup.style.display = 'none';
+
+      // เสียงตอนกำลังหมุน (multi) แบบ loop
+      if (typeof Sounds !== 'undefined') Sounds.playLoop('gacha_1', 0.8);
 
       // Animate circle: 0% → 100% over ~1.5s (fast but visible)
       const CIRCUMFERENCE = 327; // 2π×52
@@ -307,6 +317,11 @@ const Gacha = (() => {
           // Done loading — add to stash then show popup
           if (typeof Stash !== 'undefined') {
             results.forEach(r => Stash.add(r.itemId, r.qty));
+          }
+          // เสียงตอนได้รับไอเทม (multi)
+          if (typeof Sounds !== 'undefined') {
+            Sounds.stopLoop('gacha_1');
+            Sounds.play('gacha_2', 0.9);
           }
           _showMultiPopup(results, loaderWrap, popup);
         }

@@ -34,15 +34,15 @@ canvas { display: block; }
 #attack-zone {
   position: fixed;
   right: 0; bottom: 0;
-  width: 35vw; height: 35vw;
-  max-width: 160px; max-height: 160px;
+  width: 35vw; height: 45vw;
+  max-width: 160px; max-height: 260px;
   display: flex; align-items: flex-end; justify-content: flex-end;
   pointer-events: none;
 }
 
 #attack-base {
   position: absolute;
-  right: 32px; bottom: 32px;
+  right: 128px; bottom: 128px;
   width: 64px; height: 64px;
   border-radius: 50%;
   background: rgba(239,83,80,0.12);

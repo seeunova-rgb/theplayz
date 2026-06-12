@@ -1,5 +1,6 @@
 // ===== INPUT =====
 // รองรับ PC (WASD + Mouse) และมือถือ (Move Joystick + Look Joystick)
+// ใช้ KeyBinds สำหรับ sprint (ปุ่มที่ตั้งค่าได้)
 
 const Input = (() => {
   // --- Keyboard ---
@@ -123,16 +124,25 @@ const Input = (() => {
     lookKnob.style.transform = `translate(${dx}px, ${dy}px)`;
   }
 
-  // --- Sprint Toggle ---
+  // --- Sprint Toggle (รองรับ KeyBinds) ---
   let sprinting = false;
   const sprintBtn = document.getElementById('sprint-btn');
   sprintBtn.addEventListener('click', () => {
     sprinting = !sprinting;
     sprintBtn.classList.toggle('on', sprinting);
   });
-  // Shift key on PC
-  window.addEventListener('keydown', e => { if (e.key === 'Shift') sprinting = true; });
-  window.addEventListener('keyup',   e => { if (e.key === 'Shift') { sprinting = false; sprintBtn.classList.remove('on'); } });
+
+  // Sprint key — อ่านจาก KeyBinds (ถ้าโหลดแล้ว) ไม่งั้น fallback Shift
+  function getSprintKey() {
+    return (typeof KeyBinds !== 'undefined') ? KeyBinds.get('sprint').toLowerCase() : 'shift';
+  }
+
+  window.addEventListener('keydown', e => {
+    if (e.key.toLowerCase() === getSprintKey()) { sprinting = true; sprintBtn.classList.add('on'); }
+  });
+  window.addEventListener('keyup', e => {
+    if (e.key.toLowerCase() === getSprintKey()) { sprinting = false; sprintBtn.classList.remove('on'); }
+  });
 
   // --- Public API ---
   return {
@@ -155,6 +165,13 @@ const Input = (() => {
       const wx = mouseX + camera.x;
       const wy = mouseY + camera.y;
       return Math.atan2(wy - player.y, wx - player.x);
+    },
+
+    // ตรวจ key จาก KeyBinds (ใช้ใน game.js)
+    isKeyBindPressed(action) {
+      if (typeof KeyBinds === 'undefined') return false;
+      const k = KeyBinds.get(action).toLowerCase();
+      return !!keys[k];
     },
   };
 })();

@@ -135,6 +135,13 @@ const Bandage = (() => {
     if (!btn) return;
     btn.addEventListener('click', () => use());
     btn.addEventListener('touchstart', (e) => { e.preventDefault(); use(); }, { passive: false });
+
+    // Keyboard shortcut — อ่านจาก KeyBinds (default: F)
+    window.addEventListener('keydown', (e) => {
+      const k = (typeof KeyBinds !== 'undefined') ? KeyBinds.get('heal').toLowerCase() : 'f';
+      if (e.key.toLowerCase() === k) use();
+    });
+
     _updateUI();
   }
 

@@ -95,6 +95,39 @@ const Sounds = (() => {
     _playBuffer(id, volume);
   }
 
+  // ── Loop: เล่นซ้ำจนกว่าจะเรียก stopLoop ──────────────────
+  const _loopSources = {}; // id → { src, gain }
+
+  function playLoop(id, volume = 1.0) {
+    if (!_unlocked) return;
+    if (_loopSources[id]) return; // กำลังเล่นอยู่แล้ว
+    const buf = _buffers[id];
+    if (!buf) return;
+    const ctx = _getCtx();
+    if (ctx.state !== 'running') return;
+    const src  = ctx.createBufferSource();
+    const gain = ctx.createGain();
+    src.buffer = buf;
+    src.loop   = true;
+    gain.gain.value = Math.max(0, Math.min(1, volume));
+    src.connect(gain);
+    gain.connect(ctx.destination);
+    src.start(0);
+    _loopSources[id] = { src, gain };
+  }
+
+  function stopLoop(id, fadeSec = 0.15) {
+    const entry = _loopSources[id];
+    if (!entry) return;
+    const ctx = _getCtx();
+    // fade out เบาๆ ก่อน stop กัน pop
+    entry.gain.gain.setTargetAtTime(0, ctx.currentTime, fadeSec / 3);
+    setTimeout(() => {
+      try { entry.src.stop(); } catch {}
+      delete _loopSources[id];
+    }, fadeSec * 1000);
+  }
+
   // ── เสียง 3D: ปรับ volume ตามระยะห่างจาก listener ────────
   // sourceX/Y  = ตำแหน่งผู้เล่นที่ออกเสียง (world coords)
   // listenerX/Y = ตำแหน่ง local player (world coords)
@@ -126,6 +159,8 @@ const Sounds = (() => {
   preload('walk',     'assets/sounds/walk.ogg');
   preload('backpack', 'assets/sounds/backpack.ogg');
   preload('click',    'assets/sounds/click.ogg');
+  preload('gacha_1',  'assets/sounds/gacha_1.ogg');
+  preload('gacha_2',  'assets/sounds/gacha_2.ogg');
 
   // ── click sound ───────────────────────────────────────────
   const CLICK_SELECTOR = [
@@ -202,7 +237,7 @@ const Sounds = (() => {
     return false;
   }
 
-  return { play, playAt, preload, tickWalk };
+  return { play, playAt, playLoop, stopLoop, preload, tickWalk };
 })();
 
 window.Sounds = Sounds;

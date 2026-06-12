@@ -261,6 +261,12 @@ const Weapon = (() => {
     _reloadBtn.addEventListener('touchstart', (e) => { e.preventDefault(); reload(); }, { passive: false });
   }
 
+  // Keyboard shortcut — อ่านจาก KeyBinds (default: R)
+  window.addEventListener('keydown', (e) => {
+    const k = (typeof KeyBinds !== 'undefined') ? KeyBinds.get('reload').toLowerCase() : 'r';
+    if (e.key.toLowerCase() === k) reload();
+  });
+
   function getActiveGunConfig() {
     return _getActiveGunConfig();
   }

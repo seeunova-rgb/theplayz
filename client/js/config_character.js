@@ -28,7 +28,7 @@ var CHARACTERS = [
     free: false,
     currency: 'point',
     price: 100,
-    stats: { speedPct: 30, reducePct: 0, regenPct: 10 },
+    stats: { speedPct: 30, reducePct: 0, regenPct: 1 },
   },
 ];
 

@@ -1086,6 +1086,16 @@ _rafId = requestAnimationFrame(loop);
 window.startPickupHold = startPickupHold;
 window.stopPickupHold  = stopPickupHold;
 
+// Keyboard hold-to-pickup — อ่านจาก KeyBinds (default: E)
+window.addEventListener('keydown', (e) => {
+  const k = (typeof KeyBinds !== 'undefined') ? KeyBinds.get('pickup').toLowerCase() : 'e';
+  if (e.key.toLowerCase() === k) startPickupHold();
+});
+window.addEventListener('keyup', (e) => {
+  const k = (typeof KeyBinds !== 'undefined') ? KeyBinds.get('pickup').toLowerCase() : 'e';
+  if (e.key.toLowerCase() === k) stopPickupHold();
+});
+
 // [FIX] expose _stopGameLoop ให้ lobby.js เรียกเพื่อหยุด loop ก่อนกลับ lobby
 window._stopGameLoop = function() {
   if (_rafId !== null) {

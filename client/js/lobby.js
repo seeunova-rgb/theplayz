@@ -57,7 +57,7 @@ navBtns.inventory.addEventListener('click', () => switchPanel('inventory'));
 navBtns.character.addEventListener('click', () => switchPanel('character'));
 navBtns.gacha.addEventListener('click',     () => switchPanel('gacha'));
 navBtns.ranking.addEventListener('click',   () => { switchPanel('ranking'); Ranking.render(); });
-navBtns.settings.addEventListener('click',  () => switchPanel('settings'));
+navBtns.settings.addEventListener('click',  () => { switchPanel('settings'); KeyBindUI.render(); if (typeof MusicPlayer !== 'undefined') MusicPlayer.renderSettings(); });
 
 // render world select ทันทีที่ lobby โหลด (panel-play เป็น default active)
 WorldSelect.render();
@@ -85,6 +85,12 @@ window._wsJoinCallback = async function(worldId) {
     document.getElementById('btn-ingame-shop').style.display = 'flex';
   }
   document.getElementById('reputation-hud').style.display      = 'flex';
+  // แสดง Music Mini-player ในเกม
+  const _miniPlayer = document.getElementById('music-mini-player');
+  if (_miniPlayer) {
+    if (typeof MusicPlayer !== 'undefined') MusicPlayer.renderMini();
+    _miniPlayer.style.display = 'flex';
+  }
   loadGameScripts();
 
   await done();
@@ -216,6 +222,7 @@ async function goBackToLobby() {
   document.getElementById('gun-icon-hud').style.display        = 'none';
   document.getElementById('hp-hud').style.display             = 'none';
   document.getElementById('reputation-hud').style.display      = 'none';
+  document.getElementById('music-mini-player').style.display   = 'none';
   document.getElementById('lobby').style.display            = 'flex';
 
   window._isLeavingGame = false;  // [FIX] reset flag หลังกลับถึง lobby
@@ -279,3 +286,96 @@ function loadGameScripts() {
       // ไม่ต้องทำอะไรเพิ่มสำหรับครั้งแรก
     });
 }
+
+// ── KeyBind UI ────────────────────────────────────────────
+// แสดงและจัดการ UI ตั้งค่าปุ่มใน panel-settings
+
+const KeyBindUI = (() => {
+  const ACTIONS = ['sprint', 'heal', 'pickup', 'reload', 'shoot'];
+  let _listeningFor = null; // action ที่กำลังรอรับ key ใหม่
+
+  function render() {
+    const card = document.getElementById('keybind-card');
+    if (!card || typeof KeyBinds === 'undefined') return;
+
+    card.innerHTML = '';
+
+    ACTIONS.forEach((action, i) => {
+      const isFixed = KeyBinds.FIXED.has(action);
+      const keyStr  = KeyBinds.get(action);
+
+      const row = document.createElement('div');
+      row.className = 'settings-row';
+      row.dataset.action = action;
+
+      row.innerHTML = `
+        <span class="settings-label">${KeyBinds.LABELS[action]}</span>
+        <button class="keybind-key-btn ${isFixed ? 'keybind-fixed' : ''}" data-action="${action}">
+          ${isFixed ? '<span class="keybind-fixed-tag">อัตโนมัติ</span>' : KeyBinds.formatKey(keyStr)}
+        </button>
+      `;
+
+      card.appendChild(row);
+
+      if (i < ACTIONS.length - 1) {
+        const div = document.createElement('div');
+        div.className = 'settings-divider';
+        card.appendChild(div);
+      }
+    });
+
+    // ผูกปุ่ม reset
+    const resetBtn = document.getElementById('keybind-reset-btn');
+    if (resetBtn) {
+      resetBtn.onclick = () => {
+        KeyBinds.resetAll();
+        _listeningFor = null;
+        render();
+        showToast('รีเซ็ตปุ่มเรียบร้อย', 'success');
+      };
+    }
+
+    // ผูก click ปุ่ม keybind
+    card.querySelectorAll('.keybind-key-btn:not(.keybind-fixed)').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const action = btn.dataset.action;
+        if (_listeningFor === action) {
+          // กดซ้ำ = ยกเลิก
+          _listeningFor = null;
+          render();
+          return;
+        }
+        _listeningFor = action;
+        // แสดงสถานะ "รอรับปุ่ม"
+        card.querySelectorAll('.keybind-key-btn').forEach(b => b.classList.remove('keybind-listening'));
+        btn.classList.add('keybind-listening');
+        btn.textContent = '— กดปุ่มที่ต้องการ —';
+      });
+    });
+  }
+
+  // รับ keydown ขณะรอ remap
+  window.addEventListener('keydown', e => {
+    if (!_listeningFor) return;
+    if (e.key === 'Escape') {
+      _listeningFor = null;
+      render();
+      return;
+    }
+    // ป้องกันบาง key พิเศษ
+    const blocked = ['tab', 'enter', 'backspace', 'delete', 'f5', 'f11', 'f12'];
+    if (blocked.includes(e.key.toLowerCase())) return;
+
+    e.preventDefault();
+    const ok = KeyBinds.set(_listeningFor, e.key);
+    if (ok) {
+      showToast(`ตั้ง "${KeyBinds.LABELS[_listeningFor]}" → ${KeyBinds.formatKey(e.key)}`, 'success');
+    } else {
+      showToast('ปุ่มนี้ถูกใช้งานอยู่แล้ว', 'error');
+    }
+    _listeningFor = null;
+    render();
+  });
+
+  return { render };
+})();
