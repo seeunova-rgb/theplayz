@@ -32,7 +32,7 @@ const Network = (() => {
     myId = null;
     Object.keys(remotePlayers).forEach(k => delete remotePlayers[k]);
 
-    socket = io();
+    socket = io('https://theplayz.up.railway.app', { transports: ['websocket', 'polling'] });
 
     // [FIX] ลง listener 'init' ก่อน emit 'join_world' เสมอ
     // ป้องกัน race condition: server อาจตอบ 'init' กลับมาก่อนที่ listener จะลงทัน

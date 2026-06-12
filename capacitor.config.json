@@ -1,0 +1,12 @@
+{
+  "appId": "com.theplayz.game",
+  "appName": "THEPLAYZ",
+  "webDir": "client",
+  "server": {
+    "androidScheme": "https",
+    "cleartext": true
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}
