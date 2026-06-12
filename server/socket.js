@@ -23,7 +23,7 @@ function initSocket(io) {
     console.log(`Connected: ${socket.id}`);
 
     // ── join world room ─────────────────────────────────────
-    socket.on('join_world', ({ worldId, spawnX, spawnY }) => {
+    socket.on('join_world', ({ worldId, spawnX, spawnY, name, color, charId }) => {
       const wid = WORLD_IDS.includes(worldId) ? worldId : 'safezone';
 
       socket.join(wid);
@@ -44,8 +44,9 @@ function initSocket(io) {
         headReducePct: 0,         // เกราะหัว (head armor)
         angle:        0,
         alive:        true,
-        name:         'Player_' + socket.id.slice(0, 4),
-        color:        randomColor(),
+        name:         (typeof name === 'string' && name.trim()) ? name.trim() : 'Player_' + socket.id.slice(0, 4),
+        color:        (typeof color === 'string' && color.trim()) ? color.trim() : randomColor(),
+        charId:       (typeof charId === 'string' && charId.trim()) ? charId.trim() : 'default',
         kills:        0,
         reputation:   0,          // reputation ของผู้เล่น (sync จาก client)
       };

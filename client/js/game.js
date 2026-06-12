@@ -356,6 +356,15 @@ function initGame() {
 
   Network.on('onInit', (id, players, drops) => {
     console.log('[INIT] received drops from server:', (drops||[]).length, JSON.stringify((drops||[]).map(d=>d.dropId)));
+
+    // sync ผู้เล่นที่อยู่ใน world แล้วเข้า remotePlayers ให้ game loop วาดได้
+    const rp = Network.getRemotePlayers();
+    Object.entries(players).forEach(([pid, pdata]) => {
+      if (pid !== id) {
+        rp[pid] = Object.assign({ alive: true, hp: 100 }, pdata);
+      }
+    });
+
     (drops || []).forEach(d => _addDrop(d));
     console.log('[INIT] _worldDrops after init:', Object.keys(_worldDrops).length);
   });
