@@ -1519,7 +1519,7 @@
 
 /* ===== MUSIC MINI-PLAYER (In-game) ===== */
 #music-mini-player {
-  position: fixed; bottom: 72px; left: 12px;
+  position: fixed; top: 58px; left: 14px;
   z-index: 900; display: none; align-items: center;
   gap: 4px; background: rgba(0,0,0,0.55);
   border: 1px solid rgba(255,255,255,0.10);

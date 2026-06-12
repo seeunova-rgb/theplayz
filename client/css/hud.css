@@ -42,7 +42,7 @@ canvas { display: block; }
 
 #attack-base {
   position: absolute;
-  right: 128px; bottom: 128px;
+  right: 64px; bottom: 64px;
   width: 64px; height: 64px;
   border-radius: 50%;
   background: rgba(239,83,80,0.12);

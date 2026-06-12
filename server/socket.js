@@ -186,20 +186,14 @@ function initSocket(io) {
       // hitZone: 'head' = โดนหัว → ใช้ headReducePct
       //          'body' = โดนตัว → ใช้ bodyReducePct (default)
       const hitZone = data.hitZone === 'head' ? 'head' : 'body';
-      let reducePct;
-      if (hitZone === 'head') {
-        reducePct = target.headReducePct || 0;
-      } else {
-        reducePct = target.bodyReducePct || 0;
-      }
-      // fallback ถ้ายังไม่มีค่าแยก (เช่น client เก่า) → ใช้ reducePct รวม
-      if (reducePct === 0 && (target.reducePct || 0) > 0) {
-        reducePct = target.reducePct;
-      }
+      // ยิงหัว → ใช้เกราะหัวเท่านั้น, ยิงตัว → ใช้เกราะตัวเท่านั้น
+      const reducePct = hitZone === 'head'
+        ? (target.headReducePct || 0)
+        : (target.bodyReducePct || 0);
 
       const headshotMult = hitZone === 'head' ? 2 : 1;
-      const armorMult = 1 - reducePct / 100;
-      const finalDmg  = Math.max(1, Math.round(safeDamage * headshotMult * armorMult));
+      const afterArmor = safeDamage * (1 - reducePct / 100);
+      const finalDmg  = Math.max(1, Math.round(afterArmor * headshotMult));
       target.hp -= finalDmg;
 
       if (target.hp <= 0) {

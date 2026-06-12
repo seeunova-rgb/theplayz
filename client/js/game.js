@@ -115,6 +115,11 @@ function _drawNameWithRep(ctx, name, repVal, x, y) {
   let drawX = x - totalW / 2;
 
   if (hasIcon) {
+    const pad = 2;
+    ctx.fillStyle = 'rgba(0,0,0,0.65)';
+    ctx.beginPath();
+    ctx.roundRect(drawX - pad, y - iconSize - pad, iconSize + pad * 2, iconSize + pad * 2, 3);
+    ctx.fill();
     ctx.drawImage(icon, drawX, y - iconSize, iconSize, iconSize);
     drawX += iconSize + gap;
   }
@@ -905,14 +910,20 @@ function _updateHpHud() {
   curEl.textContent = hp;
   maxEl.textContent = maxHp;
 
-  const col = pct > 0.5 ? '#80e080' : pct > 0.25 ? '#ffaa00' : '#ff4444';
-  const shadow = pct > 0.5 ? 'rgba(80,200,80,0.6)' : pct > 0.25 ? 'rgba(255,170,0,0.6)' : 'rgba(255,68,68,0.6)';
+  const col = pct > 0.75 ? '#4cde4c'
+            : pct > 0.50 ? '#f0e040'
+            : pct > 0.25 ? '#ff8c00'
+            :               '#ff3333';
+  const shadow = pct > 0.75 ? 'rgba(76,222,76,0.6)'
+               : pct > 0.50 ? 'rgba(240,224,64,0.6)'
+               : pct > 0.25 ? 'rgba(255,140,0,0.6)'
+               :               'rgba(255,51,51,0.6)';
   curEl.style.color   = col;
   fill.style.width    = `${Math.round(pct * 100)}%`;
   fill.style.background  = col;
   fill.style.boxShadow   = `0 0 5px ${shadow}`;
 
-  const borderCol = pct > 0.5 ? 'rgba(80,200,80,0.6)' : pct > 0.25 ? 'rgba(255,170,0,0.6)' : 'rgba(255,68,68,0.6)';
+  const borderCol = col;
   hud.style.borderTopColor   = borderCol;
   hud.style.borderRightColor = borderCol;
 }
