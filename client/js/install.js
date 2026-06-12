@@ -53,9 +53,22 @@
       }
       deferredPrompt = null;
     } else {
-      // ยังไม่พร้อม prompt (อาจเพิ่งโหลด หรือเบราว์เซอร์ไม่รองรับ)
-      installBtn.textContent = 'กำลังโหลด... ลองอีกครั้ง';
-      setTimeout(() => { installBtn.textContent = 'ติดตั้งแอพ'; }, 1500);
+      // Chrome ไม่ fire beforeinstallprompt (อาจติดตั้งแล้ว หรือเคย dismiss)
+      // แสดงคำแนะนำติดตั้งแบบ manual ผ่านเมนู Chrome
+      const manual = document.createElement('div');
+      manual.className = 'install-manual-steps';
+      manual.innerHTML = `
+        ไม่สามารถเปิดหน้าต่างติดตั้งอัตโนมัติได้<br>
+        วิธีติดตั้งด้วยตนเอง:<br>
+        1. แตะปุ่มเมนู ⋮ มุมขวาบนของ Chrome<br>
+        2. เลือก "ติดตั้งแอป" หรือ "Add to Home screen"<br>
+        3. แตะ "ติดตั้ง" / "Add"<br>
+        <br>
+        (หากเคยติดตั้งแอปนี้ไว้แล้ว ให้เปิดจากหน้าจอหลักได้เลย)
+      `;
+      const existing = overlay.querySelector('.install-manual-steps');
+      if (existing) existing.remove();
+      overlay.appendChild(manual);
     }
   });
 
