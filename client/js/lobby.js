@@ -206,6 +206,7 @@ async function goBackToLobby() {
   document.getElementById('btn-ingame-bp').style.display      = 'none';
   document.getElementById('ingame-bp-overlay').style.display  = 'none';
   document.getElementById('ammo-hud').style.display           = 'none';
+  document.getElementById('gun-icon-hud').style.display        = 'none';
   document.getElementById('hp-hud').style.display             = 'none';
   document.getElementById('reputation-hud').style.display      = 'none';
   document.getElementById('lobby').style.display            = 'flex';

@@ -91,7 +91,9 @@ const Gacha = (() => {
         <div class="gacha-topbar">
           <span class="gacha-title">🎰 GACHA</span>
           <div class="gacha-currency">
-            <span class="gc-label">💎</span>
+            <span class="gc-label">💵</span>
+            <span class="gc-val" id="gacha-money-val">-</span>
+            <span class="gc-label" style="margin-left:10px;">💎</span>
             <span class="gc-val" id="gacha-point-val">-</span>
           </div>
         </div>
@@ -172,7 +174,7 @@ const Gacha = (() => {
             `).join('')}
           </div>
           <div class="gacha-footer-right">
-            <div class="gacha-price" id="gacha-price-${g.id}">${g.currency==='money'?'💵':'💎'} ${g.price} / ครั้ง</div>
+            <div class="gacha-price" id="gacha-price-${g.id}">${g.currency==='money'?'💵':'💎'} ${g.price.toLocaleString()} / ครั้ง</div>
             <button class="gacha-spin-btn" data-id="${g.id}" data-count="1">🎰 SPIN</button>
           </div>
         </div>
@@ -192,7 +194,7 @@ const Gacha = (() => {
         btn.classList.add('active');
 
         const priceEl = document.getElementById(`gacha-price-${gid}`);
-        if (priceEl) priceEl.textContent = `${cfg.currency==='money'?'💵':'💎'} ${cfg.price * count} (×${count})`;
+        if (priceEl) priceEl.textContent = `${cfg.currency==='money'?'💵':'💎'} ${(cfg.price * count).toLocaleString()} (×${count})`;
         const spinBtn = container.querySelector(`.gacha-spin-btn[data-id="${gid}"]`);
         if (spinBtn) spinBtn.dataset.count = count;
       });
@@ -206,10 +208,14 @@ const Gacha = (() => {
 
   // ── sync currency ─────────────────────────────────────────
   function _syncCurrency() {
-    const el = document.getElementById('gacha-point-val');
-    if (!el) return;
-    const w = (typeof Money !== 'undefined') ? Money.get() : { point: 0 };
-    el.textContent = w.point ?? 0;
+    const w = (typeof Money !== 'undefined') ? Money.get() : { money: 0, point: 0 };
+    const moneyEl = document.getElementById('gacha-money-val');
+    const pointEl = document.getElementById('gacha-point-val');
+    if (moneyEl) moneyEl.textContent = Math.floor(w.money ?? 0).toLocaleString();
+    if (pointEl) {
+      const p = w.point ?? 0;
+      pointEl.textContent = Number.isInteger(p) ? p.toLocaleString() : p.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+    }
   }
 
   // ── START SPIN ────────────────────────────────────────────

@@ -71,11 +71,12 @@ function drawGunOnPlayer(ctx, player) {
   const offsetY = r * 0.1;
   let drawX;
   if (_GUN_FLIP[gunId]) {
-    // barrel อยู่ขวารูป → ใน flipped space ต้องเลื่อน drawX
-    // เพื่อให้ barrel tip (x=gunW ของรูป) มาอยู่ที่ +x ของ player
-    drawX = -(gunW - r * 0.5);
+    // barrel อยู่ขวาของรูป → ไม่ต้อง scale(-1,1), วางให้ grip (left edge) ติดตัวละคร
+    ctx.restore(); // ออกจาก scale(-1,1) block ที่ save ไว้
+    ctx.save();
+    drawX = r * 0.5;
   } else {
-    // barrel อยู่ซ้ายรูป (ปกติ) → drawX เดิม
+    // barrel อยู่ซ้ายของรูป → ใช้ scale(-1,1) แล้ว, grip (right edge) ติดตัวละคร
     drawX = -r * 0.1 - gunW;
   }
   ctx.drawImage(_gunImg, drawX, offsetY - gunH / 2, gunW, gunH);

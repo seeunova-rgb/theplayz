@@ -9,9 +9,9 @@ const Ranking = (() => {
   const TABS = [
     { key: 'reputation',  label: '🏅 ชื่อเสียง',      field: 'reputation',  fmt: null   },
     { key: 'money',       label: '💵 เงิน',            field: 'money',       fmt: v => v.toLocaleString() },
-    { key: 'kills',       label: '🔫 สังหาร',          field: 'kills',       fmt: v => v         },
-    { key: 'deaths',      label: '💀 ตาย',             field: 'deaths',      fmt: v => v         },
-    { key: 'zombieKills', label: '🧟 ซอมบี้/บอส',     field: 'zombieKills', fmt: v => v         },
+    { key: 'kills',       label: '🔫 สังหาร',          field: 'kills',       fmt: v => v.toLocaleString() },
+    { key: 'deaths',      label: '💀 ตาย',             field: 'deaths',      fmt: v => v.toLocaleString() },
+    { key: 'zombieKills', label: '🧟 ซอมบี้/บอส',     field: 'zombieKills', fmt: v => v.toLocaleString() },
   ];
 
   let _activeTab = 'reputation';
@@ -78,8 +78,19 @@ const Ranking = (() => {
       rows.push({ uid: child.key, name: profile.displayName || 'Unknown', value });
     });
 
-    rows.sort((a, b) => b.value - a.value);
-    const result = rows.slice(0, 20).map((r, i) => ({ rank: i + 1, ...r }));
+    let result;
+    if (tabKey === 'reputation') {
+      // แบ่งเป็น 2 ฝั่ง: + มากสุด (top 10) และ - น้อยสุด (top 10)
+      const pos = rows.filter(r => r.value >= 0).sort((a, b) => b.value - a.value).slice(0, 10);
+      const neg = rows.filter(r => r.value < 0).sort((a, b) => a.value - b.value).slice(0, 10);
+      // ใส่ rank แยก แล้ว tag ฝั่ง
+      const posRanked = pos.map((r, i) => ({ rank: i + 1, side: 'pos', ...r }));
+      const negRanked = neg.map((r, i) => ({ rank: i + 1, side: 'neg', ...r }));
+      result = { pos: posRanked, neg: negRanked };
+    } else {
+      rows.sort((a, b) => b.value - a.value);
+      result = rows.slice(0, 20).map((r, i) => ({ rank: i + 1, ...r }));
+    }
     _cache[tabKey] = result;
     return result;
   }
@@ -144,45 +155,66 @@ const Ranking = (() => {
 
     try {
       const tab  = TABS.find(t => t.key === _activeTab);
-      const rows = await _fetchTab(_activeTab);
+      const data = await _fetchTab(_activeTab);
 
-      if (rows.length === 0) {
-        listEl.innerHTML = '<div class="ranking-empty">ยังไม่มีข้อมูล</div>';
-        _loading = false; return;
-      }
-
-      listEl.innerHTML = rows.map(r => {
-        const isMe    = r.uid === _uid;
-        const medal   = r.rank === 1 ? '🥇' : r.rank === 2 ? '🥈' : r.rank === 3 ? '🥉' : `#${r.rank}`;
-
-        let valFmt;
-        if (_activeTab === 'reputation') {
-          const rep  = r.value;
-          const sign = rep >= 0 ? '+' : '';
-          // หา tier จาก REPUTATION_CONFIG
-          let tierHtml = '';
-          if (typeof REPUTATION_CONFIG !== 'undefined') {
-            const tier = REPUTATION_CONFIG.TIERS.find(t => rep >= t.min && rep <= t.max);
-            if (tier && tier.img) {
-              tierHtml = `<img src="assets/reputations/${tier.img}" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:4px;">`;
-            }
-            const tierLabel = (tier && tier.label) ? `<span style="font-size:10px;opacity:0.7;margin-right:4px;">${tier.label}</span>` : '';
-            valFmt = `${tierHtml}${tierLabel}<span>${sign}${rep}</span>`;
-          } else {
-            valFmt = `${sign}${rep}`;
-          }
-        } else {
-          valFmt = tab.fmt(r.value);
+      if (_activeTab === 'reputation') {
+        // data = { pos: [...], neg: [...] }
+        const { pos, neg } = data;
+        if (pos.length === 0 && neg.length === 0) {
+          listEl.innerHTML = '<div class="ranking-empty">ยังไม่มีข้อมูล</div>';
+          _loading = false; return;
         }
 
-        return `
-          <div class="rank-row${isMe ? ' rank-row-me' : ''}">
-            <span class="rank-medal">${medal}</span>
-            <span class="rank-name">${r.name}${isMe ? ' 👤' : ''}</span>
-            <span class="rank-value" style="display:flex;align-items:center;">${valFmt}</span>
-          </div>
-        `;
-      }).join('');
+        function _repRowHtml(r) {
+          const isMe  = r.uid === _uid;
+          const medal = r.rank === 1 ? '🥇' : r.rank === 2 ? '🥈' : r.rank === 3 ? '🥉' : `#${r.rank}`;
+          const rep   = r.value;
+          const sign  = rep >= 0 ? '+' : '';
+          let valFmt  = `${sign}${rep}`;
+          if (typeof REPUTATION_CONFIG !== 'undefined') {
+            const tier = REPUTATION_CONFIG.TIERS.find(t => rep >= t.min && rep <= t.max);
+            const tierHtml  = (tier && tier.img) ? `<img src="assets/reputations/${tier.img}" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:4px;">` : '';
+            const tierLabel = (tier && tier.label) ? `<span style="font-size:10px;opacity:0.7;margin-right:4px;">${tier.label}</span>` : '';
+            valFmt = `${tierHtml}${tierLabel}<span>${sign}${rep.toLocaleString()}</span>`;
+          }
+          return `
+            <div class="rank-row${isMe ? ' rank-row-me' : ''}">
+              <span class="rank-medal">${medal}</span>
+              <span class="rank-name">${r.name}${isMe ? ' 👤' : ''}</span>
+              <span class="rank-value" style="display:flex;align-items:center;">${valFmt}</span>
+            </div>`;
+        }
+
+        let html = '';
+        if (pos.length > 0) {
+          html += `<div class="rank-section-title" style="color:#4caf50;padding:6px 10px;font-size:12px;font-weight:bold;letter-spacing:1px;">▲ ชื่อเสียงสูงสุด</div>`;
+          html += pos.map(_repRowHtml).join('');
+        }
+        if (neg.length > 0) {
+          html += `<div class="rank-section-title" style="color:#f44336;padding:6px 10px;margin-top:10px;font-size:12px;font-weight:bold;letter-spacing:1px;">▼ ชื่อเสียงต่ำสุด</div>`;
+          html += neg.map(_repRowHtml).join('');
+        }
+        listEl.innerHTML = html;
+
+      } else {
+        // tabs อื่นๆ — array ปกติ
+        if (data.length === 0) {
+          listEl.innerHTML = '<div class="ranking-empty">ยังไม่มีข้อมูล</div>';
+          _loading = false; return;
+        }
+
+        listEl.innerHTML = data.map(r => {
+          const isMe  = r.uid === _uid;
+          const medal = r.rank === 1 ? '🥇' : r.rank === 2 ? '🥈' : r.rank === 3 ? '🥉' : `#${r.rank}`;
+          const valFmt = tab.fmt(r.value);
+          return `
+            <div class="rank-row${isMe ? ' rank-row-me' : ''}">
+              <span class="rank-medal">${medal}</span>
+              <span class="rank-name">${r.name}${isMe ? ' 👤' : ''}</span>
+              <span class="rank-value" style="display:flex;align-items:center;">${valFmt}</span>
+            </div>`;
+        }).join('');
+      }
     } catch(e) {
       listEl.innerHTML = '<div class="ranking-empty">โหลดไม่ได้ ลองใหม่</div>';
       console.warn('Ranking render error:', e);
