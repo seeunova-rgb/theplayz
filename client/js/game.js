@@ -346,7 +346,8 @@ function initGame() {
     Entity.init(_wid);
     Entity.onPlayerAttacked((ent, dmg) => {
       _playRandom(_HIT_SOUNDS, 0.7);
-      _spawnDmgNum(player.x, player.y + _charTopY(CONFIG.PLAYER_R), dmg, '#ff4444', false);
+      // entity โจมตีผู้เล่นเป็น body เสมอ → สีขาว
+      _spawnDmgNum(player.x, player.y + _charTopY(CONFIG.PLAYER_R), dmg, '#ffffff', false);
     });
   }
 
@@ -370,13 +371,15 @@ function initGame() {
   });
 
   // [FIX #1] onTookDamage: hp มาจาก server แล้ว ไม่คำนวณเอง
-  Network.on('onTookDamage', ({ hp, damage }) => {
+  Network.on('onTookDamage', ({ hp, damage, hitZone }) => {
     const prevHp = player.hp;
     player.hp    = hp;
     const dmgTaken = damage ?? (prevHp - hp);
     if (dmgTaken > 0 && !window._isLeavingGame) {
       _playRandom(_HIT_SOUNDS, 0.7);
-      _spawnDmgNum(player.x, player.y + _charTopY(CONFIG.PLAYER_R), dmgTaken, '#ff4444', false);
+      const isHead = hitZone === 'head';
+      const dmgColor = isHead ? '#ff4444' : '#ffffff';
+      _spawnDmgNum(player.x, player.y + _charTopY(CONFIG.PLAYER_R), dmgTaken, dmgColor, isHead);
       // ส่งเสียงโดนดาเมจไปให้ผู้เล่นอื่น
       const _hurtId = _HURT_SOUNDS[Math.floor(Math.random() * _HURT_SOUNDS.length)];
       if (typeof Network !== 'undefined' && Network.sendSound) Network.sendSound(_hurtId);
@@ -392,10 +395,12 @@ function initGame() {
 
   // [FIX] hit_confirm: server ส่งดาเมจจริง (หลังหักเกราะ/headshot) กลับมา
   // ใช้แสดงเลขดาเมจบนเป้าให้ผู้ยิงเห็นค่าที่ถูกต้อง
-  Network.on('onHitConfirm', ({ targetId, damage }) => {
+  Network.on('onHitConfirm', ({ targetId, damage, hitZone }) => {
     const rp = Network.getRemotePlayers()[targetId];
     if (rp) {
-      _spawnDmgNum(rp.x, rp.y + _charTopY(CONFIG.PLAYER_R), damage, '#ffffff', false);
+      const isHead = hitZone === 'head';
+      const dmgColor = isHead ? '#ff4444' : '#ffffff';
+      _spawnDmgNum(rp.x, rp.y + _charTopY(CONFIG.PLAYER_R), damage, dmgColor, isHead);
     }
   });
 
@@ -566,7 +571,7 @@ function update(timestamp) {
         const finalDmg = result.isHeadshot ? Math.round(_baseDmg * 2) : _baseDmg;
         _playRandom(_HURT_SOUNDS, result.isHeadshot ? 0.9 : 0.6);
         const ent = Entity.getAlive().find(e => e.id === result.entityId);
-        if (ent) _spawnDmgNum(ent.x, ent.y + _charTopY(ENTITY_CONFIG[ent.type].r), finalDmg, '#ffffff', result.isHeadshot);
+        if (ent) _spawnDmgNum(ent.x, ent.y + _charTopY(ENTITY_CONFIG[ent.type].r), finalDmg, result.isHeadshot ? '#ff4444' : '#ffffff', result.isHeadshot);
         Entity.registerHit(result.entityId, _baseDmg, result.isHeadshot);
       });
     }
@@ -680,7 +685,7 @@ function draw() {
     ctx.strokeStyle  = 'rgba(0,0,0,0.7)';
     ctx.lineWidth    = 3;
     ctx.strokeText(selfName, 0, topY - 14);
-    ctx.fillStyle    = '#FFD700';
+    ctx.fillStyle    = '#ffffff';
     ctx.fillText(selfName, 0, topY - 14);
     ctx.restore();
   }

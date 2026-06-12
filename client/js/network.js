@@ -13,7 +13,7 @@ const Network = (() => {
     onPlayerUpdate:    null,  // (data)
     onPlayerLeft:      null,  // (id)
     onBullet:          null,  // (data)
-    onTookDamage:      null,  // ({ hp, damage })
+    onTookDamage:      null,  // ({ hp, damage, hitZone })
     onHitConfirm:      null,  // ({ targetId, damage, hitZone })
     onPlayerDied:      null,  // ({ id, killerId })
     onDropSpawned:     null,  // (drop)
@@ -162,6 +162,39 @@ const Network = (() => {
           WorldSelect.setOnlineCount(wid, count);
         });
       }
+    });
+
+    // ── reconnect: เมื่อ socket หลุดแล้วต่อกลับได้ ────────────
+    // ล้าง remotePlayers เก่า แล้ว rejoin world เหมือนตอนแรก
+    // เพื่อรับ init ใหม่ + ให้คนอื่นเห็นเราอีกครั้ง
+    socket.on('connect', () => {
+      // ข้าม connect ครั้งแรก (myId ยังไม่ถูกเซ็ต → ยังไม่เคย join)
+      if (!myId) return;
+
+      console.log('[Network] reconnected — rejoining world');
+
+      // ล้าง remote players ที่ค้างอยู่
+      Object.keys(remotePlayers).forEach(k => delete remotePlayers[k]);
+
+      // rejoin world เหมือน connect() ปกติ
+      const worldId   = window._selectedWorldId || 'safezone';
+      const _spawnPos = (typeof findSafeSpawn !== 'undefined')
+        ? findSafeSpawn(worldId)
+        : { x: 3000, y: 3000 };
+      socket.emit('join_world', {
+        worldId,
+        spawnX:  window._player ? window._player.x : _spawnPos.x,
+        spawnY:  window._player ? window._player.y : _spawnPos.y,
+        name:    window._playerName   || 'Player',
+        color:   window._playerColor  || '#2563EB',
+        charId:  window._playerCharId || 'default',
+      });
+    });
+
+    socket.on('disconnect', (reason) => {
+      console.log('[Network] disconnected:', reason);
+      // ล้าง remote players ทันที เพื่อไม่ให้เห็นผีผู้เล่น
+      Object.keys(remotePlayers).forEach(k => delete remotePlayers[k]);
     });
   }
 

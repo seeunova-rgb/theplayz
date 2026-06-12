@@ -204,7 +204,7 @@ function initSocket(io) {
         if (attacker) attacker.kills++;
         io.to(wid).emit('player_died', { id: data.targetId, killerId: socket.id });
       } else {
-        io.to(data.targetId).emit('took_damage', { hp: target.hp, damage: finalDmg });
+        io.to(data.targetId).emit('took_damage', { hp: target.hp, damage: finalDmg, hitZone });
       }
 
       // [FIX] ส่งดาเมจจริง (หลังหักเกราะ/headshot) กลับไปให้ผู้ยิง
