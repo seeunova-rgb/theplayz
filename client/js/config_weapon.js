@@ -7,7 +7,7 @@ var WEAPON_CONFIG = {
   asr_piggy: {
     damage:     27,
     speed:      15,
-    range:      300,
+    range:      500,
     fireRate:   150,
     bulletR:    3,
     trailLen:   3,
@@ -20,7 +20,7 @@ var WEAPON_CONFIG = {
   asr_evil: {
     damage:     30,
     speed:      15,
-    range:      300,
+    range:      500,
     fireRate:   135,
     bulletR:    3,
     trailLen:   3,
@@ -33,7 +33,7 @@ var WEAPON_CONFIG = {
   asr_lucifer: {
     damage:     33,
     speed:      15,
-    range:      300,
+    range:      500,
     fireRate:   120,
     bulletR:    3,
     trailLen:   3,
@@ -87,7 +87,7 @@ var WEAPON_CONFIG = {
   snp_ppap: {
     damage:     180,
     speed:      30,
-    range:      900,
+    range:      1000,
     fireRate:   1200,
     bulletR:    3,
     trailLen:   9,
@@ -100,7 +100,7 @@ var WEAPON_CONFIG = {
   snp_piggy: {
     damage:     210,
     speed:      30,
-    range:      900,
+    range:      1000,
     fireRate:   900,
     bulletR:    3,
     trailLen:   9,
@@ -113,7 +113,7 @@ var WEAPON_CONFIG = {
   snp_evil: {
     damage:     225,
     speed:      30,
-    range:      900,
+    range:      1000,
     fireRate:   750,
     bulletR:    3,
     trailLen:   9,
@@ -126,7 +126,7 @@ var WEAPON_CONFIG = {
   snp_lucifer: {
     damage:     240,
     speed:      30,
-    range:      900,
+    range:      1000,
     fireRate:   600,
     bulletR:    3,
     trailLen:   9,
@@ -139,7 +139,7 @@ var WEAPON_CONFIG = {
   snp_reddevil: {
     damage:     240,
     speed:      30,
-    range:      900,
+    range:      1000,
     fireRate:   600,
     bulletR:    3,
     trailLen:   9,
@@ -152,7 +152,7 @@ var WEAPON_CONFIG = {
   snp_blueact: {
     damage:     240,
     speed:      30,
-    range:      900,
+    range:      1000,
     fireRate:   600,
     bulletR:    3,
     trailLen:   9,
@@ -165,7 +165,7 @@ var WEAPON_CONFIG = {
   snp_chicago: {
     damage:     240,
     speed:      30,
-    range:      900,
+    range:      1000,
     fireRate:   600,
     bulletR:    3,
     trailLen:   9,

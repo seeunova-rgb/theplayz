@@ -87,13 +87,28 @@ const Inventory = (() => {
     // สร้าง stat bars ตามประเภทไอเทม
     const statBars = [];
     if (def.weaponId && typeof WEAPON_CONFIG !== 'undefined' && WEAPON_CONFIG[def.weaponId]) {
-      const wc = WEAPON_CONFIG[def.weaponId];
-      statBars.push(itemStatBar('DMG',    wc.damage,                                     120, '#ef5350'));
-      statBars.push(itemStatBar('AMMO',   wc.maxAmmo,                                    30,  '#42a5f5'));
-      const fireVal = Math.round((1200 / Math.max(wc.fireRate, 50)) * 10);
-      statBars.push(itemStatBar('RATE',   Math.min(fireVal, 30),                         30,  '#ffa726'));
-      const reloadVal = Math.round((1 - wc.reloadTime / 4000) * 10);
-      statBars.push(itemStatBar('RELOAD', Math.max(reloadVal, 1),                        10,  '#66bb6a'));
+      const wc    = WEAPON_CONFIG[def.weaponId];
+      const isSNP = def.weaponId.startsWith('snp');
+
+      // DMG — max แยกตาม type (snp สูงสุด 240, asr สูงสุด 33)
+      const dmgMax = isSNP ? 240 : 33;
+      statBars.push(itemStatBar('DMG', wc.damage, dmgMax, '#ef5350'));
+
+      // AMMO — max แยกตาม type
+      const ammoMax = isSNP ? 10 : 30;
+      statBars.push(itemStatBar('AMMO', wc.maxAmmo, ammoMax, '#42a5f5'));
+
+      // RATE — normalize ให้ fireRate ต่ำ (ยิงเร็ว) = bar สูง
+      // fireRate range: 120(เร็วสุด) → 1200(ช้าสุด)
+      const rateMin = 120, rateMax = 1200;
+      const ratePct = Math.round((1 - (wc.fireRate - rateMin) / (rateMax - rateMin)) * 10);
+      statBars.push(itemStatBar('RATE', Math.max(ratePct, 1), 10, '#ffa726'));
+
+      // RELOAD — normalize ให้ reloadTime ต่ำ (รีโหลดเร็ว) = bar สูง
+      // reloadTime range: 1800(เร็วสุด) → 3000(ช้าสุด)
+      const reloadMin = 1800, reloadMax = 3000;
+      const reloadPct = Math.round((1 - (wc.reloadTime - reloadMin) / (reloadMax - reloadMin)) * 10);
+      statBars.push(itemStatBar('RELOAD', Math.max(reloadPct, 1), 10, '#66bb6a'));
     }
     if (!def.weaponId) {
       if (def.damage) statBars.push(itemStatBar('DMG',   def.damage, 120, '#ef5350'));

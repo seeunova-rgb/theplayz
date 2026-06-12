@@ -4,6 +4,14 @@
 
 // ── sprite map: weaponId → Image ────────────────────────────
 var _gunImgs = {};
+// ปืนที่ sprite หันปากกระบอกอยู่ขวา (ตรงข้ามกับมาตรฐาน) ต้อง flip เพิ่ม
+var _GUN_FLIP = {
+  asr_blueact: true,
+  asr_lucifer: true,
+  snp_blueact: true,
+  snp_evil: true,
+  snp_lucifer: true,
+};
 var _GUN_SPRITES = {
   // ── RED DEVIL ──
   asr_reddevil: 'assets/items/asr_reddevil.png',
@@ -60,6 +68,7 @@ function drawGunOnPlayer(ctx, player) {
 
   ctx.save();
   ctx.scale(-1, 1);
+  if (_GUN_FLIP[gunId]) ctx.scale(-1, 1); // sprite barrel อยู่ขวา → flip คืน
   const offsetX = r * 0.1;
   const offsetY = -r * -0.1;
   ctx.drawImage(_gunImg, -offsetX - gunW, offsetY - gunH / 2, gunW, gunH);
