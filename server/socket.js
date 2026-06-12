@@ -49,6 +49,8 @@ function initSocket(io) {
         charId:       (typeof charId === 'string' && charId.trim()) ? charId.trim() : 'default',
         kills:        0,
         reputation:   0,          // reputation ของผู้เล่น (sync จาก client)
+        walkTimer:    0,
+        isMoving:     false,
       };
 
       // ส่ง state ปัจจุบัน + drops ที่มีอยู่ใน world ให้ผู้เล่นใหม่
@@ -104,6 +106,12 @@ function initSocket(io) {
       if (typeof data.reputation === 'number') {
         p.reputation = Math.round(data.reputation);
       }
+      // charId / color / name / walkTimer / isMoving — sync ให้ผู้เล่นอื่นเห็น
+      if (typeof data.charId  === 'string' && data.charId.trim())  p.charId   = data.charId.trim();
+      if (typeof data.color   === 'string' && data.color.trim())   p.color    = data.color.trim();
+      if (typeof data.name    === 'string' && data.name.trim())    p.name     = data.name.trim();
+      if (typeof data.walkTimer  === 'number')  p.walkTimer  = data.walkTimer;
+      if (typeof data.isMoving   === 'boolean') p.isMoving   = data.isMoving;
 
       // [FIX #1] ไม่รับ hp / alive จาก client
       // hp และ alive ถูก update เฉพาะตอน hit/respawn เท่านั้น
@@ -118,6 +126,11 @@ function initSocket(io) {
         hp:         p.hp,        // ← ค่าจาก server เสมอ
         alive:      p.alive,
         reputation: p.reputation, // ← ส่ง rep ให้คนอื่นเห็น
+        charId:     p.charId,
+        color:      p.color,
+        name:       p.name,
+        walkTimer:  p.walkTimer  ?? 0,
+        isMoving:   p.isMoving   ?? false,
       });
     });
 
@@ -249,6 +262,11 @@ function initSocket(io) {
         reducePct: p.reducePct,
         hp:        p.hp,
         alive:     p.alive,
+        charId:    p.charId,
+        color:     p.color,
+        name:      p.name,
+        walkTimer: p.walkTimer  ?? 0,
+        isMoving:  p.isMoving   ?? false,
       });
     });
 

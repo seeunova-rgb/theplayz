@@ -630,6 +630,26 @@ function draw() {
   _drawDrops(ctx);
   drawPlayer(ctx, player);
 
+  // ── วาด nametag ของตัวเอง ────────────────────────────────
+  {
+    const r    = CONFIG.PLAYER_R;
+    const s    = r / 22;
+    const bh   = 46 * s;
+    const topY = -bh / 2;
+    const selfName = window._playerName || 'Player';
+    ctx.save();
+    ctx.translate(player.x, player.y);
+    ctx.font         = `bold ${Math.max(10, r * 0.6)}px Rajdhani, sans-serif`;
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.strokeStyle  = 'rgba(0,0,0,0.7)';
+    ctx.lineWidth    = 3;
+    ctx.strokeText(selfName, 0, topY - 14);
+    ctx.fillStyle    = '#FFD700';
+    ctx.fillText(selfName, 0, topY - 14);
+    ctx.restore();
+  }
+
   {
     Object.values(Network.getRemotePlayers()).forEach(rp => {
       if (!rp.alive) return;
