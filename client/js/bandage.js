@@ -101,6 +101,10 @@ const Bandage = (() => {
     if (typeof Network !== 'undefined') Network.sendHeal(HEAL_AMT);
 
     if (typeof Sounds !== 'undefined') Sounds.play('heal', 0.9);
+    // ส่งเสียง heal ไปให้ผู้เล่นอื่น
+    if (typeof Network !== 'undefined' && Network.sendSound) {
+      Network.sendSound('heal');
+    }
     if (typeof window.showToast === 'function')
       window.showToast(`+${HEAL_AMT} HP`, 'success');
 

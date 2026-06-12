@@ -21,6 +21,7 @@ const Network = (() => {
     onPickupReceived:  null,  // ({ dropId, items })
     onPlayerRespawned: null,  // ({ id, x, y, hp })
     onHealed:          null,  // ({ hp }) — server ยืนยัน HP หลัง heal
+    onPlayerSound:     null,  // ({ id, x, y, ownerId }) — เสียงจากผู้เล่นอื่น
   };
 
   function connect() {
@@ -144,6 +145,11 @@ const Network = (() => {
       if (_cb.onHealed) _cb.onHealed(data);
     });
 
+    // ── player_sound: เสียงจากผู้เล่นอื่น (3D distance) ─────
+    socket.on('player_sound', (data) => {
+      if (_cb.onPlayerSound) _cb.onPlayerSound(data);
+    });
+
     // ── drop_ack: server ยืนยันรับ drop แล้ว ──
     socket.on('drop_ack', (data) => {
       if (_onceCbs.drop_ack) { _onceCbs.drop_ack(data); delete _onceCbs.drop_ack; }
@@ -217,6 +223,13 @@ const Network = (() => {
     socket.emit('heal', { amount });
   }
 
+  // ── ส่งเสียงไป server เพื่อ broadcast ────────────────────
+  // id: sound key (เช่น 'hurt1', 'heal', 'walk')
+  function sendSound(id) {
+    if (!socket) return;
+    socket.emit('player_sound', { id });
+  }
+
   // ── register callbacks ──────────────────────────────────
 
   function on(event, fn) { _cb[event] = fn; }
@@ -242,6 +255,7 @@ const Network = (() => {
     sendPickup,
     sendRespawn,
     sendHeal,
+    sendSound,
     on,
     once,
     getRemotePlayers: () => remotePlayers,

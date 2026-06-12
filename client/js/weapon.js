@@ -47,6 +47,14 @@ const Weapon = (() => {
     const max = document.getElementById('ammo-max');
     const reloadBtn = document.getElementById('reload-btn');
     if (!cur || !max || !hud) return;
+    // ซ่อน HUD ทั้งหมดเมื่ออยู่นอกเกม (lobby, inventory, ฯลฯ)
+    if (!window._isInGame) {
+      hud.style.display = 'none';
+      if (reloadBtn) reloadBtn.style.display = 'none';
+      const _gih = document.getElementById('gun-icon-hud');
+      if (_gih) _gih.style.display = 'none';
+      return;
+    }
     if (!hasGun()) {
       hud.style.display = 'none';
       if (reloadBtn) reloadBtn.style.display = 'none';
@@ -184,6 +192,10 @@ const Weapon = (() => {
     ammo--;
     saveAmmo(_getActiveGunId()); // [FIX] ส่ง gunId ตรงๆ กันบัคค่ากระสุนปืน A ถูก save ทับ key ปืน B
     if (GUN.sounds?.fire) Sounds.play(GUN.sounds.fire, 0.8);
+    // ส่งเสียงยิงไปให้ผู้เล่นอื่น
+    if (typeof Network !== 'undefined' && Network.sendSound && GUN.sounds?.fire) {
+      Network.sendSound(GUN.sounds.fire);
+    }
     updateAmmoUI();
     if (ammo <= 0) reload();
 
@@ -253,6 +265,8 @@ const Weapon = (() => {
     // เพราะ Backpack อาจยังไม่ได้อัปเดต slot ในขณะที่ event ถูก dispatch
     const newGunId = e?.detail?.gunId ?? null;
     initAmmo(newGunId);
+    // ถ้าอยู่นอกเกม (lobby/inventory) → ซ่อน HUD ทันที ไม่ให้โผล่
+    if (!window._isInGame) updateAmmoUI();
   });
 
   function update() {

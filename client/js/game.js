@@ -377,6 +377,9 @@ function initGame() {
     if (dmgTaken > 0 && !window._isLeavingGame) {
       _playRandom(_HIT_SOUNDS, 0.7);
       _spawnDmgNum(player.x, player.y + _charTopY(CONFIG.PLAYER_R), dmgTaken, '#ff4444', false);
+      // ส่งเสียงโดนดาเมจไปให้ผู้เล่นอื่น
+      const _hurtId = _HURT_SOUNDS[Math.floor(Math.random() * _HURT_SOUNDS.length)];
+      if (typeof Network !== 'undefined' && Network.sendSound) Network.sendSound(_hurtId);
     }
     if (player.hp <= 0 && player.alive) {
       player.alive = false;
@@ -395,6 +398,8 @@ function initGame() {
       _spawnDmgNum(rp.x, rp.y + _charTopY(CONFIG.PLAYER_R), damage, '#ffffff', false);
     }
   });
+
+  Network.on('onPlayerDied', ({ id, killerId }) => {
     const rp = Network.getRemotePlayers();
 
     // ── Reputation: ผู้ฆ่าได้ rep จากการฆ่าผู้เล่น ──────────
@@ -494,6 +499,22 @@ function initGame() {
     if (player) player.hp = hp;
   });
 
+  // ── เสียงจากผู้เล่นอื่น — distance-based volume ──────────
+  // maxDist: 800 world px → ยิ่งไกลยิ่งเบา ยิ่งใกล้ยิ่งดัง
+  const _REMOTE_SOUND_BASE_VOL = {
+    snp_1: 0.9, snp_2: 0.9,
+    asr_1: 0.85,
+    shg_1: 0.9,
+    hurt1: 0.7, hurt2: 0.7,
+    heal:  0.6,
+    walk:  0.3,
+  };
+  Network.on('onPlayerSound', ({ id: soundId, x: sx, y: sy }) => {
+    if (typeof Sounds === 'undefined' || !Sounds.playAt) return;
+    const baseVol = _REMOTE_SOUND_BASE_VOL[soundId] ?? 0.6;
+    Sounds.playAt(soundId, baseVol, sx, sy, player.x, player.y, 900);
+  });
+
   // [FIX] connect หลังจาก callbacks พร้อมแล้วเท่านั้น
   Network.connect();
 }
@@ -552,7 +573,13 @@ function update(timestamp) {
   }
 
   // ── เสียงเดิน ─────────────────────────────────────────────
-  if (typeof Sounds !== 'undefined') Sounds.tickWalk(dt, player.isMoving, Input.isSprinting());
+  if (typeof Sounds !== 'undefined') {
+    const _stepped = Sounds.tickWalk(dt, player.isMoving, Input.isSprinting());
+    // ส่งเสียงเดินไปผู้เล่นอื่นทุกครั้งที่ก้าว (throttle อยู่ใน tickWalk แล้ว)
+    if (_stepped && typeof Network !== 'undefined' && Network.sendSound) {
+      Network.sendSound('walk');
+    }
+  }
 
   // ── regen HP (ทุก ms) ─────────────────────────────────────
   if (player.hp < player.maxHp) {

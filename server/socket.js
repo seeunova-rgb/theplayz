@@ -282,20 +282,23 @@ function initSocket(io) {
 
       // broadcast HP ที่ถูกต้องไปคนอื่นใน world
       socket.to(wid).emit('player_update', {
-        id:        socket.id,
-        x:         p.x,
-        y:         p.y,
-        angle:     p.angle,
-        reducePct: p.reducePct,
-        hp:        p.hp,
-        alive:     p.alive,
-        charId:    p.charId,
-        color:     p.color,
-        gunId:     p.gunId,
-        isAiming:  p.isAiming,
-        name:      p.name,
-        walkTimer: p.walkTimer  ?? 0,
-        isMoving:  p.isMoving   ?? false,
+        id:            socket.id,
+        x:             p.x,
+        y:             p.y,
+        angle:         p.angle,
+        reducePct:     p.reducePct,
+        bodyReducePct: p.bodyReducePct,
+        headReducePct: p.headReducePct,
+        hp:            p.hp,
+        alive:         p.alive,
+        reputation:    p.reputation,
+        charId:        p.charId,
+        color:         p.color,
+        gunId:         p.gunId,
+        isAiming:      p.isAiming,
+        name:          p.name,
+        walkTimer:     p.walkTimer  ?? 0,
+        isMoving:      p.isMoving   ?? false,
       });
     });
 
@@ -312,6 +315,29 @@ function initSocket(io) {
 
       socket.to(wid).emit('player_respawned', { id: socket.id, x: p.x, y: p.y, hp: p.hp });
       console.log(`[Respawn] ${socket.id} respawned in ${wid}`);
+    });
+
+    // ── player_sound: broadcast เสียงผู้เล่นพร้อมตำแหน่ง ─────
+    // client ส่งมาเมื่อ: ยิงปืน, โดนดาเมจ, ใช้ยา, เดิน
+    // server ไม่ validate เนื้อหาเสียง — แค่ relay พร้อมตำแหน่งจริงจาก server
+    const _ALLOWED_SOUNDS = new Set([
+      'snp_1','snp_2','asr_1','shg_1',
+      'hit1','hit2','hit3','hurt1','hurt2',
+      'heal','walk',
+    ]);
+    socket.on('player_sound', (data) => {
+      const wid = socketWorld[socket.id];
+      if (!wid || !players[wid][socket.id]) return;
+      if (!data || !_ALLOWED_SOUNDS.has(data.id)) return;
+
+      const p = players[wid][socket.id];
+      // ส่งตำแหน่งจริงจาก server (ป้องกัน spoof) + sound id
+      socket.to(wid).emit('player_sound', {
+        id:       data.id,
+        x:        p.x,
+        y:        p.y,
+        ownerId:  socket.id,
+      });
     });
 
     // ── disconnect ────────────────────────────────────────────

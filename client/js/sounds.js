@@ -95,6 +95,23 @@ const Sounds = (() => {
     _playBuffer(id, volume);
   }
 
+  // ── เสียง 3D: ปรับ volume ตามระยะห่างจาก listener ────────
+  // sourceX/Y  = ตำแหน่งผู้เล่นที่ออกเสียง (world coords)
+  // listenerX/Y = ตำแหน่ง local player (world coords)
+  // maxDist    = ระยะที่ไกลที่สุดที่ได้ยิน (default 800px world)
+  // baseVol    = volume สูงสุดเมื่ออยู่ใกล้มาก
+  function playAt(id, baseVol, sourceX, sourceY, listenerX, listenerY, maxDist) {
+    if (!_unlocked) return;
+    maxDist = maxDist || 800;
+    const dx   = sourceX - listenerX;
+    const dy   = sourceY - listenerY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist >= maxDist) return;                         // ไกลเกิน — ไม่เล่น
+    // linear falloff: ใกล้สุด = baseVol, ไกลสุด = 0
+    const vol = baseVol * Math.max(0, 1 - dist / maxDist);
+    _playBuffer(id, vol);
+  }
+
   // ── preload เสียงทั้งหมด ──────────────────────────────────
   preload('snp_1',    'assets/sounds/snp_1.ogg');
   preload('snp_2',    'assets/sounds/snp_2.ogg');
@@ -173,17 +190,19 @@ const Sounds = (() => {
   function tickWalk(dt, isMoving, isSprinting) {
     if (!isMoving) {
       _walkTimer = 0;
-      return;
+      return false;
     }
     _walkTimer += dt;
     const interval = isSprinting ? _WALK_INTERVAL * 0.6 : _WALK_INTERVAL;
     if (_walkTimer >= interval) {
       _walkTimer -= interval;
       play('walk', 0.35);
+      return true;   // บอก caller ว่าเพิ่งก้าว — ให้ส่ง network sound ได้
     }
+    return false;
   }
 
-  return { play, preload, tickWalk };
+  return { play, playAt, preload, tickWalk };
 })();
 
 window.Sounds = Sounds;
