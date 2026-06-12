@@ -170,6 +170,7 @@ const Network = (() => {
       charId:        player.charId    || 'default',   // ส่ง charId ทุก frame เพื่อ sync
       color:         player.color     || '#2563EB',
       gunId:         (typeof Backpack !== 'undefined' && Backpack.getEquippedInSlot) ? (Backpack.getEquippedInSlot('gun') || null) : null,
+      isAiming:      (typeof Input !== 'undefined' && Input.isAiming) ? Input.isAiming() : false,
       name:          player.name      || (window._playerName || 'Player'),
       reducePct:     player.reducePct ?? 0,
       bodyReducePct: _armor ? _armor.getBodyReducePct() : 0,

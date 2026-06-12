@@ -48,6 +48,7 @@ function initSocket(io) {
         color:        (typeof color === 'string' && color.trim()) ? color.trim() : randomColor(),
         charId:       (typeof charId === 'string' && charId.trim()) ? charId.trim() : 'default',
         gunId:        null,
+        isAiming:     false,
         kills:        0,
         reputation:   0,          // reputation ของผู้เล่น (sync จาก client)
         walkTimer:    0,
@@ -111,6 +112,7 @@ function initSocket(io) {
       if (typeof data.charId  === 'string' && data.charId.trim())  p.charId   = data.charId.trim();
       if (typeof data.color   === 'string' && data.color.trim())   p.color    = data.color.trim();
       if (typeof data.gunId   === 'string' || data.gunId === null) p.gunId    = data.gunId;
+      if (typeof data.isAiming === 'boolean') p.isAiming = data.isAiming;
       if (typeof data.name    === 'string' && data.name.trim())    p.name     = data.name.trim();
       if (typeof data.walkTimer  === 'number')  p.walkTimer  = data.walkTimer;
       if (typeof data.isMoving   === 'boolean') p.isMoving   = data.isMoving;
@@ -131,6 +133,7 @@ function initSocket(io) {
         charId:     p.charId,
         color:      p.color,
         gunId:      p.gunId,
+        isAiming:   p.isAiming,
         name:       p.name,
         walkTimer:  p.walkTimer  ?? 0,
         isMoving:   p.isMoving   ?? false,
@@ -268,6 +271,7 @@ function initSocket(io) {
         charId:    p.charId,
         color:     p.color,
         gunId:     p.gunId,
+        isAiming:  p.isAiming,
         name:      p.name,
         walkTimer: p.walkTimer  ?? 0,
         isMoving:  p.isMoving   ?? false,

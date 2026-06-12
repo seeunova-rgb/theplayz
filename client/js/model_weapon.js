@@ -54,7 +54,8 @@ function drawGunOnPlayer(ctx, player) {
   if (!gunId) return;
   var _gunImg = _gunImgs[gunId];
   if (!_gunImg || !_gunImg.complete || _gunImg.naturalWidth === 0) return;
-  if (!Input.isAiming()) return;
+  var aiming = (player && typeof player.isAiming === 'boolean') ? player.isAiming : Input.isAiming();
+  if (!aiming) return;
 
   const { x, y, r, angle } = player;
   const gunW = r * 4.4;

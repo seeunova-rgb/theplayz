@@ -887,6 +887,7 @@ function drawRemotePlayer(ctx, rp) {
     alive:     true,
     name:      rp.name      || '?',
     gunId:     rp.gunId     || null,
+    isAiming:  rp.isAiming  ?? false,
   };
 
   // วาด character body ด้วย model จริง (model_character.js)
