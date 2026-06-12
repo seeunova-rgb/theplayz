@@ -421,9 +421,16 @@ function initGame() {
   // [FIX MULTIPLAYER] callbacks ที่หายไป — ทำให้ผู้เล่นอื่นมองไม่เห็นกัน
 
   // ผู้เล่นใหม่เข้า world — เพิ่มลงใน remotePlayers
+  // [FIX] ต้องใส่ alive: true ด้วย เพราะ server ไม่ส่งมา
+  // และใช้ Object.assign แทนการ overwrite ทั้ง object
+  // เพื่อไม่ให้ทับข้อมูลที่ network.js เพิ่มไว้แล้ว
   Network.on('onPlayerJoined', (data) => {
     const rp = Network.getRemotePlayers();
-    rp[data.id] = data;
+    if (!rp[data.id]) {
+      rp[data.id] = Object.assign({ alive: true, hp: 100 }, data);
+    } else {
+      Object.assign(rp[data.id], { alive: true }, data);
+    }
   });
 
   // รับ position/state update จากผู้เล่นอื่น — อัปเดตให้ real-time

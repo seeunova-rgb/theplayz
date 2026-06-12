@@ -38,7 +38,11 @@ const Network = (() => {
     // ป้องกัน race condition: server อาจตอบ 'init' กลับมาก่อนที่ listener จะลงทัน
     socket.on('init', ({ myId: id, players, drops }) => {
       myId = id;
-      Object.assign(remotePlayers, players);
+      // [FIX] ใส่ alive: true ให้ทุกคนที่ server ส่งมาตอน init
+      // เพราะ server อาจไม่ส่ง field alive มาด้วย
+      Object.entries(players).forEach(([pid, pdata]) => {
+        remotePlayers[pid] = Object.assign({ alive: true, hp: 100 }, pdata);
+      });
       delete remotePlayers[myId];
       if (_cb.onInit) _cb.onInit(id, players, drops || []);
 
@@ -66,7 +70,8 @@ const Network = (() => {
 
 
     socket.on('player_joined', (data) => {
-      remotePlayers[data.id] = data;
+      // [FIX] ใส่ alive: true เพราะ server ไม่ส่งมาตอน join
+      remotePlayers[data.id] = Object.assign({ alive: true, hp: 100 }, data);
       if (_cb.onPlayerJoined) _cb.onPlayerJoined(data);
     });
 
