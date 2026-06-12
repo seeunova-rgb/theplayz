@@ -5,7 +5,14 @@ const ctx    = canvas.getContext('2d');
 
 canvas.width  = window.innerWidth;
 canvas.height = window.innerHeight;
+
+let _lastW = window.innerWidth;
 window.addEventListener('resize', () => {
+  // ป้องกัน canvas ย่อ/ขยายตอน address bar ของเบราว์เซอร์ซ่อน/โผล่
+  // (เกิดเฉพาะ height เปลี่ยนเล็กน้อย แต่ width เท่าเดิม)
+  // resize จริงเฉพาะตอน width เปลี่ยน (เช่น หมุนจอ) เท่านั้น
+  if (window.innerWidth === _lastW) return;
+  _lastW = window.innerWidth;
   canvas.width  = window.innerWidth;
   canvas.height = window.innerHeight;
 });
