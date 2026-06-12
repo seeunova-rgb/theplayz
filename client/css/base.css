@@ -71,4 +71,5 @@
 }
 @media (orientation: portrait) {
   #rotate-screen { display: flex; }
+  body:has(#install-overlay:not(.hidden)) #rotate-screen { display: none; }
 }
