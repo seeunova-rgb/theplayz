@@ -463,7 +463,7 @@ function update(timestamp) {
         const result = Entity.checkBulletHit(b.x, b.y, _bulletR);
         if (!result.hit) return;
         b._hit = true;
-        const finalDmg = result.isHeadshot ? Math.round(_baseDmg * 2.5) : _baseDmg;
+        const finalDmg = result.isHeadshot ? Math.round(_baseDmg * 2) : _baseDmg;
         _playRandom(_HURT_SOUNDS, result.isHeadshot ? 0.9 : 0.6);
         const ent = Entity.getAlive().find(e => e.id === result.entityId);
         if (ent) _spawnDmgNum(ent.x, ent.y + _charTopY(ENTITY_CONFIG[ent.type].r), finalDmg, '#ffffff', result.isHeadshot);

@@ -73,31 +73,34 @@ const Money = (() => {
   }
 
   // ── อัปเดต DOM ทุกจุด ─────────────────────────────────────
+  function _fmtPoint(v) {
+    // แสดงทศนิยมเฉพาะเมื่อมีค่า เช่น 10.5 → "10.5", 10.00 → "10"
+    return Number.isInteger(v) ? v.toLocaleString() : v.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+  }
+
   function syncHUD() {
     const sm = document.getElementById('shop-money');
     const sp = document.getElementById('shop-point');
-    if (sm) sm.textContent = _money.toLocaleString();
-    if (sp) sp.textContent = _point.toLocaleString();
+    if (sm) sm.textContent = Math.floor(_money).toLocaleString();
+    if (sp) sp.textContent = _fmtPoint(_point);
 
     const hm = document.getElementById('hud-money');
     const hp = document.getElementById('hud-point');
-    if (hm) hm.textContent = _money.toLocaleString();
-    if (hp) hp.textContent = _point.toLocaleString();
+    if (hm) hm.textContent = Math.floor(_money).toLocaleString();
+    if (hp) hp.textContent = _fmtPoint(_point);
   }
 
   // ── API: ตัดเงิน ──────────────────────────────────────────
   function spend(currency, amount) {
-    // [FIX] validate input — ป้องกัน NaN, Infinity, ค่าติดลบ, non-number
-    const amt = Number(amount);
+    const amt = Math.round(Number(amount) * 100) / 100; // ปัดทศนิยม 2 ตำแหน่ง
     if (!isFinite(amt) || amt <= 0) return false;
-    const safeAmt = Math.floor(amt); // ใช้จำนวนเต็มเสมอ
 
     if (currency === 'money') {
-      if (_money < safeAmt) return false;
-      _money -= safeAmt;
+      if (_money < amt) return false;
+      _money = Math.round((_money - amt) * 100) / 100;
     } else {
-      if (_point < safeAmt) return false;
-      _point -= safeAmt;
+      if (_point < amt) return false;
+      _point = Math.round((_point - amt) * 100) / 100;
     }
     syncHUD();
     _save();
@@ -106,13 +109,11 @@ const Money = (() => {
 
   // ── API: เพิ่มเงิน ─────────────────────────────────────────
   function earn(currency, amount) {
-    // [FIX] validate input — ป้องกัน NaN, Infinity, ค่าติดลบ
-    const amt = Number(amount);
+    const amt = Math.round(Number(amount) * 100) / 100; // ปัดทศนิยม 2 ตำแหน่ง
     if (!isFinite(amt) || amt <= 0) return;
-    const safeAmt = Math.floor(amt);
 
-    if (currency === 'money') _money += safeAmt;
-    else                      _point += safeAmt;
+    if (currency === 'money') _money = Math.round((_money + amt) * 100) / 100;
+    else                      _point = Math.round((_point + amt) * 100) / 100;
     syncHUD();
     _save();
   }

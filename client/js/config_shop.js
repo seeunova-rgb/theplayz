@@ -8,18 +8,18 @@ var GAME_CONFIG = {
   // ── weapon: ASR ──
 
   // ── weapon: SNP ──
-  PRICE_SNP_PPAP:       1,   // money
+  PRICE_SNP_PPAP:       100,   // money
 
   // ── body armor ──
-  PRICE_BODY_PPAP:      1,   // money
+  PRICE_BODY_PPAP:      100,   // money
 
   // ── helmet ──
-  PRICE_HEAD_PPAP:      1,   // money
+  PRICE_HEAD_PPAP:      100,   // money
 
   // ── med ──
-  PRICE_BANDAGE:        1,   // money
+  PRICE_BANDAGE:        15,   // money
 
   // ── supply ──
-  PRICE_AMMO_BOX:       1,   // money
+  PRICE_AMMO_BOX:       15,   // money
 
 };

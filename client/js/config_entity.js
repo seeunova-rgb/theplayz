@@ -17,11 +17,11 @@ var ENTITY_CONFIG = {
     eyeColor:    '#ff4444',     // สีตาแดง
     label:       'ZOMBIE',
     labelColor:  '#88ff88',
-    reward:      { money: 10, point: 0 }, // ให้รางวัลเมื่อตาย
+    reward:      { moneyMin: 100, moneyMax: 500, point: 0 }, // ให้รางวัลเมื่อตาย (สุ่ม min-max)
 
     // spawn: จำนวน + zone สุ่มใน world_airport (ห่างจากกลาง)
     spawnCount:  30,            // จำนวน zombie ที่สุ่มสร้างตอน init
-    respawnTime: 15000,         // ms รอก่อน respawn ซอมบี้ที่ตายแล้ว
+    respawnTime: 10000,         // ms รอก่อน respawn ซอมบี้ที่ตายแล้ว
   },
 
   // ── Boss ──────────────────────────────────────────────────────────────────
@@ -38,7 +38,7 @@ var ENTITY_CONFIG = {
     outlineColor:'#ff6600',     // ขอบสีส้ม
     label:       '☠ BOSS',
     labelColor:  '#ff4400',
-    reward:      { money: 100, point: 0 },
+    reward:      { moneyMin: 500, moneyMax: 1000, point: 0 }, // สุ่ม min-max
 
     // boss เกิดที่กลาง world_airport เสมอ (x≈3000, y≈3000)
     spawnX:      3000,

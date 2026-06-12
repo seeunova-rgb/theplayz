@@ -177,7 +177,12 @@ const Entity = (() => {
       ent.hp = 0; ent.alive = false; ent._respawnTimer = 0;
       const rw = ENTITY_CONFIG[ent.type].reward;
       if (rw && typeof Money !== 'undefined') {
-        if (rw.money) Money.earn("money", rw.money);
+        if (rw.moneyMin != null && rw.moneyMax != null) {
+          const moneyAmt = Math.floor(rw.moneyMin + Math.random() * (rw.moneyMax - rw.moneyMin + 1));
+          Money.earn("money", moneyAmt);
+        } else if (rw.money) {
+          Money.earn("money", rw.money);
+        }
         if (rw.point) Money.earn("point", rw.point);
       }
       // ── Reputation reward จาก PvE ──────────────────────

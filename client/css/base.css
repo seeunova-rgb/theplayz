@@ -37,7 +37,7 @@ body {
   z-index: 100;
   font-family: 'Rajdhani', sans-serif;
   color: var(--text);
-  overflow-y: auto;
+  overflow: hidden;
   overscroll-behavior: none;
 }
 .screen::before {

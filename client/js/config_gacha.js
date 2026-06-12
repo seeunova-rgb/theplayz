@@ -7,37 +7,30 @@
 //   'blue'   — ปานกลาง    (แสดงเส้นสีฟ้า)
 //   'grey'   — ธรรมดา     (แสดงเส้นสีเทา)
 //
-// chance: น้ำหนักการออก (ยิ่งมาก ยิ่งออกบ่อย)
-// itemId + qty: ของที่ได้ (เพิ่มเข้า Stash)
+// chance:  น้ำหนักการออก (ยิ่งมาก ยิ่งออกบ่อย)
+// qty:     จำนวนคงที่  (ใช้เมื่อไม่ได้ระบุ minQty/maxQty)
+// minQty:  จำนวนต่ำสุดของการสุ่ม  \  ถ้าระบุทั้งคู่จะสุ่มใน range นี้
+// maxQty:  จำนวนสูงสุดของการสุ่ม  /  แทนการใช้ qty คงที่
 
 var GACHA_CONFIG = [
   {
-    id:       'red_devil',
-    name:     'GACHA RED DEVIL',
-    icon:     'assets/items/asr_reddevil.png',
+    id:       'gachav1',
+    name:     'GACHAv1',
+    icon:     'assets/items/snp_evil.png',
     currency: 'point',
-    price:    1,           // 10 💎 ต่อ 1 ลอง
-    color:    '#c62828',    // สีธีมกาชา
+    price:    0.1,
+    color:    '#c62828',
 
     // pool: รายการของทั้งหมดที่สุ่มได้
     pool: [
-      // ── GOLD (หายากสุด) ──────────────────────────────────
-      { itemId: 'asr_reddevil',  qty: 1,  rarity: 'gold',   chance: 3  },
-      { itemId: 'snp_reddevil',  qty: 1,  rarity: 'gold',   chance: 3  },
-      { itemId: 'body_reddevil', qty: 1,  rarity: 'gold',   chance: 4  },
-      { itemId: 'head_reddevil', qty: 1,  rarity: 'gold',   chance: 4  },
-
-      // ── PURPLE ───────────────────────────────────────────
-      { itemId: 'bandage',       qty: 10, rarity: 'purple', chance: 8  },
-      { itemId: 'ammo_box',      qty: 10, rarity: 'purple', chance: 8  },
-
-      // ── BLUE ─────────────────────────────────────────────
-      { itemId: 'bandage',       qty: 5,  rarity: 'blue',   chance: 20 },
-      { itemId: 'ammo_box',      qty: 5,  rarity: 'blue',   chance: 20 },
-
-      // ── GREY (ธรรมดา) ─────────────────────────────────────
-      { itemId: 'bandage',       qty: 1,  rarity: 'grey',   chance: 65 },
-      { itemId: 'ammo_box',      qty: 1,  rarity: 'grey',   chance: 65 },
+      { itemId: 'snp_evil',  qty: 1,  rarity: 'gold',   chance: 1  },
+      { itemId: 'asr_evil',  qty: 1,  rarity: 'purple',   chance: 3  },
+      { itemId: 'body_evil', qty: 1,  rarity: 'purple',   chance: 3  },
+      { itemId: 'head_evil', qty: 1,  rarity: 'purple',   chance: 3  },
+      { itemId: 'bandage',  minQty: 5, maxQty: 10, rarity: 'blue', chance: 15 },
+      { itemId: 'ammo_box', minQty: 5, maxQty: 10, rarity: 'blue', chance: 15 },
+      { itemId: 'bandage',  minQty: 1, maxQty: 5, rarity: 'grey', chance: 30 },
+      { itemId: 'ammo_box', minQty: 1, maxQty: 5, rarity: 'grey', chance: 30 },
     ],
   },
 ];

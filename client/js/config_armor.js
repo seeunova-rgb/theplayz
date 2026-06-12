@@ -6,24 +6,24 @@
 
 var ARMOR_CONFIG = {
   // ── PPAP ──
-  body_ppap:     { slot: 'body', armorPct: 78 },
-  head_ppap:     { slot: 'head', armorPct: 79 },
+  body_ppap:     { slot: 'body', armorPct: 86 },
+  head_ppap:     { slot: 'head', armorPct: 87 },
   // ── PIGGY ──
-  body_piggy:    { slot: 'body', armorPct: 80 },
-  head_piggy:    { slot: 'head', armorPct: 81 },
+  body_piggy:    { slot: 'body', armorPct: 88 },
+  head_piggy:    { slot: 'head', armorPct: 89 },
   // ── EVIL ──
-  body_evil:     { slot: 'body', armorPct: 82 },
-  head_evil:     { slot: 'head', armorPct: 83 },
+  body_evil:     { slot: 'body', armorPct: 90 },
+  head_evil:     { slot: 'head', armorPct: 91 },
   // ── LUCIFER ──
-  body_lucifer:  { slot: 'body', armorPct: 84 },
-  head_lucifer:  { slot: 'head', armorPct: 85 },
+  body_lucifer:  { slot: 'body', armorPct: 92 },
+  head_lucifer:  { slot: 'head', armorPct: 93 },
   // ── CHICAGO ──
-  body_chicago:  { slot: 'body', armorPct: 86 },
-  head_chicago:  { slot: 'head', armorPct: 87 },
+  body_chicago:  { slot: 'body', armorPct: 92 },
+  head_chicago:  { slot: 'head', armorPct: 93 },
   // ── RED DEVIL ──
-  body_reddevil: { slot: 'body', armorPct: 88 },
-  head_reddevil: { slot: 'head', armorPct: 89 },
+  body_reddevil: { slot: 'body', armorPct: 92 },
+  head_reddevil: { slot: 'head', armorPct: 93 },
   // ── BLUE ACT ──
-  body_blueact:  { slot: 'body', armorPct: 90 },
-  head_blueact:  { slot: 'head', armorPct: 91 },
+  body_blueact:  { slot: 'body', armorPct: 92 },
+  head_blueact:  { slot: 'head', armorPct: 93 },
 };

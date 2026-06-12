@@ -14,6 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Rajdhani:wght@500;600;700&display=swap">
   <script src="js/loader.js"></script>
+  <script src="js/fps.js"></script>
   <link rel="stylesheet" href="css/loading.css">
   <link rel="stylesheet" href="css/world_select.css">
 </head>
@@ -219,6 +220,14 @@
           <div class="settings-row">
             <span class="settings-label">เล่นเป็น</span>
             <span class="settings-value" id="display-name"></span>
+          </div>
+          <div class="settings-divider"></div>
+          <div class="settings-row">
+            <span class="settings-label">FPS Counter</span>
+            <label class="settings-switch">
+              <input type="checkbox" id="toggle-fps">
+              <span class="settings-switch-slider"></span>
+            </label>
           </div>
           <div class="settings-divider"></div>
           <button class="settings-btn-logout" id="btn-logout">LOGOUT</button>

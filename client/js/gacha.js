@@ -6,15 +6,27 @@ const Gacha = (() => {
 
   let _currentSpinCount = 1;
 
+  // ── สุ่มจำนวน qty จาก range (ถ้ามี minQty/maxQty) ──────────
+  function _resolveQty(entry) {
+    if (entry.minQty != null && entry.maxQty != null) {
+      return Math.floor(Math.random() * (entry.maxQty - entry.minQty + 1)) + entry.minQty;
+    }
+    return entry.qty ?? 1;
+  }
+
   // ── สุ่มของจาก pool ───────────────────────────────────────
   function _roll(pool) {
     const total = pool.reduce((s, r) => s + r.chance, 0);
     let rand = Math.random() * total;
     for (const r of pool) {
       rand -= r.chance;
-      if (rand <= 0) return r;
+      if (rand <= 0) {
+        // คืน copy พร้อม qty ที่สุ่มแล้ว
+        return { ...r, qty: _resolveQty(r) };
+      }
     }
-    return pool[pool.length - 1];
+    const last = pool[pool.length - 1];
+    return { ...last, qty: _resolveQty(last) };
   }
 
   // ── สร้าง spin strip ──────────────────────────────────────
@@ -35,6 +47,10 @@ const Gacha = (() => {
     snp_reddevil:  '<img src="assets/items/snp_reddevil.png"  style="width:36px;height:36px;object-fit:contain;">',
     body_reddevil: '<img src="assets/items/body_reddevil.png" style="width:36px;height:36px;object-fit:contain;">',
     head_reddevil: '<img src="assets/items/head_reddevil.png" style="width:36px;height:36px;object-fit:contain;">',
+    asr_evil:      '<img src="assets/items/asr_evil.png"      style="width:36px;height:36px;object-fit:contain;">',
+    snp_evil:      '<img src="assets/items/snp_evil.png"      style="width:36px;height:36px;object-fit:contain;">',
+    body_evil:     '<img src="assets/items/body_evil.png"     style="width:36px;height:36px;object-fit:contain;">',
+    head_evil:     '<img src="assets/items/head_evil.png"     style="width:36px;height:36px;object-fit:contain;">',
     bandage:       '<img src="assets/items/bandage.png"       style="width:30px;height:30px;object-fit:contain;">',
     ammo_box:      '<span style="font-size:26px;line-height:1;">📦</span>',
   };
@@ -46,7 +62,13 @@ const Gacha = (() => {
   }
 
   function _itemName(itemId) {
-    return { asr_reddevil:'ASR RED DEVIL', snp_reddevil:'SNP RED DEVIL', body_reddevil:'BODY RED DEVIL', head_reddevil:'HEAD RED DEVIL', bandage:'BANDAGE', ammo_box:'AMMO BOX' }[itemId] || itemId;
+    return {
+      asr_reddevil:'ASR RED DEVIL', snp_reddevil:'SNP RED DEVIL',
+      body_reddevil:'BODY RED DEVIL', head_reddevil:'HEAD RED DEVIL',
+      asr_evil:'ASR EVIL', snp_evil:'SNP EVIL',
+      body_evil:'BODY EVIL', head_evil:'HEAD EVIL',
+      bandage:'BANDAGE', ammo_box:'AMMO BOX',
+    }[itemId] || itemId;
   }
 
   // ── render panel ──────────────────────────────────────────
@@ -123,9 +145,12 @@ const Gacha = (() => {
         <div class="gacha-pool-preview">
           ${g.pool.map(r => {
             const rar = GACHA_RARITY[r.rarity];
+            const qtyLabel = (r.minQty != null && r.maxQty != null)
+              ? r.minQty + '–' + r.maxQty
+              : (r.qty > 1 ? '×' + r.qty : '');
             return `<div class="gacha-pool-item" style="border-color:${rar.color};box-shadow:0 0 5px ${rar.glow};">
               <div class="gacha-pool-icon">${_icon(r.itemId)}</div>
-              ${r.qty > 1 ? `<div class="gacha-pool-qty">×${r.qty}</div>` : ''}
+              ${qtyLabel ? `<div class="gacha-pool-qty">${qtyLabel}</div>` : ''}
             </div>`;
           }).join('')}
         </div>
@@ -276,11 +301,12 @@ const Gacha = (() => {
 
   // ── แสดง popup หลาย-spin ─────────────────────────────────
   function _showMultiPopup(results, loaderWrap, popup) {
-    // นับรวม: สรุปทีละ itemId+rarity
+    // นับรวม: group by itemId+rarity, สะสม totalQty และ count (รอบที่ออก)
     const summary = {};
     results.forEach(r => {
-      const key = r.itemId + '|' + r.rarity + '|' + r.qty;
-      if (!summary[key]) summary[key] = { ...r, count: 0 };
+      const key = r.itemId + '|' + r.rarity;
+      if (!summary[key]) summary[key] = { ...r, totalQty: 0, count: 0 };
+      summary[key].totalQty += r.qty;
       summary[key].count++;
     });
 
@@ -292,8 +318,8 @@ const Gacha = (() => {
       const rar = GACHA_RARITY[item.rarity];
       return `<div class="gacha-popup-item" style="border-color:${rar.color};box-shadow:0 0 8px ${rar.glow};">
         <div class="gacha-popup-icon">${_icon(item.itemId)}</div>
-        <div class="gacha-popup-name">${_itemName(item.itemId)}${item.qty>1?' ×'+item.qty:''}</div>
-        ${item.count>1 ? `<div class="gacha-popup-count" style="color:${rar.color};">×${item.count}</div>` : ''}
+        <div class="gacha-popup-name">${_itemName(item.itemId)}</div>
+        <div class="gacha-popup-count" style="color:${rar.color};">×${item.totalQty}</div>
       </div>`;
     }).join('');
 
