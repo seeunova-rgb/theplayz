@@ -826,6 +826,9 @@
 /* Panel */
 #dev-panel {
   width: min(360px, 95vw);
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
   background: rgba(8,10,14,0.98);
   border: 1px solid rgba(255,82,82,0.3);
   border-radius: 12px;
@@ -845,6 +848,7 @@
   padding: 10px 14px;
   background: rgba(255,82,82,0.08);
   border-bottom: 1px solid rgba(255,82,82,0.15);
+  flex-shrink: 0;
 }
 .dev-title {
   font-size: 13px;
@@ -883,6 +887,8 @@
 /* Body */
 .dev-body {
   padding: 14px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .dev-section { display: flex; flex-direction: column; gap: 8px; }
 .dev-label {
