@@ -511,7 +511,7 @@ const Backpack = (() => {
   // keyboard shortcut ใน game
   window.addEventListener('keydown', e => {
     if (document.getElementById('ingame-bp-overlay')) {
-      if (e.key.toLowerCase() === 'b') togglePanel();
+      if (e.key && e.key.toLowerCase() === 'b') togglePanel();
       if (e.key === 'Escape' && _panelOpen) closePanel();
     }
   });
