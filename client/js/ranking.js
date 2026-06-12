@@ -85,6 +85,18 @@ const Ranking = (() => {
     const panel = document.getElementById('panel-ranking');
     if (!panel) return;
 
+    // ถ้า Firebase ยังไม่พร้อม (auth module โหลดช้า) → แสดง loading แล้วรอ
+    if (!_fb || !_uid) {
+      panel.innerHTML = `<div class="ranking-wrap"><div class="ranking-loading">⏳ กำลังเชื่อมต่อ...</div></div>`;
+      let waited = 0;
+      const check = setInterval(() => {
+        waited += 200;
+        if (_fb && _uid) { clearInterval(check); render(); }
+        else if (waited > 8000) { clearInterval(check); panel.innerHTML = `<div class="ranking-wrap"><div class="ranking-empty">เชื่อมต่อไม่ได้ ลอง refresh</div></div>`; }
+      }, 200);
+      return;
+    }
+
     // header
     panel.innerHTML = `
       <div class="ranking-wrap">
