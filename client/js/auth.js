@@ -121,7 +121,7 @@ onAuthStateChanged(auth, async user => {
     Stash.init(user.uid, fb);       // โหลดคลังไอเทมจาก Firebase
     Reputation.init(user.uid, fb);  // โหลด Reputation จาก Firebase
     Ranking.init(user.uid, fb);     // init Ranking leaderboard
-    Premium.init(user.uid, { getDoc, doc, db: firestoreDb });  // โหลดสถานะ Premium
+    Premium.init(user.uid, { get, ref, db });  // โหลดสถานะ Premium จาก Realtime Database
     Dev.init(user.uid, { getDoc, doc, db: firestoreDb });       // โหลดสถานะ DEV
     // sync profile (ชื่อ, rep, money) ตอนเข้าล็อบบี้
     setTimeout(() => Ranking.syncProfile(), 2000);

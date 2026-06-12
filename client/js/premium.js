@@ -1,12 +1,12 @@
 // ===== PREMIUM.JS =====
-// จัดการสถานะ Premium ผ่าน Firestore
-// path: /users/{uid}/premium  →  { active: true, since: timestamp }
+// จัดการสถานะ Premium ผ่าน Realtime Database
+// path: /users/{uid}/profile/account  →  "general" หรือ "premium"
 //
 // API สาธารณะ:
-//   Premium.init(uid, firestoreRef)   — เรียกตอน login
-//   Premium.isActive()                — คืน true/false
-//   Premium.onReady(fn)               — เรียก fn เมื่อโหลดเสร็จ
-//   Premium.reset()                   — เมื่อ logout
+//   Premium.init(uid, rtdbHelpers)   — เรียกตอน login
+//   Premium.isActive()               — คืน true/false
+//   Premium.onReady(fn)              — เรียก fn เมื่อโหลดเสร็จ
+//   Premium.reset()                  — เมื่อ logout
 
 const Premium = (() => {
 
@@ -15,55 +15,34 @@ const Premium = (() => {
   let _ready    = false;
   const _onReadyCallbacks = [];
 
-  // ── ตรวจ premium จาก Firestore ───────────────────────────
-  async function _load(getDoc, docRef) {
+  // ── โหลดจาก Realtime Database ────────────────────────────
+  async function _load(get, ref, db) {
     try {
-      const snap = await getDoc(docRef);
-      if (snap.exists()) {
-        const data = snap.data();
-        _active = data.active === true;
-      } else {
-        _active = false;
-      }
+      const snap = await get(ref(db, `users/${_uid}/profile/account`));
+      _active = snap.exists() && snap.val() === 'premium';
     } catch (e) {
       console.warn('[Premium] load failed:', e);
       _active = false;
     }
     _ready = true;
     _onReadyCallbacks.forEach(fn => fn());
-    _updateUI();
   }
 
-  // ── อัปเดต UI ตาม premium status ─────────────────────────
-  function _updateUI() {
-    // ปุ่ม in-game shop — แสดงเฉพาะตอนอยู่ในเกม + เป็น premium
-    const inGameShopBtn = document.getElementById('btn-ingame-shop');
-    if (inGameShopBtn) {
-      // ปุ่มนี้จะถูกควบคุมโดย lobby.js ว่าแสดงตอนไหน
-      // แค่เก็บ flag ไว้ให้ lobby.js ใช้
-    }
-  }
-
-  // ── API: เช็คสถานะ ────────────────────────────────────────
   function isActive() { return _active; }
 
-  // ── API: รอ ready ─────────────────────────────────────────
   function onReady(fn) {
     if (_ready) fn();
     else _onReadyCallbacks.push(fn);
   }
 
-  // ── API: init (รับ Firestore helpers จาก auth.js) ─────────
-  function init(uid, firestoreHelpers) {
-    _uid   = uid;
-    _ready = false;
+  function init(uid, rtdbHelpers) {
+    _uid    = uid;
+    _ready  = false;
     _active = false;
-    const { getDoc, doc, db } = firestoreHelpers;
-    const ref = doc(db, 'users', uid, 'premium', 'status');
-    _load(getDoc, ref);
+    const { get, ref, db } = rtdbHelpers;
+    _load(get, ref, db);
   }
 
-  // ── reset เมื่อ logout ─────────────────────────────────────
   function reset() {
     _uid    = null;
     _active = false;
