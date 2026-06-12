@@ -36,6 +36,29 @@ const SHOP_ITEMS = {
       equip:      { type: 'weapon', img: 'assets/items/snp_ppap.png' },
       weaponId:   'snp_ppap',
     },
+    // ── PIGGY ──
+    {
+      id:         'snp_piggy',
+      name:       'SNP PIGGY',
+      icon:       '<img src="assets/items/snp_piggy.png" style="width:56px;height:auto;object-fit:contain;image-rendering:auto;">',
+      currency:   'money',
+      price:      () => 0,
+      consumable: true,
+      noStackBP:  true,
+      equip:      { type: 'weapon', img: 'assets/items/snp_piggy.png' },
+      weaponId:   'snp_piggy',
+    },
+    {
+      id:         'asr_piggy',
+      name:       'ASR PIGGY',
+      icon:       '<img src="assets/items/asr_piggy.png" style="width:56px;height:auto;object-fit:contain;image-rendering:auto;">',
+      currency:   'money',
+      price:      () => 0,
+      consumable: true,
+      noStackBP:  true,
+      equip:      { type: 'weapon', img: 'assets/items/asr_piggy.png' },
+      weaponId:   'asr_piggy',
+    },
   ],
   knife: [],
   armor: [
@@ -64,6 +87,19 @@ const SHOP_ITEMS = {
       armorId:    'body_ppap',
       armor:      78,
     },
+    // ── PIGGY ──
+    {
+      id:         'body_piggy',
+      name:       'BODY PIGGY',
+      icon:       '<img src="assets/items/body_piggy.png" style="width:56px;height:auto;object-fit:contain;image-rendering:auto;">',
+      currency:   'money',
+      price:      () => 0,
+      consumable: true,
+      noStackBP:  true,
+      equip:      { type: 'armor', img: 'assets/items/body_piggy.png' },
+      armorId:    'body_piggy',
+      armor:      75,
+    },
   ],
   helmet: [
     // ── EVIL ──
@@ -90,6 +126,19 @@ const SHOP_ITEMS = {
       equip:      { type: 'helmet', img: 'assets/items/head_ppap.png' },
       armorId:    'head_ppap',
       armor:      79,
+    },
+    // ── PIGGY ──
+    {
+      id:         'head_piggy',
+      name:       'HEAD PIGGY',
+      icon:       '<img src="assets/items/head_piggy.png" style="width:56px;height:auto;object-fit:contain;image-rendering:auto;">',
+      currency:   'money',
+      price:      () => 0,
+      consumable: true,
+      noStackBP:  true,
+      equip:      { type: 'helmet', img: 'assets/items/head_piggy.png' },
+      armorId:    'head_piggy',
+      armor:      76,
     },
   ],
   med: [

@@ -19,26 +19,28 @@ var GACHA_CONFIG = [
     icon:     'assets/items/snp_piggy.png',
     currency: 'money',
     price:    1000,
-    color:    '#ff33ff',
+    color:    '#e91e8c',
 
+    // pool: รายการของทั้งหมดที่สุ่มได้ (chance = % โดยตรง รวม = 100)
     pool: [
-      { itemId: 'snp_piggy', qty: 1,  rarity: 'gold', chance: 4 },
-      { itemId: 'asr_piggy', qty: 1,  rarity: 'purple', chance: 7 },
-      { itemId: 'body_piggy', qty: 1,  rarity: 'purple', chance: 7 },
-      { itemId: 'head_piggy', qty: 1,  rarity: 'purple', chance: 7 },
-      { itemId: 'snp_ppap', qty: 1,  rarity: 'purple', chance: 25 },
-      { itemId: 'body_ppap', qty: 1,  rarity: 'purple', chance: 25 },
-      { itemId: 'head_ppap', qty: 1,  rarity: 'purple', chance: 25 },
+      { itemId: 'snp_piggy',  qty: 1, rarity: 'purple',   chance: 4  },
+      { itemId: 'asr_piggy',  qty: 1, rarity: 'blue', chance: 7  },
+      { itemId: 'body_piggy', qty: 1, rarity: 'blue', chance: 7  },
+      { itemId: 'head_piggy', qty: 1, rarity: 'blue', chance: 7  },
+      { itemId: 'snp_ppap',   qty: 1, rarity: 'grey',   chance: 25 },
+      { itemId: 'body_ppap',  qty: 1, rarity: 'grey',   chance: 25 },
+      { itemId: 'head_ppap',  qty: 1, rarity: 'grey',   chance: 25 },
     ],
   },
   {
-    id:       'gacha_v1',
-    name:     'GACHA V1',
+    id:       'gachav1',
+    name:     'GACHAv1',
     icon:     'assets/items/snp_evil.png',
     currency: 'point',
     price:    0.1,
     color:    '#c62828',
 
+    // pool: รายการของทั้งหมดที่สุ่มได้
     pool: [
       { itemId: 'snp_evil',  qty: 1,  rarity: 'gold',   chance: 1  },
       { itemId: 'asr_evil',  qty: 1,  rarity: 'purple',   chance: 3  },
@@ -52,6 +54,7 @@ var GACHA_CONFIG = [
   },
 ];
 
+// ── สีและชื่อ rarity ─────────────────────────────────────────
 var GACHA_RARITY = {
   gold:   { label: 'GOLD',   color: '#ffd700', glow: 'rgba(255,215,0,0.6)'   },
   purple: { label: 'PURPLE', color: '#ab47bc', glow: 'rgba(171,71,188,0.6)'  },
