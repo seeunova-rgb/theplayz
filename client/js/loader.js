@@ -36,11 +36,28 @@
     }
   });
 
-  // ป้องกัน pinch-zoom และ scroll
+  // ป้องกัน pinch-zoom และ scroll นอก scrollable container
+  function isInsideScrollable(el) {
+    while (el && el !== document.body) {
+      var style = window.getComputedStyle(el);
+      var overflowY = style.overflowY;
+      if ((overflowY === 'auto' || overflowY === 'scroll') && el.scrollHeight > el.clientHeight) {
+        return true;
+      }
+      el = el.parentElement;
+    }
+    return false;
+  }
+
   document.addEventListener('touchstart', function (e) { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
-  document.addEventListener('touchmove',  function (e) { e.preventDefault(); }, { passive: false });
-  document.addEventListener('wheel',      function (e) { e.preventDefault(); }, { passive: false });
-  window.addEventListener(  'scroll',     function ()  { window.scrollTo(0, 0); }, { passive: true });
+  document.addEventListener('touchmove',  function (e) {
+    if (e.touches.length > 1) { e.preventDefault(); return; }
+    if (!isInsideScrollable(e.target)) e.preventDefault();
+  }, { passive: false });
+  document.addEventListener('wheel', function (e) {
+    if (!isInsideScrollable(e.target)) e.preventDefault();
+  }, { passive: false });
+  window.addEventListener('scroll', function () { window.scrollTo(0, 0); }, { passive: true });
 
   // ── โหลด CSS ─────────────────────────────────────────────────
   var _v = (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.port === '1106')
