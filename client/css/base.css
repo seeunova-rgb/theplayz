@@ -3,6 +3,10 @@ html, body {
   height: 100%;
   height: 100dvh;
   overflow: hidden;
+  touch-action: none;
+  overscroll-behavior: none;
+  position: fixed;
+  width: 100%;
 }
 :root {
   --green:  #4caf50;
@@ -26,6 +30,8 @@ html, body {
   font-family: 'Rajdhani', sans-serif;
   color: var(--text);
   overflow-y: auto;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: auto;
 }
 .screen::before {
   content: '';
