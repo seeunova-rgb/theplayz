@@ -95,27 +95,67 @@
 /* แถว stats */
 #ammo-stats {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 4px;
+  flex-direction: column;
+  gap: 2px;
   width: 100%;
-  justify-content: center;
 }
-.ammo-stat-sep {
-  color: rgba(255,255,255,0.3);
-  font-size: 8px;
-}
-.ammo-stat-label {
-  font-family: "Rajdhani", sans-serif;
-  font-size: 7px;
-  font-weight: 700;
-  color: rgba(255,255,255,0.45);
-  letter-spacing: 0.5px;
-}
-.ammo-stat-val {
+
+#stat-gun-name {
   font-family: "Black Ops One", sans-serif;
   font-size: 7px;
   color: rgba(180,255,180,0.9);
+  text-align: center;
+  letter-spacing: 0.5px;
+  margin-bottom: 1px;
+  display: block;
+}
+
+.stat-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+}
+
+.stat-row {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.stat-label {
+  font-family: "Rajdhani", sans-serif;
+  font-size: 6px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.5px;
+  width: 18px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.stat-bar-track {
+  flex: 1;
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.stat-bar-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 2px;
+  transition: width 0.25s ease;
+}
+
+.stat-num {
+  font-family: "Black Ops One", sans-serif;
+  font-size: 6px;
+  color: rgba(200,255,200,0.8);
+  width: 22px;
+  text-align: left;
+  flex-shrink: 0;
 }
 
 

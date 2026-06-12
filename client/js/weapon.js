@@ -18,6 +18,29 @@ const Weapon = (() => {
     return (id && WEAPON_CONFIG[id]) ? WEAPON_CONFIG[id] : null;
   }
 
+  // ── stat bar references (max values สำหรับคำนวณ %) ────────
+  // ดึงจาก WEAPON_CONFIG ทุกปืนเพื่อ normalize bar อัตโนมัติ
+  function _getStatRanges() {
+    const all = Object.values(WEAPON_CONFIG);
+    return {
+      maxDmg:    Math.max(...all.map(g => g.damage)),
+      minFire:   Math.min(...all.map(g => g.fireRate)),  // เร็วสุด = bar เต็ม
+      maxFire:   Math.max(...all.map(g => g.fireRate)),
+      maxRange:  Math.max(...all.map(g => g.range)),
+      maxReload: Math.max(...all.map(g => g.reloadTime)), // นานสุด = bar ว่าง
+      minReload: Math.min(...all.map(g => g.reloadTime)),
+    };
+  }
+
+  function _setBar(id, pct) {
+    const el = document.getElementById(id);
+    if (el) el.style.width = Math.round(Math.max(5, Math.min(100, pct))) + '%';
+  }
+  function _setNum(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  }
+
   function updateAmmoUI() {
     const hud = document.getElementById('ammo-hud');
     const cur = document.getElementById('ammo-cur');
@@ -51,17 +74,31 @@ const Weapon = (() => {
     const boxes = typeof Backpack !== 'undefined' ? Backpack.countItems('ammo_box') : 0;
     max.textContent = boxes;
 
-    // อัปเดต ชื่อปืน + ดาเมจ
+    // อัปเดต ชื่อปืน + stat bars จาก config
     const gunId = _getActiveGunId();
     const GUN   = _getActiveGunConfig();
-    const nameEl   = document.getElementById('stat-gun-name');
-    const damageEl = document.getElementById('stat-damage');
+    const nameEl = document.getElementById('stat-gun-name');
     if (nameEl && GUN && gunId) {
-      // แปลง id → ชื่อแสดงผล เช่น asr_reddevil → ASR RED DEVIL
       nameEl.textContent = gunId.replace(/_/g, ' ').toUpperCase();
     }
-    if (damageEl && GUN) {
-      damageEl.textContent = GUN.damage;
+    if (GUN) {
+      const r = _getStatRanges();
+      // Damage bar
+      const dmgPct = (GUN.damage / r.maxDmg) * 100;
+      _setBar('bar-damage', dmgPct);
+      _setNum('stat-damage', GUN.damage);
+      // Fire Rate bar (fireRate ต่ำ = เร็ว = bar เต็ม)
+      const firePct = ((r.maxFire - GUN.fireRate) / (r.maxFire - r.minFire)) * 100;
+      _setBar('bar-firerate', firePct);
+      _setNum('stat-firerate', (1000 / GUN.fireRate).toFixed(1) + '/s');
+      // Range bar
+      const rngPct = (GUN.range / r.maxRange) * 100;
+      _setBar('bar-range', rngPct);
+      _setNum('stat-range', GUN.range);
+      // Reload bar (reloadTime ต่ำ = เร็ว = bar เต็ม)
+      const rldPct = ((r.maxReload - GUN.reloadTime) / (r.maxReload - r.minReload)) * 100;
+      _setBar('bar-reload', rldPct);
+      _setNum('stat-reload', (GUN.reloadTime / 1000).toFixed(1) + 's');
     }
 
     // ── อัปเดต Gun Icon HUD ─────────────────────────────────

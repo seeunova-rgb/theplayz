@@ -67,11 +67,18 @@ function drawGunOnPlayer(ctx, player) {
   if (flipped) ctx.scale(1, -1);
 
   ctx.save();
-  ctx.scale(-1, 1);
-  if (_GUN_FLIP[gunId]) ctx.scale(-1, 1); // sprite barrel อยู่ขวา → flip คืน
-  const offsetX = r * 0.1;
-  const offsetY = -r * -0.1;
-  ctx.drawImage(_gunImg, -offsetX - gunW, offsetY - gunH / 2, gunW, gunH);
+  ctx.scale(-1, 1); // flip แนวนอน ให้ barrel ชี้ +x (ทิศ aim)
+  const offsetY = r * 0.1;
+  let drawX;
+  if (_GUN_FLIP[gunId]) {
+    // barrel อยู่ขวารูป → ใน flipped space ต้องเลื่อน drawX
+    // เพื่อให้ barrel tip (x=gunW ของรูป) มาอยู่ที่ +x ของ player
+    drawX = -(gunW - r * 0.5);
+  } else {
+    // barrel อยู่ซ้ายรูป (ปกติ) → drawX เดิม
+    drawX = -r * 0.1 - gunW;
+  }
+  ctx.drawImage(_gunImg, drawX, offsetY - gunH / 2, gunW, gunH);
   ctx.restore();
 
   ctx.restore();

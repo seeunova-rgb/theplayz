@@ -350,9 +350,28 @@
     <div id="ammo-divider"></div>
     <div id="ammo-stats">
       <span class="ammo-stat-val" id="stat-gun-name">-</span>
-      <span class="ammo-stat-sep">|</span>
-      <span class="ammo-stat-label">ดาเมจ:</span>
-      <span class="ammo-stat-val" id="stat-damage">-</span>
+      <div class="stat-bars">
+        <div class="stat-row">
+          <span class="stat-label">DMG</span>
+          <div class="stat-bar-track"><div class="stat-bar-fill" id="bar-damage" style="background:#ff4444;"></div></div>
+          <span class="stat-num" id="stat-damage">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">SPD</span>
+          <div class="stat-bar-track"><div class="stat-bar-fill" id="bar-firerate" style="background:#44ccff;"></div></div>
+          <span class="stat-num" id="stat-firerate">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">RNG</span>
+          <div class="stat-bar-track"><div class="stat-bar-fill" id="bar-range" style="background:#44ff88;"></div></div>
+          <span class="stat-num" id="stat-range">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">RLD</span>
+          <div class="stat-bar-track"><div class="stat-bar-fill" id="bar-reload" style="background:#ffaa00;"></div></div>
+          <span class="stat-num" id="stat-reload">-</span>
+        </div>
+      </div>
     </div>
   </div>
 

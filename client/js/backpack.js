@@ -490,6 +490,7 @@ const Backpack = (() => {
   function openPanel() {
     _panelOpen = true;
     renderPanel();
+    if (typeof Sounds !== 'undefined') Sounds.play('backpack', 0.7);
     const overlay = document.getElementById('ingame-bp-overlay');
     if (!overlay) return;
     overlay.style.display = 'flex';
@@ -500,6 +501,7 @@ const Backpack = (() => {
 
   function closePanel() {
     _panelOpen = false;
+    if (typeof Sounds !== 'undefined') Sounds.play('backpack', 0.7);
     const overlay = document.getElementById('ingame-bp-overlay');
     if (!overlay) return;
     overlay.classList.remove('visible');
