@@ -1,7 +1,7 @@
 // ===== SERVICE WORKER — THEPLAYZ =====
 // Cache Version: เปลี่ยนตัวเลขนี้ทุกครั้งที่ deploy โค้ดใหม่
 // เพื่อให้ผู้เล่นได้รับไฟล์อัปเดตแทนไฟล์เก่าจาก cache
-const CACHE_NAME = 'theplayz-v1.1.95';
+const CACHE_NAME = 'theplayz-v1.1.97';
 
 // ── รายการไฟล์ static ที่ cache ตั้งแต่ติดตั้ง ──────────────────
 // (ไฟล์เหล่านี้โหลดเร็วขึ้นมากเพราะมาจาก cache แทน network)
@@ -81,6 +81,8 @@ const PRECACHE_URLS = [
   '/assets/sounds/shg_1.ogg',
   '/assets/sounds/snp_1.ogg',
   '/assets/sounds/snp_2.ogg',
+  '/assets/sounds/gacha_1.ogg',
+  '/assets/sounds/gacha_2.ogg',
   '/assets/sounds/walk.ogg',
 
   // รูปตัวละคร
