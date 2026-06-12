@@ -154,8 +154,10 @@ const Dev = (() => {
   // ── Tab: Cheat (เฉพาะตัวเอง) ──────────────────────────────
   function _htmlCheat() {
     const p = window._player;
+    // [FIX] CONFIG อาจยังไม่ถูกโหลดตอนอยู่ Lobby — ใช้ fallback แทนการอ้างตรง
+    const _defaultSpeed = (typeof CONFIG !== 'undefined' && CONFIG.PLAYER_SPEED) ? CONFIG.PLAYER_SPEED : 2;
     const hpVal    = p ? Math.round(p.hp ?? 100)        : 100;
-    const speedVal = p ? (p.baseSpeed ?? CONFIG.PLAYER_SPEED) : CONFIG.PLAYER_SPEED;
+    const speedVal = p ? (p.baseSpeed ?? _defaultSpeed) : _defaultSpeed;
     const regenVal = p ? (p.regenPerSec ?? 0)           : 0;
 
     return `
