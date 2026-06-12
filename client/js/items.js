@@ -1,6 +1,29 @@
 // ===== items.js =====
 const SHOP_ITEMS = {
   weapon: [
+    // ── EVIL ──
+    {
+      id:         'snp_evil',
+      name:       'SNP EVIL',
+      icon:       '<img src="assets/items/snp_evil.png" style="width:56px;height:auto;object-fit:contain;image-rendering:auto;">',
+      currency:   'money',
+      price:      () => 0,
+      consumable: true,
+      noStackBP:  true,
+      equip:      { type: 'weapon', img: 'assets/items/snp_evil.png' },
+      weaponId:   'snp_evil',
+    },
+    {
+      id:         'asr_evil',
+      name:       'ASR EVIL',
+      icon:       '<img src="assets/items/asr_evil.png" style="width:56px;height:auto;object-fit:contain;image-rendering:auto;">',
+      currency:   'money',
+      price:      () => 0,
+      consumable: true,
+      noStackBP:  true,
+      equip:      { type: 'weapon', img: 'assets/items/asr_evil.png' },
+      weaponId:   'asr_evil',
+    },
     // ── PPAP ──
     {
       id:         'snp_ppap',
@@ -16,6 +39,18 @@ const SHOP_ITEMS = {
   ],
   knife: [],
   armor: [
+    // ── EVIL ──
+    {
+      id:         'body_evil',
+      name:       'BODY EVIL',
+      icon:       '<img src="assets/items/body_evil.png" style="width:56px;height:auto;object-fit:contain;image-rendering:auto;">',
+      currency:   'money',
+      price:      () => 0,
+      consumable: true,
+      noStackBP:  true,
+      equip:      { type: 'armor', img: 'assets/items/body_evil.png' },
+      armorId:    'body_evil',
+    },
     // ── PPAP ──
     {
       id:         'body_ppap',
@@ -31,6 +66,18 @@ const SHOP_ITEMS = {
     },
   ],
   helmet: [
+    // ── EVIL ──
+    {
+      id:         'head_evil',
+      name:       'HEAD EVIL',
+      icon:       '<img src="assets/items/head_evil.png" style="width:56px;height:auto;object-fit:contain;image-rendering:auto;">',
+      currency:   'money',
+      price:      () => 0,
+      consumable: true,
+      noStackBP:  true,
+      equip:      { type: 'helmet', img: 'assets/items/head_evil.png' },
+      armorId:    'head_evil',
+    },
     // ── PPAP ──
     {
       id:         'head_ppap',
