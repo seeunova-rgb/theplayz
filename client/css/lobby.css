@@ -690,10 +690,10 @@
 /* ===== GACHA ===== */
 .gacha-layout {
   display: flex; flex-direction: column;
-  width: 100%; flex: 1;
+  width: 100%;
   gap: 8px; position: relative;
-  min-height: 0;
 }
+
 
 .gacha-topbar {
   display: flex; align-items: center;
@@ -720,7 +720,7 @@
 /* ── Cards ── */
 .gacha-cards {
   display: flex; flex-direction: column;
-  gap: 8px; overflow-y: auto; flex: 1;
+  gap: 8px;
   padding-bottom: 8px;
 }
 

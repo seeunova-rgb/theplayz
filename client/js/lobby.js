@@ -28,7 +28,7 @@ window.showScreenWithLoading = async function(name, from, to, duration) {
 
 // ── nav panels ────────────────────────────────────────────
 
-const panels = { play: 'panel-play', shop: 'panel-shop', inventory: 'panel-inventory', character: 'panel-character', gacha: 'panel-gacha', settings: 'panel-settings' };
+const panels = { play: 'panel-play', shop: 'panel-shop', inventory: 'panel-inventory', character: 'panel-character', gacha: 'panel-gacha', ranking: 'panel-ranking', settings: 'panel-settings' };
 const navBtns = {
   play:      document.getElementById('nav-play'),
   shop:      document.getElementById('nav-shop'),
