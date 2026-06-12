@@ -7,9 +7,12 @@
   // ใช้ screen.width/height แทน innerWidth/innerHeight
   // เพราะ screen.* ไม่เปลี่ยนตาม address bar หรือ keyboard เลย
   function getSize() {
-    // landscape → W > H เสมอ
-    var sw = screen.width  || window.innerWidth;
-    var sh = screen.height || window.innerHeight;
+    // ใช้ขนาด viewport จริงที่มองเห็นได้ (ไม่รวม address bar/system bar ที่บัง)
+    // screen.* ใช้เป็น fallback เท่านั้น เพราะอาจรายงานขนาดเกินพื้นที่ที่ render ได้จริง
+    var iw = window.innerWidth  || 0;
+    var ih = window.innerHeight || 0;
+    var sw = iw || screen.width  || 0;
+    var sh = ih || screen.height || 0;
     // ถ้า portrait ให้สลับเพราะเกมบังคับ landscape
     return (sw > sh) ? { W: sw, H: sh } : { W: sh, H: sw };
   }
