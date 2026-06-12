@@ -886,13 +886,11 @@ function drawRemotePlayer(ctx, rp) {
     name:      rp.name      || '?',
   };
 
-  // วาด trail สั้นๆ (optional — ลบออกได้ถ้าไม่ต้องการ)
-  ctx.save();
-
   // วาด character body ด้วย model จริง (model_character.js)
   if (typeof drawCharacterBody === 'function') {
     drawCharacterBody(ctx, fakePlayer);
   } else {
+    ctx.save();
     // fallback: วงกลมธรรมดา
     ctx.translate(rp.x, rp.y);
     ctx.fillStyle = fakePlayer.color;
