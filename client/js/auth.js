@@ -107,6 +107,8 @@ document.getElementById('btn-logout').addEventListener('click', () => signOut(au
 onAuthStateChanged(auth, async user => {
   if (user) {
     document.getElementById('display-name').textContent = user.displayName || user.email;
+    // [FIX MULTIPLAYER] เก็บชื่อไว้ให้ network.js ส่งไปด้วยทุก frame
+    window._playerName = user.displayName || user.email || 'Player';
     const fb = { ref, get, set, onValue, off, db };
 
     // ── Loading: LOGIN → LOBBY ───────────────────────────

@@ -66,7 +66,17 @@ const Network = (() => {
     const _spawnPos = (typeof findSafeSpawn !== 'undefined')
       ? findSafeSpawn(worldId)
       : { x: 3000, y: 3000 };
-    socket.emit('join_world', { worldId, spawnX: _spawnPos.x, spawnY: _spawnPos.y });
+    const _joinName   = window._playerName   || 'Player';
+    const _joinColor  = window._playerColor  || '#2563EB';
+    const _joinCharId = window._playerCharId || 'default';
+    socket.emit('join_world', {
+      worldId,
+      spawnX:  _spawnPos.x,
+      spawnY:  _spawnPos.y,
+      name:    _joinName,
+      color:   _joinColor,
+      charId:  _joinCharId,
+    });
 
 
     socket.on('player_joined', (data) => {
@@ -155,10 +165,15 @@ const Network = (() => {
       x:             player.x,
       y:             player.y,
       angle:         player.angle,
-      reducePct:     player.reducePct ?? 0,           // fallback รวม
+      walkTimer:     player.walkTimer ?? 0,           // ใช้วาด leg animation ฝั่ง remote
+      isMoving:      player.isMoving  ?? false,
+      charId:        player.charId    || 'default',   // ส่ง charId ทุก frame เพื่อ sync
+      color:         player.color     || '#2563EB',
+      name:          player.name      || (window._playerName || 'Player'),
+      reducePct:     player.reducePct ?? 0,
       bodyReducePct: _armor ? _armor.getBodyReducePct() : 0,
       headReducePct: _armor ? _armor.getHeadReducePct() : 0,
-      reputation:    _rep,                            // sync rep ให้ server/คนอื่นรู้
+      reputation:    _rep,
       // [FIX #1] ไม่ส่ง hp/alive — server เป็น source of truth
     });
   }

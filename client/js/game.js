@@ -321,11 +321,18 @@ function initGame() {
   const _charReducePct  = passive ? passive.reducePct || 0 : 0;
   const _armorReducePct = (typeof Armor !== 'undefined') ? Armor.getCombinedReducePct() : 0;
   player.reducePct = Math.max(_charReducePct, _armorReducePct);
-  player.regenPerSec = 1 * (1 + (passive ? passive.regenPct || 0 : 0) / 100);
+  // [FIX] regenPct = 0 หมายถึงไม่มี regen เลย, > 0 = regen ต่อวินาที
+  // ไม่ใช้ base regen 1 อีกต่อไป เพื่อให้ Default (regenPct=0) ไม่ได้ regen
+  const _regenPct = passive ? (passive.regenPct || 0) : 0;
+  player.regenPerSec = _regenPct > 0 ? _regenPct : 0;
   player.color       = color;
   player.charId      = charId;
   player.alive       = true;
   _regenTimer        = 0;
+
+  // [FIX MULTIPLAYER] เก็บข้อมูลตัวละครไว้ใน window ให้ network.js ส่งไปด้วยทุก frame
+  window._playerColor  = color;
+  window._playerCharId = charId;
 
   if (typeof Backpack !== 'undefined') Backpack.renderPanel();
   if (typeof Weapon   !== 'undefined') Weapon.initAmmo();
@@ -831,19 +838,74 @@ function _updateRepHud() {
 // ── วาดผู้เล่นคนอื่น ─────────────────────────────────────────
 function drawRemotePlayer(ctx, rp) {
   const r = CONFIG.PLAYER_R;
+
+  // [FIX MULTIPLAYER] normalize rp ให้มีทุก field ที่ drawCharacterBody/drawGunOnPlayer ต้องการ
+  // โดยไม่แก้ object ต้นฉบับ (เพราะ network อาจ update ตลอดเวลา)
+  const fakePlayer = {
+    x:         rp.x,
+    y:         rp.y,
+    r:         r,
+    angle:     rp.angle     ?? 0,
+    color:     rp.color     || '#888888',
+    charId:    rp.charId    || 'default',
+    walkTimer: rp.walkTimer ?? 0,
+    isMoving:  rp.isMoving  ?? false,
+    trail:     [],           // ไม่วาด trail ของคนอื่น
+    hp:        rp.hp        ?? 100,
+    maxHp:     100,
+    alive:     true,
+    name:      rp.name      || '?',
+  };
+
+  // วาด trail สั้นๆ (optional — ลบออกได้ถ้าไม่ต้องการ)
+  ctx.save();
+
+  // วาด character body ด้วย model จริง (model_character.js)
+  if (typeof drawCharacterBody === 'function') {
+    drawCharacterBody(ctx, fakePlayer);
+  } else {
+    // fallback: วงกลมธรรมดา
+    ctx.translate(rp.x, rp.y);
+    ctx.fillStyle = fakePlayer.color;
+    ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+
+  // วาดปืน (model_weapon.js)
+  if (typeof drawGunOnPlayer === 'function') {
+    drawGunOnPlayer(ctx, fakePlayer);
+  }
+
+  // วาด nametag + HP bar เหนือหัว
   ctx.save();
   ctx.translate(rp.x, rp.y);
-  ctx.fillStyle = rp.color || '#888';
-  ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#fff';
-  ctx.font = `bold ${r*0.75}px Rajdhani`;
-  ctx.textAlign = 'center';
-  ctx.fillText(rp.name || '?', 0, -r - 6);
-  const barW = r*2.5, barH = 5, barX = -barW/2, barY = -r - 20;
+
+  const s    = r / 22;
+  const bh   = 46 * s;
+  const topY = -bh / 2;
+
+  // nametag
+  ctx.font         = `bold ${Math.max(10, r * 0.6)}px Rajdhani, sans-serif`;
+  ctx.textAlign    = 'center';
+  ctx.textBaseline = 'bottom';
+  ctx.strokeStyle  = 'rgba(0,0,0,0.7)';
+  ctx.lineWidth    = 3;
+  ctx.strokeText(fakePlayer.name, 0, topY - 14);
+  ctx.fillStyle    = '#ffffff';
+  ctx.fillText(fakePlayer.name, 0, topY - 14);
+
+  // HP bar
+  const barW  = r * 2.5;
+  const barH  = 5;
+  const barX  = -barW / 2;
+  const barY  = topY - 12;
   const hpPct = Math.max(0, (rp.hp ?? 100) / 100);
+  const hpCol = hpPct > 0.5 ? '#4caf50' : hpPct > 0.25 ? '#ff9800' : '#f44336';
   ctx.fillStyle = '#333'; ctx.fillRect(barX, barY, barW, barH);
-  ctx.fillStyle = hpPct > 0.5 ? '#4caf50' : hpPct > 0.25 ? '#ff9800' : '#f44336';
-  ctx.fillRect(barX, barY, barW * hpPct, barH);
+  ctx.fillStyle = hpCol;  ctx.fillRect(barX, barY, barW * hpPct, barH);
+  ctx.strokeStyle = '#000'; ctx.lineWidth = 1;
+  ctx.strokeRect(barX, barY, barW, barH);
+
   ctx.restore();
 }
 
