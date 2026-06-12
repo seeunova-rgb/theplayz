@@ -33,8 +33,8 @@ var GACHA_CONFIG = [
     ],
   },
   {
-    id:       'gachav1',
-    name:     'GACHAv1',
+    id:       'gacha_v1',
+    name:     'GACHA V1',
     icon:     'assets/items/snp_evil.png',
     currency: 'point',
     price:    0.1,

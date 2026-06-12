@@ -771,7 +771,7 @@
 }
 
 .gacha-spin-count-row {
-  display: flex; flex-wrap: wrap; gap: 3px; max-width: 200px;
+  display: flex; flex-wrap: nowrap; gap: 3px;
 }
 
 .gacha-count-btn {
@@ -779,10 +779,11 @@
   border: 1.5px solid rgba(255,255,255,0.18);
   color: rgba(255,255,255,0.6);
   font-family: 'Black Ops One', sans-serif;
-  font-size: 9px; padding: 3px 7px;
+  font-size: 8px; padding: 3px 5px;
   border-radius: 6px; cursor: pointer;
   transition: all 0.12s;
   -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
 }
 .gacha-count-btn.active {
   background: rgba(255,215,0,0.15);
@@ -1031,3 +1032,120 @@
   font-size: 8px;
   background: rgba(0,0,0,0.7); padding: 0 3px; border-radius: 3px;
 }
+
+
+/* ===== RANKING PANEL ===== */
+.ranking-wrap {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.ranking-title {
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 18px;
+  color: #ffd700;
+  letter-spacing: 2px;
+}
+
+.ranking-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.rank-tab-btn {
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.6);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.12s;
+  -webkit-tap-highlight-color: transparent;
+}
+.rank-tab-btn.active {
+  background: rgba(255,215,0,0.15);
+  border-color: rgba(255,215,0,0.6);
+  color: #ffd700;
+  box-shadow: 0 0 6px rgba(255,215,0,0.3);
+}
+
+.ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ranking-loading,
+.ranking-empty {
+  text-align: center;
+  color: rgba(255,255,255,0.4);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  padding: 20px 0;
+}
+
+.rank-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 7px 12px;
+  transition: background 0.1s;
+}
+.rank-row-me {
+  background: rgba(255,215,0,0.08);
+  border-color: rgba(255,215,0,0.35);
+}
+
+.rank-medal {
+  font-size: 15px;
+  width: 28px;
+  text-align: center;
+  flex-shrink: 0;
+  font-family: 'Black Ops One', sans-serif;
+  color: rgba(255,255,255,0.5);
+  font-size: 11px;
+}
+
+.rank-name {
+  flex: 1;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rank-value {
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 12px;
+  color: #80e080;
+  flex-shrink: 0;
+}
+
+.ranking-refresh-btn {
+  align-self: flex-end;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.6);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.ranking-refresh-btn:active { transform: scale(0.93); }

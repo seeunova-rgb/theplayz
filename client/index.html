@@ -82,6 +82,7 @@
       <button class="nav-btn" id="nav-inventory">INVENTORY</button>
       <button class="nav-btn" id="nav-gacha">GACHA</button>
       <button class="nav-btn" id="nav-shop">SHOP</button>
+      <button class="nav-btn" id="nav-ranking">🏆 RANK</button>
       <button class="nav-btn play-nav" id="nav-play">PLAY</button>
       <button class="nav-btn nav-settings" id="nav-settings">⚙ SETTINGS</button>
     </nav>
@@ -210,6 +211,11 @@
         </div>
       </div>
 
+    </div>
+
+    <!-- PANEL: RANKING -->
+    <div class="lobby-panel" id="panel-ranking">
+      <!-- filled by ranking.js -->
     </div>
 
     <!-- PANEL: SETTINGS -->
@@ -429,6 +435,7 @@
   <script src="js/config_world.js"></script>
   <script src="js/world_select.js"></script>
   <script src="js/gacha.js"></script>
+  <script src="js/ranking.js"></script>
   <script src="js/lobby.js"></script>
 
   <!-- Auth — ES module, must come last (uses Shop, Inventory, showScreen) -->

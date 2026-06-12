@@ -286,6 +286,7 @@ window._onPlayerSelfDeath = function(killerName) {
   player.alive = false;
   player.hp    = 0;
   _dropPlayerItems();
+  if (typeof Ranking !== 'undefined') Ranking.addDeath();
   // [FIX] ถ้ากำลังกลับ lobby อยู่ → drop ของแล้วพอ ไม่ต้องแสดง death screen
   if (window._isLeavingGame) return;
   _showDeathScreen(killerName || null);
@@ -388,6 +389,8 @@ function initGame() {
       if (typeof Money !== 'undefined' && typeof MONEY_CONFIG !== 'undefined') {
         Money.earn('money', MONEY_CONFIG.REWARD_PER_KILL);
       }
+      // ── Ranking: นับ kill ──────────────────────────────────
+      if (typeof Ranking !== 'undefined') Ranking.addKill();
     }
 
     if (id === Network.getMyId()) {

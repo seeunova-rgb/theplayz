@@ -35,6 +35,7 @@ const navBtns = {
   inventory: document.getElementById('nav-inventory'),
   character: document.getElementById('nav-character'),
   gacha:     document.getElementById('nav-gacha'),
+  ranking:   document.getElementById('nav-ranking'),
   settings:  document.getElementById('nav-settings'),
 };
 
@@ -55,6 +56,7 @@ navBtns.shop.addEventListener('click',      () => switchPanel('shop'));
 navBtns.inventory.addEventListener('click', () => switchPanel('inventory'));
 navBtns.character.addEventListener('click', () => switchPanel('character'));
 navBtns.gacha.addEventListener('click',     () => switchPanel('gacha'));
+navBtns.ranking.addEventListener('click',   () => { switchPanel('ranking'); Ranking.render(); });
 navBtns.settings.addEventListener('click',  () => switchPanel('settings'));
 
 // render world select ทันทีที่ lobby โหลด (panel-play เป็น default active)

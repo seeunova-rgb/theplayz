@@ -189,6 +189,8 @@ const Entity = (() => {
       if (typeof Reputation !== 'undefined' && Reputation.onKillEntity) {
         Reputation.onKillEntity(ent.type);
       }
+      // ── Ranking: นับ zombie/boss kill ──────────────────
+      if (typeof Ranking !== 'undefined') Ranking.addZombieKill();
     }
   }
 

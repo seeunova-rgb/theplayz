@@ -51,6 +51,13 @@ const Gacha = (() => {
     snp_evil:      '<img src="assets/items/snp_evil.png"      style="width:36px;height:36px;object-fit:contain;">',
     body_evil:     '<img src="assets/items/body_evil.png"     style="width:36px;height:36px;object-fit:contain;">',
     head_evil:     '<img src="assets/items/head_evil.png"     style="width:36px;height:36px;object-fit:contain;">',
+    asr_piggy:     '<img src="assets/items/asr_piggy.png"     style="width:36px;height:36px;object-fit:contain;">',
+    snp_piggy:     '<img src="assets/items/snp_piggy.png"     style="width:36px;height:36px;object-fit:contain;">',
+    body_piggy:    '<img src="assets/items/body_piggy.png"    style="width:36px;height:36px;object-fit:contain;">',
+    head_piggy:    '<img src="assets/items/head_piggy.png"    style="width:36px;height:36px;object-fit:contain;">',
+    snp_ppap:      '<img src="assets/items/snp_ppap.png"      style="width:36px;height:36px;object-fit:contain;">',
+    body_ppap:     '<img src="assets/items/body_ppap.png"     style="width:36px;height:36px;object-fit:contain;">',
+    head_ppap:     '<img src="assets/items/head_ppap.png"     style="width:36px;height:36px;object-fit:contain;">',
     bandage:       '<img src="assets/items/bandage.png"       style="width:30px;height:30px;object-fit:contain;">',
     ammo_box:      '<span style="font-size:26px;line-height:1;">📦</span>',
   };
@@ -67,6 +74,9 @@ const Gacha = (() => {
       body_reddevil:'BODY RED DEVIL', head_reddevil:'HEAD RED DEVIL',
       asr_evil:'ASR EVIL', snp_evil:'SNP EVIL',
       body_evil:'BODY EVIL', head_evil:'HEAD EVIL',
+      asr_piggy:'ASR PIGGY', snp_piggy:'SNP PIGGY',
+      body_piggy:'BODY PIGGY', head_piggy:'HEAD PIGGY',
+      snp_ppap:'SNP PPAP', body_ppap:'BODY PPAP', head_ppap:'HEAD PPAP',
       bandage:'BANDAGE', ammo_box:'AMMO BOX',
     }[itemId] || itemId;
   }
@@ -162,7 +172,7 @@ const Gacha = (() => {
             `).join('')}
           </div>
           <div class="gacha-footer-right">
-            <div class="gacha-price" id="gacha-price-${g.id}">💎 ${g.price} / ครั้ง</div>
+            <div class="gacha-price" id="gacha-price-${g.id}">${g.currency==='money'?'💵':'💎'} ${g.price} / ครั้ง</div>
             <button class="gacha-spin-btn" data-id="${g.id}" data-count="1">🎰 SPIN</button>
           </div>
         </div>
@@ -182,7 +192,7 @@ const Gacha = (() => {
         btn.classList.add('active');
 
         const priceEl = document.getElementById(`gacha-price-${gid}`);
-        if (priceEl) priceEl.textContent = `💎 ${cfg.price * count} (×${count})`;
+        if (priceEl) priceEl.textContent = `${cfg.currency==='money'?'💵':'💎'} ${cfg.price * count} (×${count})`;
         const spinBtn = container.querySelector(`.gacha-spin-btn[data-id="${gid}"]`);
         if (spinBtn) spinBtn.dataset.count = count;
       });
@@ -211,7 +221,7 @@ const Gacha = (() => {
 
     if (typeof Money !== 'undefined') {
       const ok = Money.spend(cfg.currency, totalCost);
-      if (!ok) { _showToast('💎 Point ไม่พอ!'); return; }
+      if (!ok) { _showToast(cfg.currency === 'money' ? '💵 Money ไม่พอ!' : '💎 Point ไม่พอ!'); return; }
       _syncCurrency();
     }
 

@@ -115,6 +115,9 @@ onAuthStateChanged(auth, async user => {
     Money.init(user.uid, fb);       // โหลดเงินจาก Firebase ก่อนระบบอื่น
     Stash.init(user.uid, fb);       // โหลดคลังไอเทมจาก Firebase
     Reputation.init(user.uid, fb);  // โหลด Reputation จาก Firebase
+    Ranking.init(user.uid, fb);     // init Ranking leaderboard
+    // sync profile (ชื่อ, rep, money) ตอนเข้าล็อบบี้
+    setTimeout(() => Ranking.syncProfile(), 2000);
     Shop.init(user.uid);
     Inventory.init(user.uid);
     Character.init(user.uid, fb);
