@@ -1,14 +1,16 @@
 {
   "name": "THEPLAYZ",
   "short_name": "THEPLAYZ",
-  "description": "THEPLAYZ Top-down 2D Multiplayer Game",
+  "description": "THEPLAYZ",
   "start_url": "/",
   "scope": "/",
   "display": "fullscreen",
-  "orientation": "landscape-primary",
+  "orientation": "landscape",
   "background_color": "#0a0c12",
   "theme_color": "#0a0c12",
-  "categories": ["games"],
+  "categories": [
+    "games"
+  ],
   "icons": [
     {
       "src": "/icons/icon-192.png",
@@ -23,6 +25,6 @@
       "purpose": "any maskable"
     }
   ],
-  "screenshots": [],
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "lang": "th"
 }
