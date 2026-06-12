@@ -450,9 +450,11 @@ function initGame() {
   });
 
   // รับ position/state update จากผู้เล่นอื่น — อัปเดตให้ real-time
+  // [FIX] สร้าง entry ใหม่ถ้ายังไม่มี — กรณี A อยู่ก่อน B เข้า
   Network.on('onPlayerUpdate', (data) => {
     const rp = Network.getRemotePlayers();
-    if (rp[data.id]) Object.assign(rp[data.id], data);
+    if (!rp[data.id]) rp[data.id] = { alive: true, hp: 100 };
+    Object.assign(rp[data.id], data);
   });
 
   // ผู้เล่นออกจาก world — ลบออก
