@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "app.railway.up.theplayz.twa",
+    "sha256_cert_fingerprints": ["9C:66:F8:21:39:E5:8A:FC:7E:86:7A:28:71:83:D0:DA:DF:7D:FA:FF:99:23:42:F8:04:4A:4E:DB:70:08:F1:F1"]
+  }
+}]
