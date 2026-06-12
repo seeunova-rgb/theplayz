@@ -17,7 +17,6 @@ const Inventory = (() => {
   const CAT_MAP = {
     all:    { label: '📋', name: 'ทั้งหมด', key: null      },
     gun:    { label: '🔫', name: 'ปืน',     key: 'weapon'  },
-    knife:  { label: '🔪', name: 'มีด',     key: 'knife'   },
     body:   { label: '👕', name: 'ตัว',     key: 'armor'   },
     head:   { label: '⛑️', name: 'หัว',     key: 'helmet'  },
     supply: { label: '🧪', name: 'ซัพพลาย', key: 'supply'  },

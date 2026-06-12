@@ -8,6 +8,8 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getDatabase, ref, get, set, onValue, off }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getFirestore, doc, getDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 // ── Firebase config ───────────────────────────────────────
 
@@ -24,6 +26,7 @@ const firebaseConfig = {
 const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getDatabase(app);
+const firestoreDb = getFirestore(app);
 
 // ── helpers ───────────────────────────────────────────────
 
@@ -118,6 +121,8 @@ onAuthStateChanged(auth, async user => {
     Stash.init(user.uid, fb);       // โหลดคลังไอเทมจาก Firebase
     Reputation.init(user.uid, fb);  // โหลด Reputation จาก Firebase
     Ranking.init(user.uid, fb);     // init Ranking leaderboard
+    Premium.init(user.uid, { getDoc, doc, db: firestoreDb });  // โหลดสถานะ Premium
+    Dev.init(user.uid, { getDoc, doc, db: firestoreDb });       // โหลดสถานะ DEV
     // sync profile (ชื่อ, rep, money) ตอนเข้าล็อบบี้
     setTimeout(() => Ranking.syncProfile(), 2000);
     Shop.init(user.uid);
@@ -129,6 +134,8 @@ onAuthStateChanged(auth, async user => {
   } else {
     Money.reset();              // detach listener + เคลียร์ค่าเมื่อ logout
     Stash.reset();
+    Premium.reset();            // reset premium status
+    Dev.reset();                // reset dev status
     Reputation.reset();         // detach listener + เคลียร์ค่าเมื่อ logout
     // ถ้า showScreenWithLoading พร้อมใช้แล้ว (logout จาก lobby) ใช้ loading
     if (typeof window.showScreenWithLoading === 'function') {

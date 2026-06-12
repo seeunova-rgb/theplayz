@@ -307,8 +307,29 @@
     </div>
   </div>
 
+  <!-- ===== IN-GAME SHOP OVERLAY (Premium) ===== -->
+  <div id="ingame-shop-overlay" style="display:none;">
+    <div id="ingame-shop-panel">
+      <div class="igs-header">
+        <span class="igs-title">🛒 ร้านค้า <span class="igs-premium-badge">💎 PREMIUM</span></span>
+        <div id="igs-wallet" class="igs-wallet"></div>
+        <button class="igs-close" onclick="InGameShop.close()">✕</button>
+      </div>
+      <div class="igs-cat-bar" id="igs-cat-bar"></div>
+      <div class="igs-body">
+        <div class="igs-grid" id="igs-grid"></div>
+        <div class="igs-detail-panel" id="igs-detail">
+          <div class="igs-detail-empty">เลือกไอเทม</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- In-game BP toggle button (ซ้ายบน ใต้ LOBBY) -->
   <button id="btn-ingame-bp" style="display:none;" onclick="Backpack.togglePanel()">🎒</button>
+
+  <!-- In-game Shop button (Premium only, ถัดจากกระเป๋า) -->
+  <button id="btn-ingame-shop" style="display:none;" onclick="InGameShop.toggle()">🛒</button>
 
   <!-- Reload Button (ขวาล่าง เหนือปุ่มยิง เดียวกับ sprint) -->
   <button id="reload-btn" style="display:none;">🔄</button>
@@ -323,18 +344,6 @@
     <div id="hp-bar-track"><div id="hp-bar-fill"></div></div>
   </div>
 
-  <!-- Body Armor HUD (ติดขวา hp-hud) -->
-  <div id="armor-body-hud" style="display:none;">
-    <img class="armor-slot-img" id="armor-body-img" src="" alt="body" />
-    <div class="armor-slot-pct" id="armor-body-pct">-</div>
-  </div>
-
-  <!-- Head Armor HUD (ติดขวา body armor hud) -->
-  <div id="armor-head-hud" style="display:none;">
-    <img class="armor-slot-img" id="armor-head-img" src="" alt="head" />
-    <div class="armor-slot-pct" id="armor-head-pct">-</div>
-  </div>
-
   <!-- Reputation HUD (มุมขวาบน) -->
   <div id="reputation-hud" style="display:none;">
     <img id="hud-reputation-icon" src="" alt="rep" style="width:28px;height:28px;vertical-align:middle;margin-right:4px;" />
@@ -345,23 +354,24 @@
   <!-- Reputation change popup -->
   <div id="rep-change-popup" style="position:fixed;top:60px;right:16px;z-index:9999;pointer-events:none;"></div>
 
-  <!-- Gun Icon HUD (ซ้ายของ ammo-hud) -->
+  <!-- Gun HUD (armor ซ้าย + ปืนขวา) -->
   <div id="gun-icon-hud" style="display:none;">
-    <img id="gun-icon-img" src="" alt="gun" />
-  </div>
-
-  <!-- Ammo HUD -->
-  <div id="ammo-hud" style="display:none;">
-    <div id="ammo-count"><span id="ammo-cur">5</span><span class="ammo-sep">/</span><span id="ammo-max">5</span></div>
-    <div id="ammo-divider"></div>
-    <div id="ammo-stats">
-      <span class="ammo-stat-val" id="stat-gun-name">-</span>
-      <div class="stat-bars">
-        <div class="stat-row">
-          <span class="stat-label">DMG</span>
-          <span class="stat-num" id="stat-damage">-</span>
-        </div>
+    <!-- Armor stack: head บน, body ล่าง -->
+    <div id="armor-stack">
+      <div id="armor-head-hud" style="display:none;">
+        <img class="armor-slot-img" id="armor-head-img" src="" alt="head" />
+        <div class="armor-slot-pct" id="armor-head-pct">-</div>
       </div>
+      <div id="armor-body-hud" style="display:none;">
+        <img class="armor-slot-img" id="armor-body-img" src="" alt="body" />
+        <div class="armor-slot-pct" id="armor-body-pct">-</div>
+      </div>
+    </div>
+    <!-- Gun: กระสุนบน + รูปปืน + DMG ล่าง -->
+    <div id="gun-panel">
+      <div id="ammo-count"><span id="ammo-cur">5</span><span class="ammo-sep">/</span><span id="ammo-max">5</span></div>
+      <img id="gun-icon-img" src="" alt="gun" />
+      <div id="gun-dmg-row"><span class="stat-label">DMG</span><span class="stat-num" id="stat-damage">-</span></div>
     </div>
   </div>
 
@@ -409,11 +419,16 @@
   <!-- Reputation system (depends on config_reputation) -->
   <script src="js/reputation.js"></script>
   <script src="js/stash.js"></script>
+  <!-- Premium system -->
+  <script src="js/premium.js"></script>
+  <!-- Dev system -->
+  <script src="js/dev.js"></script>
 
   <!-- Lobby systems (depends on config_shop, items, money, stash) -->
   <script src="js/shop.js"></script>
   <script src="js/backpack.js"></script>
   <!-- ingame_bp.js removed: InGameBP is now part of backpack.js -->
+  <script src="js/ingame_shop.js"></script>
   <script src="js/inventory.js"></script>
   <script src="js/character.js"></script>
   <script src="js/config_world.js"></script>

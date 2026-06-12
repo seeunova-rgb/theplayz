@@ -15,7 +15,6 @@ const Shop = (() => {
   // ── category map ──────────────────────────────────────────
   const CAT_MAP = {
     gun:    { label: '🔫', name: 'ปืน',     key: 'weapon'  },
-    knife:  { label: '🔪', name: 'มีด',     key: 'knife'   },
     body:   { label: '👕', name: 'ตัว',     key: 'armor'   },
     head:   { label: '⛑️', name: 'หัว',     key: 'helmet'  },
     med:    { label: '🩹', name: 'ยา',      key: 'med'     },

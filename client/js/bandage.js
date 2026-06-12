@@ -122,6 +122,14 @@ const Bandage = (() => {
     }, 100);
   }
 
+  // [FIX] reset ปุ่มยาเมื่อผู้เล่นตาย — หยุด cooldown interval และซ่อนปุ่ม
+  function reset() {
+    clearInterval(_cdInterval);
+    _cdInterval = null;
+    _lastUsed   = 0;
+    _updateUI();
+  }
+
   function init() {
     const btn = document.getElementById('bandage-btn');
     if (!btn) return;
@@ -130,7 +138,7 @@ const Bandage = (() => {
     _updateUI();
   }
 
-  return { init, use, updateUI: _updateUI };
+  return { init, use, updateUI: _updateUI, reset };
 })();
 
 window.Bandage = Bandage;

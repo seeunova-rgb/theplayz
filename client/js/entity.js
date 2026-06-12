@@ -86,6 +86,15 @@ const Entity = (() => {
       if (!ent.alive) continue;
       const c = ENTITY_CONFIG[ent.type];
 
+      // [DEV] ล็อคหัว — ขยาย hitbox หัวให้คลุมทั้งตัว → โดนตรงไหนก็เป็น headshot
+      if (window._devLockHead) {
+        const br = c.r + bulletR;
+        const bdx = bx - ent.x, bdy = by - ent.y;
+        if (bdx*bdx + bdy*bdy < br*br)
+          return { hit: true, isHeadshot: true, entityId: ent.id };
+        continue;
+      }
+
       // HEAD (priority)
       const h  = _headCenter(ent);
       const hr = _headR(ent) + bulletR;
@@ -153,13 +162,16 @@ const Entity = (() => {
             const finalEntityDmg = (typeof Armor !== 'undefined')
               ? Armor.calcFinalDamage(c.damage, 'body')
               : c.damage;
-            player.hp = Math.max(0, player.hp - finalEntityDmg);
-            if (player.hp <= 0) {
-              player.hp = 0;
-              if (player.alive) {
-                // [FIX] ไม่เซ็ต player.alive = false ที่นี่
-                // ให้ _onPlayerSelfDeath จัดการเอง ป้องกัน guard check ใน _onPlayerSelfDeath fail
-                if (typeof window._onPlayerSelfDeath === "function") window._onPlayerSelfDeath(null);
+            // [DEV] อมตะ — ไม่รับดาเมจจาก zombie/boss
+            if (!window._devGod) {
+              player.hp = Math.max(0, player.hp - finalEntityDmg);
+              if (player.hp <= 0) {
+                player.hp = 0;
+                if (player.alive) {
+                  // [FIX] ไม่เซ็ต player.alive = false ที่นี่
+                  // ให้ _onPlayerSelfDeath จัดการเอง ป้องกัน guard check ใน _onPlayerSelfDeath fail
+                  if (typeof window._onPlayerSelfDeath === "function") window._onPlayerSelfDeath(null);
+                }
               }
             }
             _playerAttackCbs.forEach(cb => cb(ent, finalEntityDmg));
@@ -177,13 +189,19 @@ const Entity = (() => {
       ent.hp = 0; ent.alive = false; ent._respawnTimer = 0;
       const rw = ENTITY_CONFIG[ent.type].reward;
       if (rw && typeof Money !== 'undefined') {
+        let moneyAmt = 0;
         if (rw.moneyMin != null && rw.moneyMax != null) {
-          const moneyAmt = Math.floor(rw.moneyMin + Math.random() * (rw.moneyMax - rw.moneyMin + 1));
+          moneyAmt = Math.floor(rw.moneyMin + Math.random() * (rw.moneyMax - rw.moneyMin + 1));
           Money.earn("money", moneyAmt);
         } else if (rw.money) {
-          Money.earn("money", rw.money);
+          moneyAmt = rw.money;
+          Money.earn("money", moneyAmt);
         }
         if (rw.point) Money.earn("point", rw.point);
+        // ── แจ้งเตือน floating reward ──────────────────────
+        if (typeof window._onEntityKillReward === 'function') {
+          window._onEntityKillReward(ent.x, ent.y, ent.type, moneyAmt, rw.point || 0);
+        }
       }
       // ── Reputation reward จาก PvE ──────────────────────
       if (typeof Reputation !== 'undefined' && Reputation.onKillEntity) {
@@ -425,7 +443,15 @@ const Entity = (() => {
 
   function onPlayerAttacked(cb) { _playerAttackCbs.push(cb); }
 
-  return { init, update, draw, checkBulletHit, registerHit, getAlive, onPlayerAttacked };
+  // ── DEV: spawn ที่ตำแหน่งใดก็ได้ ────────────────────────
+  function spawnZombieAt(x, y) {
+    _entities.push(_make('zombie', x, y));
+  }
+  function spawnBossAt(x, y) {
+    _entities.push(_make('boss', x, y));
+  }
+
+  return { init, update, draw, checkBulletHit, registerHit, getAlive, onPlayerAttacked, spawnZombieAt, spawnBossAt };
 })();
 
 window.Entity = Entity;

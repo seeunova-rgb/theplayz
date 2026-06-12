@@ -29,7 +29,7 @@ const _dmgNums = [];
 function _spawnDmgNum(x, y, dmg, color, isHeadshot) {
   _dmgNums.push({
     x, y,
-    text:  isHeadshot ? `${dmg} HEADSHOT` : `${dmg}`,
+    text:  `${dmg}`,
     color,
     alpha: 1,
     vy:    -1.8,
@@ -39,10 +39,91 @@ function _spawnDmgNum(x, y, dmg, color, isHeadshot) {
   });
 }
 
+// ── Kill reward floating texts ────────────────────────────────
+const _rewardNums = [];
+
+function _spawnRewardNum(x, y, type, money, point) {
+  const isBoss = type === 'boss';
+  const r = ENTITY_CONFIG?.[type]?.r || 18;
+  const baseY = y + _charTopY(r) - 18;  // เหนือ entity
+
+  if (money > 0) {
+    _rewardNums.push({
+      x, y: baseY,
+      text: `+${money.toLocaleString()} 💵`,
+      color: isBoss ? '#ffd740' : '#66bb6a',
+      alpha: 1,
+      vy: -1.1,
+      vx: (Math.random() - 0.5) * 0.6,
+      timer: 0,
+      life: isBoss ? 2200 : 1600,
+      size: isBoss ? 15 : 12,
+    });
+  }
+  if (point > 0) {
+    _rewardNums.push({
+      x, y: baseY - (money > 0 ? 18 : 0),
+      text: `+${point} 💎`,
+      color: '#64b5f6',
+      alpha: 1,
+      vy: -1.1,
+      vx: (Math.random() - 0.5) * 0.6,
+      timer: 0,
+      life: isBoss ? 2200 : 1600,
+      size: isBoss ? 15 : 12,
+    });
+  }
+}
+
+window._onEntityKillReward = function(x, y, type, money, point) {
+  _spawnRewardNum(x, y, type, money, point);
+};
+
 function _charTopY(r) {
   const s  = r / 22;
   const bh = 46 * s;
   return -bh / 2 - 10;
+}
+
+// ===== REP ICON (หน้าชื่อผู้เล่น) =====
+// cache รูปยศ reputation — โหลดครั้งเดียวแล้วใช้ซ้ำทุก frame
+const _repIconCache = {};
+function _getRepIcon(imgName) {
+  if (!imgName) return null;
+  if (_repIconCache[imgName]) return _repIconCache[imgName];
+  const img = new Image();
+  img.src = `assets/reputations/${imgName}`;
+  _repIconCache[imgName] = img;
+  return img;
+}
+
+// วาด nametag พร้อมรูป rep ไว้หน้าชื่อ (ใช้กับทั้งตัวเองและผู้เล่นอื่น)
+// คืนค่าไม่มี — วาดลง ctx ที่ position ปัจจุบัน (translate มาแล้ว)
+function _drawNameWithRep(ctx, name, repVal, x, y) {
+  const tier = (typeof Reputation !== 'undefined' && Reputation.getTier) ? Reputation.getTier(repVal) : null;
+  const icon = tier && tier.img ? _getRepIcon(tier.img) : null;
+  const iconSize = 14;
+  const gap = 4;
+
+  ctx.font         = `bold ${Math.max(10, CONFIG.PLAYER_R * 0.6)}px Rajdhani, sans-serif`;
+  ctx.textAlign    = 'left';
+  ctx.textBaseline = 'bottom';
+  const textW = ctx.measureText(name).width;
+
+  const hasIcon = icon && icon.complete && icon.naturalWidth > 0;
+  const totalW  = textW + (hasIcon ? iconSize + gap : 0);
+  let drawX = x - totalW / 2;
+
+  if (hasIcon) {
+    ctx.drawImage(icon, drawX, y - iconSize, iconSize, iconSize);
+    drawX += iconSize + gap;
+  }
+
+  ctx.strokeStyle = 'rgba(0,0,0,0.7)';
+  ctx.lineWidth   = 3;
+  ctx.strokeText(name, drawX, y);
+  ctx.fillStyle   = '#ffffff';
+  ctx.fillText(name, drawX, y);
 }
 
 // ===== SOUNDS =====
@@ -245,13 +326,9 @@ function _dropPlayerItems() {
   } else {
     console.log('[DROP] backpack empty, nothing to drop');
   }
-  // [FIX #7] อัพเดต ammo UI ก่อน clearAll เพื่อซ่อน HUD อย่างถูกต้อง
-  const _ammoHud = document.getElementById('ammo-hud');
-  if (_ammoHud) _ammoHud.style.display = 'none';
-  const _bHud = document.getElementById('armor-body-hud');
-  const _hHud = document.getElementById('armor-head-hud');
-  if (_bHud) _bHud.style.display = 'none';
-  if (_hHud) _hHud.style.display = 'none';
+  // [FIX #7] ซ่อน HUD ก่อน clearAll
+  const _gunIconHud = document.getElementById('gun-icon-hud');
+  if (_gunIconHud) _gunIconHud.style.display = 'none';
   const _repHud = document.getElementById('reputation-hud');
   if (_repHud) _repHud.style.display = 'none';
   if (typeof Weapon !== 'undefined') Weapon.updateAmmoUI();
@@ -281,6 +358,7 @@ function _doRespawn() {
 // ── hook ให้ entity.js เรียกเมื่อ player ตายจาก zombie/boss ──
 window._onPlayerSelfDeath = function(killerName) {
   if (!player) return;
+  if (window._devGod) return;  // [DEV] อมตะ
   if (player.hp > 0) return;
   if (!player.alive) return;  // ป้องกัน drop ซ้ำ
   player.alive = false;
@@ -370,8 +448,16 @@ function initGame() {
     console.log('[INIT] _worldDrops after init:', Object.keys(_worldDrops).length);
   });
 
-  // [FIX #1] onTookDamage: hp มาจาก server แล้ว ไม่คำนวณเอง
+  // [DEV] dev_stats_ack: server ยืนยันค่า HP/maxHp หลัง SET HP — sync HUD ให้ตรง server
+  Network.on('onDevStatsAck', ({ hp, maxHp }) => {
+    if (typeof maxHp === 'number') player.maxHp = maxHp;
+    if (typeof hp    === 'number') player.hp    = hp;
+  });
+
+
   Network.on('onTookDamage', ({ hp, damage, hitZone }) => {
+    // [DEV] อมตะ — ไม่รับดาเมจ, คง HP เดิม
+    if (window._devGod) { return; }
     const prevHp = player.hp;
     player.hp    = hp;
     const dmgTaken = damage ?? (prevHp - hp);
@@ -630,6 +716,14 @@ function update(timestamp) {
   _tickPickup(dt);
 
   // ── damage numbers ────────────────────────────────────────
+  for (let i = _rewardNums.length - 1; i >= 0; i--) {
+    const n = _rewardNums[i];
+    n.timer += dt;
+    n.x += n.vx;
+    n.y += n.vy;
+    n.alpha = Math.max(0, 1 - n.timer / n.life);
+    if (n.timer >= n.life) _rewardNums.splice(i, 1);
+  }
   for (let i = _dmgNums.length - 1; i >= 0; i--) {
     const n = _dmgNums[i];
     n.timer += dt; n.y += n.vy; n.vy *= 0.94;
@@ -670,23 +764,17 @@ function draw() {
   _drawDrops(ctx);
   drawPlayer(ctx, player);
 
-  // ── วาด nametag ของตัวเอง ────────────────────────────────
+  // ── วาด nametag ของตัวเอง (พร้อมรูป rep) ─────────────────
   {
     const r    = CONFIG.PLAYER_R;
     const s    = r / 22;
     const bh   = 46 * s;
     const topY = -bh / 2;
     const selfName = window._playerName || 'Player';
+    const selfRep  = (typeof Reputation !== 'undefined' && Reputation.get) ? Reputation.get().rep : 0;
     ctx.save();
     ctx.translate(player.x, player.y);
-    ctx.font         = `bold ${Math.max(10, r * 0.6)}px Rajdhani, sans-serif`;
-    ctx.textAlign    = 'center';
-    ctx.textBaseline = 'bottom';
-    ctx.strokeStyle  = 'rgba(0,0,0,0.7)';
-    ctx.lineWidth    = 3;
-    ctx.strokeText(selfName, 0, topY - 14);
-    ctx.fillStyle    = '#ffffff';
-    ctx.fillText(selfName, 0, topY - 14);
+    _drawNameWithRep(ctx, selfName, selfRep, 0, topY - 14);
     ctx.restore();
   }
 
@@ -705,6 +793,21 @@ function draw() {
     ctx.textBaseline = 'middle';
     ctx.strokeStyle  = 'rgba(0,0,0,0.7)';
     ctx.lineWidth    = 3;
+    ctx.strokeText(n.text, n.x, n.y);
+    ctx.fillStyle    = n.color;
+    ctx.fillText(n.text, n.x, n.y);
+    ctx.restore();
+  });
+
+  // ── reward floating text ──────────────────────────────────
+  _rewardNums.forEach(n => {
+    ctx.save();
+    ctx.globalAlpha  = n.alpha;
+    ctx.font         = `bold ${n.size}px Rajdhani, sans-serif`;
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.strokeStyle  = 'rgba(0,0,0,0.85)';
+    ctx.lineWidth    = 4;
     ctx.strokeText(n.text, n.x, n.y);
     ctx.fillStyle    = n.color;
     ctx.fillText(n.text, n.x, n.y);
@@ -854,7 +957,6 @@ function _updateArmorHud() {
     const pct = document.getElementById('armor-body-pct');
     if (img) img.src = 'assets/items/' + bodyId + '.png';
     if (pct) pct.textContent = bodyCfg.armorPct + '%';
-    bodyHud.style.borderColor = borderColor;
     bodyHud.style.display = 'flex';
   } else {
     bodyHud.style.display = 'none';
@@ -866,28 +968,17 @@ function _updateArmorHud() {
     const pct = document.getElementById('armor-head-pct');
     if (img) img.src = 'assets/items/' + headId + '.png';
     if (pct) pct.textContent = headCfg.armorPct + '%';
-    headHud.style.borderColor = borderColor;
     headHud.style.display = 'flex';
   } else {
     headHud.style.display = 'none';
   }
 
-  // ── วางตำแหน่ง ชิดขวา hp-hud เว้นช่องห่าง 4px ───────────
-  let cursor = 130; // fallback ถ้า hp-hud ยังไม่ render (width = 0)
-  if (hpHud) {
-    const hpRect = hpHud.getBoundingClientRect();
-    if (hpRect.width > 0) cursor = hpRect.right + 4;
-  }
-
-  if (bodyHud.style.display !== 'none') {
-    bodyHud.style.left   = cursor + 'px';
-    bodyHud.style.bottom = '0px';
-    // อ่าน width หลัง display แล้ว
-    cursor += (bodyHud.offsetWidth || 50) + 4;
-  }
-  if (headHud.style.display !== 'none') {
-    headHud.style.left   = cursor + 'px';
-    headHud.style.bottom = '0px';
+  // [FIX] armor อยู่ใน gun-icon-hud แล้ว — ไม่ต้องคำนวณตำแหน่ง JS
+  // แสดง armor-stack เฉพาะเมื่อมีอย่างน้อยหนึ่งชิ้น
+  const armorStack = document.getElementById('armor-stack');
+  if (armorStack) {
+    const anyArmor = (bodyId && bodyCfg) || (headId && headCfg);
+    armorStack.style.display = anyArmor ? 'flex' : 'none';
   }
 }
 
@@ -953,15 +1044,8 @@ function drawRemotePlayer(ctx, rp) {
   const bh   = 46 * s;
   const topY = -bh / 2;
 
-  // nametag
-  ctx.font         = `bold ${Math.max(10, r * 0.6)}px Rajdhani, sans-serif`;
-  ctx.textAlign    = 'center';
-  ctx.textBaseline = 'bottom';
-  ctx.strokeStyle  = 'rgba(0,0,0,0.7)';
-  ctx.lineWidth    = 3;
-  ctx.strokeText(fakePlayer.name, 0, topY - 14);
-  ctx.fillStyle    = '#ffffff';
-  ctx.fillText(fakePlayer.name, 0, topY - 14);
+  // nametag (พร้อมรูป rep)
+  _drawNameWithRep(ctx, fakePlayer.name, rp.reputation, 0, topY - 14);
 
   // HP bar
   const barW  = r * 2.5;
@@ -1010,7 +1094,7 @@ window._stopGameLoop = function() {
   }
   window._isInGame = false;
   // ซ่อน HUD ทั้งหมดเมื่อออกจากเกม
-  const _ids = ['hp-hud', 'ammo-hud', 'gun-icon-hud', 'armor-body-hud', 'armor-head-hud', 'reputation-hud'];
+  const _ids = ['hp-hud', 'gun-icon-hud', 'reputation-hud'];
   _ids.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
 };
 

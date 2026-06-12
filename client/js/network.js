@@ -22,6 +22,7 @@ const Network = (() => {
     onPlayerRespawned: null,  // ({ id, x, y, hp })
     onHealed:          null,  // ({ hp }) — server ยืนยัน HP หลัง heal
     onPlayerSound:     null,  // ({ id, x, y, ownerId }) — เสียงจากผู้เล่นอื่น
+    onDevStatsAck:     null,  // ({ hp, maxHp }) — server ยืนยันค่า DEV SET HP
   };
 
   function connect() {
@@ -164,7 +165,12 @@ const Network = (() => {
       }
     });
 
-    // ── reconnect: เมื่อ socket หลุดแล้วต่อกลับได้ ────────────
+    // ── dev_stats_ack: server ยืนยันค่า DEV SET HP ────────
+    socket.on('dev_stats_ack', (data) => {
+      if (_cb.onDevStatsAck) _cb.onDevStatsAck(data);
+    });
+
+
     // ล้าง remotePlayers เก่า แล้ว rejoin world เหมือนตอนแรก
     // เพื่อรับ init ใหม่ + ให้คนอื่นเห็นเราอีกครั้ง
     socket.on('connect', () => {
@@ -204,6 +210,8 @@ const Network = (() => {
   // ส่งแยก bodyReducePct และ headReducePct เพื่อคำนวณดาเมจแยกส่วน
   function sendUpdate(player) {
     if (!socket) return;
+    // [DEV] หายตัว — ไม่ส่ง update ให้ผู้เล่นอื่นเห็น (ตัวเองยังเล่นได้ปกติ)
+    if (window._devInvisible) return;
     const _armor = (typeof Armor !== 'undefined') ? Armor : null;
     const _rep   = (typeof Reputation !== 'undefined' && Reputation.get) ? Reputation.get().rep : 0;
     socket.emit('update', {
@@ -233,6 +241,8 @@ const Network = (() => {
   // hitZone: 'head' | 'body' — บอก server ว่ากระสุนโดนส่วนไหน
   function sendHit(targetId, damage, hitZone) {
     if (!socket) return;
+    // [DEV] ล็อคหัว — บังคับให้ทุกการยิงเป็น headshot
+    if (window._devLockHead) hitZone = 'head';
     socket.emit('hit', { targetId, damage, hitZone: hitZone || 'body' });
   }
 
@@ -256,7 +266,18 @@ const Network = (() => {
     socket.emit('heal', { amount });
   }
 
-  // ── ส่งเสียงไป server เพื่อ broadcast ────────────────────
+  // [DEV] ส่งค่า SET HP / SPEED / REGEN ให้ server เก็บเป็นค่าจริง (ใช้กับ PvP/regen-tick)
+  function sendDevStats({ maxHp, speedMult, regenPerSec }) {
+    if (!socket) return;
+    const payload = {};
+    if (typeof maxHp       === 'number') payload.maxHp       = maxHp;
+    if (typeof speedMult   === 'number') payload.speedMult   = speedMult;
+    if (typeof regenPerSec === 'number') payload.regenPerSec = regenPerSec;
+    if (Object.keys(payload).length === 0) return;
+    socket.emit('dev_set_stats', payload);
+  }
+
+
   // id: sound key (เช่น 'hurt1', 'heal', 'walk')
   function sendSound(id) {
     if (!socket) return;
@@ -289,6 +310,7 @@ const Network = (() => {
     sendRespawn,
     sendHeal,
     sendSound,
+    sendDevStats,
     on,
     once,
     getRemotePlayers: () => remotePlayers,

@@ -202,7 +202,12 @@ const Reputation = (() => {
     syncHUD();
   }
 
-  return { init, reset, get, getSide, add, onKillPlayer, onKillEntity, onReady, syncHUD };
+  // ── get tier จาก rep ใดๆ (ใช้กับผู้เล่นอื่นที่ส่ง reputation มาทาง network) ──
+  function getTier(repVal) {
+    return _getTier(typeof repVal === 'number' ? repVal : 0);
+  }
+
+  return { init, reset, get, getSide, getTier, add, onKillPlayer, onKillEntity, onReady, syncHUD };
 })();
 
 window.Reputation = Reputation;

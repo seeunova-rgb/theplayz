@@ -60,7 +60,6 @@ const SHOP_ITEMS = {
       weaponId:   'asr_piggy',
     },
   ],
-  knife: [],
   armor: [
     // ── EVIL ──
     {

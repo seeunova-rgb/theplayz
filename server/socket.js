@@ -69,6 +69,9 @@ function initSocket(io) {
         reputation:   0,          // reputation ของผู้เล่น (sync จาก client)
         walkTimer:    0,
         isMoving:     false,
+        // ── DEV overrides (เฉพาะ socket ตัวเอง, ไม่ broadcast ไปคนอื่น) ──
+        devSpeedMult: null,       // null = ใช้ค่า default (charSpeedPct)
+        devRegenPerSec: null,     // null = ใช้ค่า default (charRegenPct)
       };
 
       // ส่ง state ปัจจุบัน + drops ที่มีอยู่ใน world ให้ผู้เล่นใหม่
@@ -99,7 +102,9 @@ function initSocket(io) {
       const dx   = (typeof data.x === 'number' ? data.x : p.x) - p.x;
       const dy   = (typeof data.y === 'number' ? data.y : p.y) - p.y;
       const dist = Math.sqrt(dx * dx + dy * dy);
-      const speedMult = 1 + getCharSpeedPct(p.charId) / 100;
+      const speedMult = (typeof p.devSpeedMult === 'number' && p.devSpeedMult > 0)
+        ? p.devSpeedMult
+        : 1 + getCharSpeedPct(p.charId) / 100;
       const maxMove = MAX_SPEED_PX * speedMult * (TICK_INTERVAL_MS * 2); // รอง 2 frame buffer
 
       if (dist <= maxMove) {
@@ -302,7 +307,46 @@ function initSocket(io) {
       });
     });
 
-    // ── respawn: ผู้เล่น respawn ──────────────────────────────
+    // ── dev_set_stats: DEV cheat — SET HP / SPEED / REGEN (เฉพาะตัวเอง) ──
+    // ไม่มีระบบ auth แยก — ใช้ flag ฝั่ง client (Dev.isActive) เป็นเงื่อนไขเปิดใช้
+    // server clamp ค่าไว้ในช่วงที่สมเหตุสมผล กันค่าผิดปกติพังเกม
+    const MAX_DEV_HP        = 100000;
+    const MAX_DEV_SPEEDMULT = 10;     // เทียบกับ speed ปกติ (1 = ปกติ)
+    const MAX_DEV_REGEN     = 1000;   // HP ต่อวินาที
+
+    socket.on('dev_set_stats', (data) => {
+      const wid = socketWorld[socket.id];
+      if (!wid || !players[wid][socket.id]) return;
+      const p = players[wid][socket.id];
+
+      // SET HP (กำหนด maxHp ใหม่ และเติม hp เต็ม)
+      if (typeof data.maxHp === 'number' && data.maxHp > 0) {
+        p.maxHp = Math.min(MAX_DEV_HP, Math.max(1, Math.round(data.maxHp)));
+        p.hp    = p.maxHp;
+      }
+
+      // SET SPEED (speed multiplier เทียบกับ base — ใช้ในการเช็ค anti-teleport)
+      if (typeof data.speedMult === 'number' && data.speedMult >= 0) {
+        p.devSpeedMult = Math.min(MAX_DEV_SPEEDMULT, Math.max(0, data.speedMult));
+      }
+
+      // SET REGEN (HP ต่อวินาที — ใช้แทน regen ของ character)
+      if (typeof data.regenPerSec === 'number' && data.regenPerSec >= 0) {
+        p.devRegenPerSec = Math.min(MAX_DEV_REGEN, Math.max(0, data.regenPerSec));
+      }
+
+      // ยืนยันค่ากลับไปให้ client ตัวเอง (sync HUD ให้ตรง server)
+      socket.emit('dev_stats_ack', { hp: p.hp, maxHp: p.maxHp });
+
+      // broadcast hp/maxHp ใหม่ให้คนอื่นเห็น (เผื่อ SET HP ทำให้ hp เปลี่ยน)
+      socket.to(wid).emit('player_update', {
+        id:    socket.id,
+        hp:    p.hp,
+        alive: p.alive,
+      });
+    });
+
+
     socket.on('respawn', (data) => {
       const wid = socketWorld[socket.id];
       if (!wid || !players[wid][socket.id]) return;
@@ -364,7 +408,9 @@ function initSocket(io) {
       Object.keys(worldPlayers).forEach(pid => {
         const p = worldPlayers[pid];
         if (!p.alive) return;
-        const regenPerSec = getCharRegenPct(p.charId);
+        const regenPerSec = (typeof p.devRegenPerSec === 'number' && p.devRegenPerSec >= 0)
+          ? p.devRegenPerSec
+          : getCharRegenPct(p.charId);
         if (regenPerSec <= 0) return;
         if (p.hp >= p.maxHp) return;
 

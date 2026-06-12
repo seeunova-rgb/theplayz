@@ -62,6 +62,9 @@ navBtns.settings.addEventListener('click',  () => switchPanel('settings'));
 // render world select ทันทีที่ lobby โหลด (panel-play เป็น default active)
 WorldSelect.render();
 
+// init in-game shop (เฉพาะ structure, ไม่ต้องรอ premium check ตรงนี้)
+if (typeof InGameShop !== 'undefined') InGameShop.init();
+
 // ── play button ───────────────────────────────────────────
 
 // ── world join callback (เรียกจาก WorldSelect เมื่อกด JOIN) ──
@@ -77,7 +80,10 @@ window._wsJoinCallback = async function(worldId) {
   document.getElementById('sprint-btn').style.display       = '';
   document.getElementById('btn-back-lobby').style.display   = 'flex';
   document.getElementById('btn-ingame-bp').style.display      = 'flex';
-  document.getElementById('ammo-hud').style.display           = 'flex';
+  // แสดงปุ่ม Shop ในเกมเฉพาะ Premium
+  if (typeof Premium !== 'undefined' && Premium.isActive()) {
+    document.getElementById('btn-ingame-shop').style.display = 'flex';
+  }
   document.getElementById('reputation-hud').style.display      = 'flex';
   loadGameScripts();
 
@@ -204,8 +210,9 @@ async function goBackToLobby() {
   document.getElementById('sprint-btn').style.display       = 'none';
   document.getElementById('btn-back-lobby').style.display   = 'none';
   document.getElementById('btn-ingame-bp').style.display      = 'none';
+  document.getElementById('btn-ingame-shop').style.display    = 'none';
   document.getElementById('ingame-bp-overlay').style.display  = 'none';
-  document.getElementById('ammo-hud').style.display           = 'none';
+  document.getElementById('ingame-shop-overlay').style.display = 'none';
   document.getElementById('gun-icon-hud').style.display        = 'none';
   document.getElementById('hp-hud').style.display             = 'none';
   document.getElementById('reputation-hud').style.display      = 'none';

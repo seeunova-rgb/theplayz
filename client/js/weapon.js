@@ -42,28 +42,21 @@ const Weapon = (() => {
   }
 
   function updateAmmoUI() {
-    const hud = document.getElementById('ammo-hud');
+    const gunIconHud = document.getElementById('gun-icon-hud');
     const cur = document.getElementById('ammo-cur');
     const max = document.getElementById('ammo-max');
     const reloadBtn = document.getElementById('reload-btn');
-    if (!cur || !max || !hud) return;
-    // ซ่อน HUD ทั้งหมดเมื่ออยู่นอกเกม (lobby, inventory, ฯลฯ)
-    if (!window._isInGame) {
-      hud.style.display = 'none';
+    if (!gunIconHud || !cur || !max) return;
+
+    // ซ่อน HUD ทั้งหมดเมื่ออยู่นอกเกม หรือไม่มีปืน
+    if (!window._isInGame || !hasGun()) {
+      gunIconHud.style.display = 'none';
       if (reloadBtn) reloadBtn.style.display = 'none';
-      const _gih = document.getElementById('gun-icon-hud');
-      if (_gih) _gih.style.display = 'none';
       return;
     }
-    if (!hasGun()) {
-      hud.style.display = 'none';
-      if (reloadBtn) reloadBtn.style.display = 'none';
-      const _gih = document.getElementById('gun-icon-hud');
-      if (_gih) _gih.style.display = 'none';
-      return;
-    }
-    hud.style.display = 'flex';
-    // แสดงปุ่ม reload เสมอเมื่อมีปืน
+
+    // แสดง HUD และปุ่ม reload
+    gunIconHud.style.display = 'flex';
     if (reloadBtn) {
       reloadBtn.style.display = 'flex';
       if (reloading) {
@@ -72,6 +65,8 @@ const Weapon = (() => {
         reloadBtn.classList.remove('reloading');
       }
     }
+
+    // กระสุน
     if (reloading) {
       cur.textContent = '↺';
       cur.style.color = '#ffaa00';
@@ -82,56 +77,24 @@ const Weapon = (() => {
     const boxes = typeof Backpack !== 'undefined' ? Backpack.countItems('ammo_box') : 0;
     max.textContent = boxes;
 
-    // อัปเดต ชื่อปืน + stat bars จาก config
-    const gunId = _getActiveGunId();
-    const GUN   = _getActiveGunConfig();
-    const nameEl = document.getElementById('stat-gun-name');
-    if (nameEl && GUN && gunId) {
-      nameEl.textContent = gunId.replace(/_/g, ' ').toUpperCase();
-    }
+    // DMG
+    const GUN = _getActiveGunConfig();
     if (GUN) {
-      const r = _getStatRanges();
-      // Damage bar
-      const dmgPct = (GUN.damage / r.maxDmg) * 100;
-      _setBar('bar-damage', dmgPct);
       _setNum('stat-damage', GUN.damage);
-      // Fire Rate bar (fireRate ต่ำ = เร็ว = bar เต็ม)
-      const firePct = ((r.maxFire - GUN.fireRate) / (r.maxFire - r.minFire)) * 100;
-      _setBar('bar-firerate', firePct);
-      _setNum('stat-firerate', (1000 / GUN.fireRate).toFixed(1) + '/s');
-      // Range bar
-      const rngPct = (GUN.range / r.maxRange) * 100;
-      _setBar('bar-range', rngPct);
-      _setNum('stat-range', GUN.range);
-      // Reload bar (reloadTime ต่ำ = เร็ว = bar เต็ม)
-      const rldPct = ((r.maxReload - GUN.reloadTime) / (r.maxReload - r.minReload)) * 100;
-      _setBar('bar-reload', rldPct);
-      _setNum('stat-reload', (GUN.reloadTime / 1000).toFixed(1) + 's');
     }
 
-    // ── อัปเดต Gun Icon HUD ─────────────────────────────────
-    const gunIconHud = document.getElementById('gun-icon-hud');
+    // รูปปืน
+    const gunId = _getActiveGunId();
     const gunIconImg = document.getElementById('gun-icon-img');
-    if (gunIconHud && gunIconImg) {
-      if (gunId) {
-        // หา item config เพื่อเอา image path
-        let imgSrc = 'assets/items/' + gunId + '.png';
-        if (typeof SHOP_ITEMS !== 'undefined' && SHOP_ITEMS.weapon) {
-          const itemCfg = SHOP_ITEMS.weapon.find(w => w.id === gunId);
-          if (itemCfg && itemCfg.equip && itemCfg.equip.img) {
-            imgSrc = itemCfg.equip.img;
-          }
+    if (gunIconImg && gunId) {
+      let imgSrc = 'assets/items/' + gunId + '.png';
+      if (typeof SHOP_ITEMS !== 'undefined' && SHOP_ITEMS.weapon) {
+        const itemCfg = SHOP_ITEMS.weapon.find(w => w.id === gunId);
+        if (itemCfg && itemCfg.equip && itemCfg.equip.img) {
+          imgSrc = itemCfg.equip.img;
         }
-        gunIconImg.src = imgSrc;
-        gunIconHud.style.display = 'flex';
-        // วางตำแหน่ง gun-icon-hud ให้ชิดซ้ายของ ammo-hud
-        const ammoRect = hud.getBoundingClientRect();
-        const iconWidth = gunIconHud.offsetWidth || 76;
-        gunIconHud.style.right = (window.innerWidth - ammoRect.left + 2) + 'px';
-        gunIconHud.style.bottom = '0px';
-      } else {
-        gunIconHud.style.display = 'none';
       }
+      gunIconImg.src = imgSrc;
     }
   }
 

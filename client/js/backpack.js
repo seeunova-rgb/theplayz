@@ -8,10 +8,9 @@
 
 const Backpack = (() => {
 
-  const EQUIP_SLOTS = ['gun', 'knife', 'body', 'head', 'med'];
+  const EQUIP_SLOTS = ['gun', 'body', 'head', 'med'];
   const EQUIP_META  = {
     gun:   { label: '🔫', name: 'ปืน'   },
-    knife: { label: '🔪', name: 'มีด'   },
     body:  { label: '👕', name: 'เกราะ' },
     head:  { label: '⛑️', name: 'หมวก'  },
     med:   { label: '🩹', name: 'ยา'    },
@@ -66,13 +65,13 @@ const Backpack = (() => {
   function isWeapon(def) { return def?.cat === 'weapon'; }
   function canStack(def) {
     if (!def) return true;
-    return !['weapon','knife','armor','helmet'].includes(def.cat);
+    return !['weapon','armor','helmet'].includes(def.cat);
   }
   function _equipCanStack(slotId) { return slotId === 'med'; }
 
   function getEquipSlot(def) {
     if (!def) return null;
-    return { weapon:'gun', knife:'knife', armor:'body', helmet:'head', med:'med', supply:null }[def.cat] ?? null;
+    return { weapon:'gun', armor:'body', helmet:'head', med:'med', supply:null }[def.cat] ?? null;
   }
 
   // ── counts ───────────────────────────────────────────────
