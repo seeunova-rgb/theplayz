@@ -7,7 +7,7 @@ const Ranking = (() => {
   let _uid = null;
 
   const TABS = [
-    { key: 'reputation',  label: '🏅 ชื่อเสียง',      field: 'reputation',  fmt: v => `+${v}`   },
+    { key: 'reputation',  label: '🏅 ชื่อเสียง',      field: 'reputation',  fmt: null   },
     { key: 'money',       label: '💵 เงิน',            field: 'money',       fmt: v => v.toLocaleString() },
     { key: 'kills',       label: '🔫 สังหาร',          field: 'kills',       fmt: v => v         },
     { key: 'deaths',      label: '💀 ตาย',             field: 'deaths',      fmt: v => v         },
@@ -45,7 +45,8 @@ const Ranking = (() => {
     try {
       const nameEl = document.getElementById('display-name');
       const name   = nameEl ? nameEl.textContent : 'Unknown';
-      const rep    = (typeof Reputation !== 'undefined') ? Reputation.get() : 0;
+      const repObj = (typeof Reputation !== 'undefined') ? Reputation.get() : { rep: 0 };
+      const rep    = (repObj && typeof repObj.rep === 'number') ? repObj.rep : 0;
       const money  = (typeof Money !== 'undefined') ? (Money.get().money || 0) : 0;
       const r      = _fb.ref(_fb.db, `users/${_uid}/profile`);
       await _fb.set(r, { displayName: name, reputation: rep, money });
@@ -68,9 +69,12 @@ const Ranking = (() => {
       const profile = d.profile || {};
       const stats   = d.stats   || {};
       let value = 0;
-      if (tabKey === 'reputation') value = profile.reputation || 0;
-      else if (tabKey === 'money') value = profile.money      || 0;
-      else                         value = stats[tabKey]      || 0;
+      if (tabKey === 'reputation') {
+        const raw = profile.reputation;
+        // รองรับทั้งแบบ number และ object เก่า { rep: N }
+        value = (raw && typeof raw === 'object') ? (raw.rep || 0) : (raw || 0);
+      } else if (tabKey === 'money') value = profile.money || 0;
+      else                           value = stats[tabKey] || 0;
       rows.push({ uid: child.key, name: profile.displayName || 'Unknown', value });
     });
 
@@ -150,12 +154,32 @@ const Ranking = (() => {
       listEl.innerHTML = rows.map(r => {
         const isMe    = r.uid === _uid;
         const medal   = r.rank === 1 ? '🥇' : r.rank === 2 ? '🥈' : r.rank === 3 ? '🥉' : `#${r.rank}`;
-        const valFmt  = tab.fmt(r.value);
+
+        let valFmt;
+        if (_activeTab === 'reputation') {
+          const rep  = r.value;
+          const sign = rep >= 0 ? '+' : '';
+          // หา tier จาก REPUTATION_CONFIG
+          let tierHtml = '';
+          if (typeof REPUTATION_CONFIG !== 'undefined') {
+            const tier = REPUTATION_CONFIG.TIERS.find(t => rep >= t.min && rep <= t.max);
+            if (tier && tier.img) {
+              tierHtml = `<img src="assets/reputations/${tier.img}" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:4px;">`;
+            }
+            const tierLabel = (tier && tier.label) ? `<span style="font-size:10px;opacity:0.7;margin-right:4px;">${tier.label}</span>` : '';
+            valFmt = `${tierHtml}${tierLabel}<span>${sign}${rep}</span>`;
+          } else {
+            valFmt = `${sign}${rep}`;
+          }
+        } else {
+          valFmt = tab.fmt(r.value);
+        }
+
         return `
           <div class="rank-row${isMe ? ' rank-row-me' : ''}">
             <span class="rank-medal">${medal}</span>
             <span class="rank-name">${r.name}${isMe ? ' 👤' : ''}</span>
-            <span class="rank-value">${valFmt}</span>
+            <span class="rank-value" style="display:flex;align-items:center;">${valFmt}</span>
           </div>
         `;
       }).join('');
