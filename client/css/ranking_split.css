@@ -1,0 +1,90 @@
+/* ===== RANKING — reputation split layout (เพิ่มใน lobby.css) ===== */
+
+/* container 2 คอลัมน์ */
+.rep-split {
+  display: flex;
+  gap: 0;
+  width: 100%;
+  min-height: 200px;
+}
+
+/* เส้นแบ่งกลาง */
+.rep-divider {
+  width: 1px;
+  background: rgba(255,255,255,0.1);
+  flex-shrink: 0;
+  margin: 0 4px;
+}
+
+/* คอลัมน์ซ้าย/ขวา */
+.rep-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* หัวคอลัมน์ */
+.rep-col-header {
+  font-family: 'Black Ops One', sans-serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 4px 6px 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.rep-col-pos .rep-col-header {
+  color: #4caf50;
+}
+.rep-col-neg .rep-col-header {
+  color: #f44336;
+}
+.rep-col-icon {
+  font-size: 10px;
+}
+
+/* list ใน column */
+.rep-col-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* rank-row ใน split — compact กว่าปกติ */
+.rep-col .rank-row {
+  padding: 5px 6px;
+  gap: 5px;
+  border-radius: 6px;
+}
+.rep-col .rank-medal {
+  width: 22px;
+  font-size: 10px;
+}
+.rep-col .rank-name {
+  font-size: 11px;
+}
+.rep-col .rank-value {
+  font-size: 10px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+
+/* ค่า rep+ สีเขียว / rep- สีแดง */
+.rep-col-pos .rank-value { color: #69e069; }
+.rep-col-neg .rank-value { color: #ff6b6b; }
+
+/* tier icon & label ใน split */
+.rank-tier-img {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 2px;
+}
+.rank-tier-label {
+  font-size: 9px;
+  opacity: 0.65;
+}
