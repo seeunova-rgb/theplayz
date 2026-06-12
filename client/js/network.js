@@ -87,8 +87,14 @@ const Network = (() => {
 
     // [FIX #5] player_update จาก server มี hp/alive จาก server แล้ว
     // ใช้ Object.assign โดยตรง — รวมถึง reducePct ที่ตอนนี้ส่งมาด้วย
+    // [FIX #7] สร้าง entry ใหม่ถ้ายังไม่มี — กรณี A อยู่ก่อน B เข้า
+    // B จะไม่เคยรับ player_joined ของ A ทำให้ remotePlayers[A.id] ไม่มี
+    // → B มองไม่เห็น A แม้ A จะส่ง player_update มาตลอด
     socket.on('player_update', (data) => {
-      if (remotePlayers[data.id]) Object.assign(remotePlayers[data.id], data);
+      if (!remotePlayers[data.id]) {
+        remotePlayers[data.id] = { alive: true, hp: 100 };
+      }
+      Object.assign(remotePlayers[data.id], data);
       if (_cb.onPlayerUpdate) _cb.onPlayerUpdate(data);
     });
 
