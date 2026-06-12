@@ -658,17 +658,48 @@ const Backpack = (() => {
       return;
     }
 
-    let qty = 1;
+    // หาจำนวนสูงสุดที่ทิ้งได้
+    let maxQty = 1;
+    let stackable = false;
+    if (src === 'pg_item') {
+      const slot = items[ref];
+      if (!slot) return;
+      maxQty = slot.qty;
+      stackable = canStack(findDef(itemId)) && maxQty > 1;
+    } else if (src === 'pg_equip') {
+      maxQty = equipQty[ref] || 1;
+      stackable = _equipCanStack(ref) && maxQty > 1;
+    } else {
+      return;
+    }
+
+    // stackable + มีมากกว่า 1 ชิ้น → ถาม qty ก่อนทิ้ง
+    if (stackable) {
+      showQtyPopup(maxQty, 'กระเป๋า', qty => _doDropOutside(src, ref, itemId, qty));
+    } else {
+      _doDropOutside(src, ref, itemId, maxQty);
+    }
+  }
+
+  function _doDropOutside(src, ref, itemId, qty) {
     if (src === 'pg_item') {
       const slotIdx = ref;
       if (slotIdx < 0 || slotIdx >= items.length) return;
       const slot = items[slotIdx];
-      qty = slot.qty;
-      items.splice(slotIdx, 1);
+      const actualQty = Math.min(qty, slot.qty);
+      slot.qty -= actualQty;
+      if (slot.qty <= 0) items.splice(slotIdx, 1);
+      qty = actualQty;
     } else if (src === 'pg_equip') {
       const slotId = ref;
-      qty = equipQty[slotId] || 1;
-      unequipSlot(slotId);
+      const totalQty = equipQty[slotId] || 1;
+      const actualQty = Math.min(qty, totalQty);
+      if (actualQty >= totalQty) {
+        unequipSlot(slotId);
+      } else {
+        equipQty[slotId] = totalQty - actualQty;
+      }
+      qty = actualQty;
     } else {
       return;
     }

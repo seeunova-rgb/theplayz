@@ -288,7 +288,21 @@ const Weapon = (() => {
     return _getActiveGunConfig();
   }
 
-  return { shoot, update, draw, getBullets: () => bullets, initAmmo, updateAmmoUI, getActiveGunConfig };
+  // [FIX MULTIPLAYER] เพิ่ม bullet จาก remote player เข้า array
+  // remote bullets แสดงภาพแต่ไม่ตรวจ hit กับ remote players (server เป็น source of truth)
+  function addRemoteBullet(data) {
+    bullets.push({
+      x:      data.x,
+      y:      data.y,
+      vx:     data.vx,
+      vy:     data.vy,
+      dist:   0,
+      trail:  [],
+      remote: true,
+    });
+  }
+
+  return { shoot, update, draw, getBullets: () => bullets, initAmmo, updateAmmoUI, getActiveGunConfig, addRemoteBullet };
 })();
 
 window.Weapon = Weapon;

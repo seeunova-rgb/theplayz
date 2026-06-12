@@ -418,6 +418,50 @@ function initGame() {
     if (rp[id]) { rp[id].alive = true; rp[id].hp = hp; rp[id].x = x; rp[id].y = y; }
   });
 
+  // [FIX MULTIPLAYER] callbacks ที่หายไป — ทำให้ผู้เล่นอื่นมองไม่เห็นกัน
+
+  // ผู้เล่นใหม่เข้า world — เพิ่มลงใน remotePlayers
+  Network.on('onPlayerJoined', (data) => {
+    const rp = Network.getRemotePlayers();
+    rp[data.id] = data;
+  });
+
+  // รับ position/state update จากผู้เล่นอื่น — อัปเดตให้ real-time
+  Network.on('onPlayerUpdate', (data) => {
+    const rp = Network.getRemotePlayers();
+    if (rp[data.id]) Object.assign(rp[data.id], data);
+  });
+
+  // ผู้เล่นออกจาก world — ลบออก
+  Network.on('onPlayerLeft', (id) => {
+    const rp = Network.getRemotePlayers();
+    delete rp[id];
+  });
+
+  // กระสุนของผู้เล่นอื่น — สร้าง bullet ให้แสดงในเกม
+  Network.on('onBullet', (data) => {
+    if (typeof Weapon !== 'undefined' && Weapon.addRemoteBullet) {
+      Weapon.addRemoteBullet(data);
+    } else {
+      // fallback: ใช้ bullets array โดยตรงผ่าน Weapon module ถ้า addRemoteBullet ยังไม่มี
+      const rBullet = {
+        x:      data.x,
+        y:      data.y,
+        vx:     data.vx,
+        vy:     data.vy,
+        dist:   0,
+        trail:  [],
+        remote: true,  // tag ว่าเป็น bullet จากคนอื่น — ไม่ตรวจ hit กับ remote players
+      };
+      if (typeof Weapon !== 'undefined') Weapon.getBullets().push(rBullet);
+    }
+  });
+
+  // server ยืนยัน HP หลังใช้ยา bandage
+  Network.on('onHealed', ({ hp }) => {
+    if (player) player.hp = hp;
+  });
+
   // [FIX] connect หลังจาก callbacks พร้อมแล้วเท่านั้น
   Network.connect();
 }
@@ -499,7 +543,7 @@ function update(timestamp) {
     const _gun = Weapon.getActiveGunConfig();
     if (_gun) {
       bullets.forEach(b => {
-        if (b._hit || _inSz(b.x, b.y)) return;
+        if (b._hit || b.remote || _inSz(b.x, b.y)) return;  // [FIX] skip remote bullets
         Object.values(remotePlayers).forEach(rp => {
           if (!rp.alive || _inSz(rp.x, rp.y)) return;
           const dx = b.x - rp.x, dy = b.y - rp.y;
