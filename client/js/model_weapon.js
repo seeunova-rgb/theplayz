@@ -40,7 +40,8 @@ Object.keys(_GUN_SPRITES).forEach(function(id) {
   _gunImgs[id] = img;
 });
 
-function _getEquippedGunId() {
+function _getEquippedGunId(player) {
+  if (player && player.gunId) return player.gunId;
   if (typeof Backpack === 'undefined') return null;
   var slot = Backpack.getEquippedInSlot('gun');
   if (!slot) return null;
@@ -49,7 +50,7 @@ function _getEquippedGunId() {
 
 // ── วาด sprite ปืนบน player ──────────────────────────────
 function drawGunOnPlayer(ctx, player) {
-  var gunId = _getEquippedGunId();
+  var gunId = _getEquippedGunId(player);
   if (!gunId) return;
   var _gunImg = _gunImgs[gunId];
   if (!_gunImg || !_gunImg.complete || _gunImg.naturalWidth === 0) return;
@@ -106,8 +107,8 @@ function drawMuzzleFlash(ctx, player, muzzleFlash) {
 }
 
 // ── วาดกระสุนทั้งหมด ─────────────────────────────────────
-function drawBullets(ctx, bullets) {
-  var gunId = _getEquippedGunId();
+function drawBullets(ctx, bullets, player) {
+  var gunId = _getEquippedGunId(player);
   var GUN = (gunId && WEAPON_CONFIG[gunId]) ? WEAPON_CONFIG[gunId] : WEAPON_CONFIG.snp_reddevil;
 
   bullets.forEach(b => {
