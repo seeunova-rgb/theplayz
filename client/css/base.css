@@ -53,43 +53,5 @@ body {
 .screen.leaving { animation: leaveOut 0.35s forwards; }
 @keyframes leaveOut { to { opacity: 0; transform: scale(1.03); } }
 
-
-/* ===================================================
-   FORCE LANDSCAPE — หมุนหน้าจอถ้าถือแนวตั้ง
-   =================================================== */
-#rotate-screen {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: #0a0c12;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-}
-#rotate-screen .rotate-icon {
-  font-size: 52px;
-  animation: rotateAnim 1.2s ease-in-out infinite;
-}
-#rotate-screen .rotate-text {
-  font-family: 'Black Ops One', sans-serif;
-  font-size: 14px;
-  letter-spacing: 0.12em;
-  color: rgba(255,255,255,0.7);
-}
-#rotate-screen .rotate-sub {
-  font-size: 10px;
-  color: rgba(255,255,255,0.3);
-  letter-spacing: 0.06em;
-}
-@keyframes rotateAnim {
-  0%   { transform: rotate(0deg); }
-  40%  { transform: rotate(-90deg); }
-  60%  { transform: rotate(-90deg); }
-  100% { transform: rotate(0deg); }
-}
-@media (orientation: portrait) {
-  #rotate-screen { display: flex; }
-  body:has(#install-overlay:not(.hidden)) #rotate-screen { display: none; }
-}
+/* rotate-screen ซ่อนเสมอ — APK บังคับ landscape ผ่าน manifest แล้ว */
+#rotate-screen { display: none !important; }
