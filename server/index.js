@@ -11,11 +11,6 @@ const io = new Server(server, {
   cors: { origin: '*' }
 });
 
-// ===== TWA Digital Asset Links (ต้อง serve ได้แม้เป็น dotfile) =====
-app.get('/.well-known/assetlinks.json', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/.well-known/assetlinks.json'));
-});
-
 // serve client files — ไม่ cache JS/CSS เพื่อให้ได้ไฟล์ใหม่เสมอ
 app.use(express.static(path.join(__dirname, '../client'), {
   etag: false,
