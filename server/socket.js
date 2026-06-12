@@ -5,8 +5,8 @@ const { players, WORLD, WORLD_IDS, socketWorld, world_drops, newDropId, saveDrop
 const { randomColor } = require('./utils');
 
 // ── ค่า limit สำหรับ server-side validation ──────────────────────────────
-const MAX_DAMAGE       = 500;   // ดาเมจสูงสุดที่ยอมรับต่อนัด (กัน cheat ส่งค่าเกิน)
-const MAX_SPEED_PX     = 12;    // ความเร็วสูงสุดที่ยอมรับต่อ tick (px) — กัน teleport
+const MAX_DAMAGE       = 1000;   // ดาเมจสูงสุดที่ยอมรับต่อนัด (กัน cheat ส่งค่าเกิน)
+const MAX_SPEED_PX     = 30;    // ความเร็วสูงสุดที่ยอมรับต่อ tick (px) — กัน teleport
 const TICK_INTERVAL_MS = 33;    // ~30 tick/s (network.js ส่งทุก 2 frame @ 60fps)
 
 // broadcast online counts ให้ทุกคน
@@ -163,7 +163,8 @@ function initSocket(io) {
       if (target.hp <= 0) {
         target.hp    = 0;
         target.alive = false;
-        players[wid][socket.id].kills++;
+        const attacker = players[wid][socket.id];
+        if (attacker) attacker.kills++;
         io.to(wid).emit('player_died', { id: data.targetId, killerId: socket.id });
       } else {
         io.to(data.targetId).emit('took_damage', { hp: target.hp, damage: finalDmg });

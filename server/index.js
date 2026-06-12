@@ -22,6 +22,14 @@ app.use(express.static(path.join(__dirname, '../client'), {
 
 initSocket(io);
 
+// ── กัน server crash จาก exception เดี่ยวๆ ใน socket event handlers ──
+process.on('uncaughtException', (err) => {
+  console.error('[UNCAUGHT EXCEPTION]', err);
+});
+process.on('unhandledRejection', (err) => {
+  console.error('[UNHANDLED REJECTION]', err);
+});
+
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`THEPLAYZ server running on http://localhost:${PORT}`);
