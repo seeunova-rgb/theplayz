@@ -387,7 +387,14 @@ function initGame() {
     }
   });
 
-  Network.on('onPlayerDied', ({ id, killerId }) => {
+  // [FIX] hit_confirm: server ส่งดาเมจจริง (หลังหักเกราะ/headshot) กลับมา
+  // ใช้แสดงเลขดาเมจบนเป้าให้ผู้ยิงเห็นค่าที่ถูกต้อง
+  Network.on('onHitConfirm', ({ targetId, damage }) => {
+    const rp = Network.getRemotePlayers()[targetId];
+    if (rp) {
+      _spawnDmgNum(rp.x, rp.y + _charTopY(CONFIG.PLAYER_R), damage, '#ffffff', false);
+    }
+  });
     const rp = Network.getRemotePlayers();
 
     // ── Reputation: ผู้ฆ่าได้ rep จากการฆ่าผู้เล่น ──────────
@@ -581,7 +588,6 @@ function update(timestamp) {
             const hitZone = b.y < headThreshold ? 'head' : 'body';
 
             Network.sendHit(rp.id, _gun.damage, hitZone);
-            _spawnDmgNum(rp.x, rp.y + _charTopY(CONFIG.PLAYER_R), _gun.damage, '#ffffff', false);
           }
         });
       });

@@ -32,4 +32,7 @@ var CHARACTERS = [
   },
 ];
 
-
+// ── export ให้ server (Node) เรียกใช้ได้ — ไม่กระทบฝั่ง browser ──
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { CHARACTERS, CHARACTER_CONFIG };
+}

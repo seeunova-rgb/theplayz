@@ -14,6 +14,7 @@ const Network = (() => {
     onPlayerLeft:      null,  // (id)
     onBullet:          null,  // (data)
     onTookDamage:      null,  // ({ hp, damage })
+    onHitConfirm:      null,  // ({ targetId, damage, hitZone })
     onPlayerDied:      null,  // ({ id, killerId })
     onDropSpawned:     null,  // (drop)
     onDropRemoved:     null,  // ({ dropId })
@@ -103,6 +104,11 @@ const Network = (() => {
 
     socket.on('took_damage', (data) => {
       if (_cb.onTookDamage) _cb.onTookDamage(data);
+    });
+
+    // [FIX] ดาเมจจริงหลังหักเกราะ — ใช้แสดงเลขดาเมจให้ผู้ยิงเห็นถูกต้อง
+    socket.on('hit_confirm', (data) => {
+      if (_cb.onHitConfirm) _cb.onHitConfirm(data);
     });
 
     socket.on('player_died', (data) => {
