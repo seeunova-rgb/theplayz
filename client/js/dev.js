@@ -61,6 +61,7 @@ const Dev = (() => {
             <button class="dev-tab" data-tab="money">💵 เงิน</button>
             <button class="dev-tab" data-tab="entity">🧟 Entity</button>
             <button class="dev-tab" data-tab="cheat">🛠 Cheat</button>
+            <button class="dev-tab" data-tab="namecolor">🎨 ชื่อสี</button>
           </div>
           <button class="dev-close" id="dev-close-btn">✕</button>
         </div>
@@ -89,7 +90,8 @@ const Dev = (() => {
     if (_tab === 'item')   body.innerHTML = _htmlItem();
     if (_tab === 'money')  body.innerHTML = _htmlMoney();
     if (_tab === 'entity') body.innerHTML = _htmlEntity();
-    if (_tab === 'cheat')  body.innerHTML = _htmlCheat();
+    if (_tab === 'cheat')     body.innerHTML = _htmlCheat();
+    if (_tab === 'namecolor') { _renderNameColor(body); return; }
   }
 
   // ── Tab: เสกของ ───────────────────────────────────────────
@@ -418,8 +420,9 @@ const Dev = (() => {
   function isActive() { return _active; }
   function onReady(fn) { if (_ready) fn(); else _onReadyCallbacks.push(fn); }
 
-  function init(uid, firestoreHelpers) {
+  function init(uid, firestoreHelpers, rtdbHelpers) {
     _active = false; _ready = false;
+    if (rtdbHelpers) _rtdb = rtdbHelpers;
     const { getDoc, doc, db } = firestoreHelpers;
     _load(getDoc, doc(db, 'users', uid, 'dev', 'status'));
   }
@@ -433,11 +436,104 @@ const Dev = (() => {
     if (ov) ov.remove();
   }
 
+  // ── Tab: ชื่อสี ───────────────────────────────────────────
+  function _renderNameColor(body) {
+    if (!_rtdb) {
+      body.innerHTML = '<div class="dev-hint">❌ ไม่มี RTDB connection</div>';
+      return;
+    }
+    body.innerHTML = `
+      <div class="dev-section">
+        <div class="dev-label">🎨 กำหนดสีชื่อผู้เล่น</div>
+        <div class="dev-row">
+          <input id="nc-uid" class="dev-input" placeholder="UID ผู้เล่น" style="flex:2"/>
+        </div>
+        <div class="dev-row" style="gap:6px">
+          <input id="nc-color" type="color" value="#ffffff" style="width:40px;height:32px;border:none;background:none;cursor:pointer;padding:0"/>
+          <input id="nc-label" class="dev-input" placeholder="ป้ายกำกับ เช่น Dev, VIP, Admin" style="flex:2"/>
+        </div>
+        <div class="dev-row" style="gap:6px">
+          <button class="dev-action-btn" id="nc-set-btn" style="flex:1">✅ ตั้งค่า</button>
+          <button class="dev-action-btn" id="nc-clear-btn" style="flex:1;background:rgba(255,80,80,0.15)">🗑 ล้าง</button>
+        </div>
+        <div class="dev-hint" id="nc-hint"></div>
+        <div class="dev-label" style="margin-top:10px">📋 รายชื่อที่มีสี</div>
+        <div id="nc-list" style="font-size:11px;color:rgba(255,255,255,0.6);max-height:180px;overflow-y:auto"></div>
+      </div>`;
+
+    // โหลดรายชื่อที่มีสีอยู่
+    const { ref, get, set, db } = _rtdb;
+    // โหลดรายชื่อที่มีสีจาก users/*/profile/nameColor
+    get(ref(db, 'users')).then(snap => {
+      const listEl = document.getElementById('nc-list');
+      if (!listEl) return;
+      if (!snap.exists()) { listEl.textContent = 'ยังไม่มีข้อมูล'; return; }
+      const entries = [];
+      snap.forEach(child => {
+        const uid = child.key;
+        const nc  = child.child('profile/nameColor').val();
+        const name = child.child('profile/displayName').val() || uid.slice(0,8);
+        if (nc && nc.color) entries.push({ uid, name, ...nc });
+      });
+      if (entries.length === 0) { listEl.textContent = 'ยังไม่มีข้อมูล'; return; }
+      listEl.innerHTML = entries.map(v =>
+        `<div style="display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+          <span style="width:12px;height:12px;border-radius:2px;background:${v.color};display:inline-block;flex-shrink:0"></span>
+          <span style="color:${v.color};font-weight:700">${v.label || ''}</span>
+          <span style="color:rgba(255,255,255,0.8);font-size:11px">${v.name}</span>
+          <span style="color:rgba(255,255,255,0.3);font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${v.uid.slice(0,10)}…</span>
+          <button onclick="Dev.clearNameColor('${v.uid}')" style="margin-left:auto;font-size:10px;background:rgba(255,60,60,0.2);border:none;color:#ff9999;border-radius:3px;padding:1px 5px;cursor:pointer">ลบ</button>
+        </div>`
+      ).join('');
+    });
+
+    document.getElementById('nc-set-btn').onclick = () => {
+      const uid   = document.getElementById('nc-uid').value.trim();
+      const color = document.getElementById('nc-color').value;
+      const label = document.getElementById('nc-label').value.trim();
+      if (!uid) return _ncHint('❌ กรอก UID ก่อน');
+      setNameColor(uid, color, label);
+    };
+    document.getElementById('nc-clear-btn').onclick = () => {
+      const uid = document.getElementById('nc-uid').value.trim();
+      if (!uid) return _ncHint('❌ กรอก UID ก่อน');
+      clearNameColor(uid);
+    };
+  }
+
+  function _ncHint(msg) {
+    const el = document.getElementById('nc-hint');
+    if (el) { el.textContent = msg; setTimeout(() => { if(el) el.textContent=''; }, 3000); }
+  }
+
+  function setNameColor(uid, color, label) {
+    if (!_rtdb) return;
+    const { ref, set, db } = _rtdb;
+    set(ref(db, `users/${uid}/profile/nameColor`), { color, label: label || '' })
+      .then(() => {
+        _ncHint(`✅ ตั้งค่าแล้ว: ${label} (${color})`);
+        if (_tab === 'namecolor') _renderNameColor(document.getElementById('dev-body'));
+      })
+      .catch(e => _ncHint('❌ Error: ' + e.message));
+  }
+
+  function clearNameColor(uid) {
+    if (!_rtdb) return;
+    const { ref, set, db } = _rtdb;
+    set(ref(db, `users/${uid}/profile/nameColor`), null)
+      .then(() => {
+        _ncHint('✅ ล้างแล้ว');
+        if (_tab === 'namecolor') _renderNameColor(document.getElementById('dev-body'));
+      })
+      .catch(e => _ncHint('❌ Error: ' + e.message));
+  }
+
   return {
     init, reset, isActive, onReady, toggle, open, close,
     giveItem, giveMoney, spawnZombie, spawnBoss,
     toggleGod, toggleLockHead, toggleInvisible,
-    teleport, teleportCenter, setHp, setSpeed, setRegen
+    teleport, teleportCenter, setHp, setSpeed, setRegen,
+    setNameColor, clearNameColor,
   };
 })();
 

@@ -355,9 +355,56 @@
 
   <!-- HP HUD (ซ้ายล่าง) -->
   <div id="hp-hud" style="display:none;">
-    <div id="hp-bar-track">
-      <div id="hp-bar-fill"></div>
-      <div id="hp-count"><span id="hp-cur">100</span><span class="hp-sep">/</span><span id="hp-max">100</span></div>
+    <div id="hp-char-wrap">
+      <!-- วงกลมพื้นหลัง -->
+      <svg id="hp-svg" viewBox="0 0 80 90" width="70" height="78" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- clip path รูปคน (silhouette) -->
+          <clipPath id="person-clip">
+            <!-- หัว -->
+            <ellipse cx="40" cy="18" rx="10" ry="11"/>
+            <!-- ลำตัว -->
+            <rect x="28" y="28" width="24" height="26" rx="4"/>
+            <!-- แขนซ้าย -->
+            <rect x="14" y="29" width="13" height="8" rx="4"/>
+            <!-- แขนขวา -->
+            <rect x="53" y="29" width="13" height="8" rx="4"/>
+            <!-- ขาซ้าย -->
+            <rect x="28" y="53" width="10" height="26" rx="4"/>
+            <!-- ขาขวา -->
+            <rect x="42" y="53" width="10" height="26" rx="4"/>
+          </clipPath>
+          <!-- clip สำหรับ fill จากล่างขึ้น -->
+          <clipPath id="hp-fill-clip">
+            <rect id="hp-fill-rect" x="0" y="90" width="80" height="0"/>
+          </clipPath>
+        </defs>
+
+        <!-- วงกลมพื้นหลัง -->
+        <circle cx="40" cy="45" r="38" fill="rgba(0,0,0,0.6)" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+
+        <!-- silhouette สีเทา (พื้นหลัง) -->
+        <g clip-path="url(#person-clip)" fill="rgba(120,120,120,0.4)">
+          <rect x="0" y="0" width="80" height="90"/>
+        </g>
+
+        <!-- เลือด (ลดจากบนลงล่าง) -->
+        <g clip-path="url(#person-clip)">
+          <g clip-path="url(#hp-fill-clip)">
+            <rect id="hp-blood-fill" x="0" y="0" width="80" height="90" fill="#e03030"/>
+          </g>
+        </g>
+
+        <!-- ขอบ silhouette -->
+        <g clip-path="url(#person-clip)" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1">
+          <rect x="0" y="0" width="80" height="90"/>
+        </g>
+      </svg>
+
+      <!-- ตัวเลข HP ใต้วงกลม -->
+      <div id="hp-count">
+        <span id="hp-cur">100</span><span class="hp-sep">/</span><span id="hp-max">100</span>
+      </div>
     </div>
   </div>
 

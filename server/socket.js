@@ -4,6 +4,14 @@
 const { players, WORLD, WORLD_IDS, socketWorld, world_drops, newDropId, saveDrops } = require('./gameState');
 const { randomColor } = require('./utils');
 
+// ── โหลด weapon config สำหรับ validate bullet ────────────────────────────
+const { WEAPON_CONFIG } = require('../client/js/config_weapon.js');
+const VALID_GUN_IDS = new Set(Object.keys(WEAPON_CONFIG));
+
+// ── hit log สำหรับ Death Recap (เก็บแค่ 5 วินาทีล่าสุด) ──────────────────
+// structure: { [targetId]: [ { attackerId, attackerName, damage, hitZone, gunId, ts } ] }
+const _hitLog = {};
+
 // ── ค่า limit สำหรับ server-side validation ──────────────────────────────
 const MAX_DAMAGE       = 1000;   // ดาเมจสูงสุดที่ยอมรับต่อนัด (กัน cheat ส่งค่าเกิน)
 const MAX_SPEED_PX     = 30;    // ความเร็วสูงสุดที่ยอมรับต่อ tick (px) — กัน teleport
@@ -163,10 +171,35 @@ function initSocket(io) {
     });
 
     // ── bullet ───────────────────────────────────────────────
+    // validate: gunId ต้องตรงกับปืนที่ผู้เล่นถืออยู่จริงบน server
+    // ค่า speed/range/color ดึงจาก WEAPON_CONFIG — client แก้ไม่ได้
     socket.on('bullet', (data) => {
       const wid = socketWorld[socket.id];
-      if (!wid) return;
-      socket.to(wid).emit('bullet', { ...data, owner: socket.id });
+      if (!wid || !players[wid][socket.id]) return;
+
+      const p = players[wid][socket.id];
+      if (!p.alive) return;
+
+      // gunId ต้องตรงกับที่ผู้เล่นถืออยู่จริงบน server
+      const gunId = p.gunId;
+      if (!gunId || !VALID_GUN_IDS.has(gunId)) return;
+
+      // ดึงค่าจาก config จริง — ไม่เชื่อค่าจาก client
+      const cfg = WEAPON_CONFIG[gunId];
+
+      socket.to(wid).emit('bullet', {
+        x:          p.x,
+        y:          p.y,
+        angle:      typeof data.angle === 'number' ? data.angle : 0,
+        speed:      cfg.speed,
+        range:      cfg.range,
+        bulletR:    cfg.bulletR,
+        color:      cfg.color,
+        trailColor: cfg.trailColor,
+        trailLen:   cfg.trailLen,
+        owner:      socket.id,
+        gunId:      gunId,
+      });
     });
 
     // ── hit ──────────────────────────────────────────────────
@@ -196,18 +229,43 @@ function initSocket(io) {
       const finalDmg  = Math.max(1, Math.round(afterArmor * headshotMult));
       target.hp -= finalDmg;
 
+      // ── บันทึก hit log สำหรับ Death Recap ──────────────────
+      const attacker = players[wid][socket.id];
+      const now = Date.now();
+      if (!_hitLog[data.targetId]) _hitLog[data.targetId] = [];
+      _hitLog[data.targetId].push({
+        attackerId:   socket.id,
+        attackerName: attacker ? attacker.name : 'Unknown',
+        gunId:        attacker ? (attacker.gunId || 'unknown') : 'unknown',
+        damage:       finalDmg,
+        hitZone:      hitZone,
+        ts:           now,
+      });
+      // เก็บแค่ 5 วินาทีล่าสุด
+      const RECAP_WINDOW = 5000;
+      _hitLog[data.targetId] = _hitLog[data.targetId].filter(e => now - e.ts <= RECAP_WINDOW);
+
       if (target.hp <= 0) {
         target.hp    = 0;
         target.alive = false;
-        const attacker = players[wid][socket.id];
         if (attacker) attacker.kills++;
+
+        // ── ส่ง Death Recap ให้ผู้ตาย ──────────────────────────
+        const recap = (_hitLog[data.targetId] || []).slice(-10); // สูงสุด 10 hits
+        delete _hitLog[data.targetId]; // เคลียร์ log หลังตาย
+        io.to(data.targetId).emit('death_recap', {
+          killerId:     socket.id,
+          killerName:   attacker ? attacker.name : 'Unknown',
+          killerGunId:  attacker ? (attacker.gunId || 'unknown') : 'unknown',
+          hits:         recap,
+        });
+
         io.to(wid).emit('player_died', { id: data.targetId, killerId: socket.id });
       } else {
         io.to(data.targetId).emit('took_damage', { hp: target.hp, damage: finalDmg, hitZone });
       }
 
-      // [FIX] ส่งดาเมจจริง (หลังหักเกราะ/headshot) กลับไปให้ผู้ยิง
-      // เพื่อแสดงเลขดาเมจลอยบนหัวเป้าให้ตรงกับความเสียหายจริง
+      // ส่งดาเมจจริง (หลังหักเกราะ/headshot) กลับไปให้ผู้ยิง
       socket.emit('hit_confirm', { targetId: data.targetId, damage: finalDmg, hitZone });
     });
 

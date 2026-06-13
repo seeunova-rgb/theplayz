@@ -1,58 +1,42 @@
-/* ===== HP HUD (ซ้ายล่าง, mirror ของ ammo-hud) ===== */
+/* ===== HP HUD (ซ้ายล่าง) — character silhouette ===== */
 #hp-hud {
   position: fixed;
-  bottom: 0;
-  left: 0;
+  bottom: 8px;
+  left: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1px;
-  background: rgba(0,0,0,0.65);
-  border-top: 2px solid rgba(80,200,80,0.6);
-  border-right: 2px solid rgba(80,200,80,0.6);
-  border-top-right-radius: 14px;
-  padding: 3px 6px 3px;
   z-index: 1000;
   pointer-events: none;
-  min-width: 120px;
 }
 
-#hp-bar-track {
-  position: relative;
-  width: 100%;
-  height: 22px;
-  background: rgba(90,90,90,0.75);
-  border-radius: 5px;
-  overflow: hidden;
+#hp-char-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
 }
 
-#hp-bar-fill {
-  position: absolute;
-  top: 0; left: 0;
-  height: 100%;
-  width: 100%;
-  background: #80e080;
-  border-radius: 5px;
-  transition: width 0.15s ease, background 0.3s ease;
+#hp-svg {
+  filter: drop-shadow(0 0 6px rgba(0,0,0,0.8));
 }
 
 #hp-count {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
   font-family: "Black Ops One", sans-serif;
   font-size: 11px;
   color: #fff;
-  line-height: 1;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
   letter-spacing: 1px;
-  white-space: nowrap;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-  pointer-events: none;
-  z-index: 1;
+  line-height: 1;
 }
 #hp-cur  { color: #fff; }
-.hp-sep  { color: rgba(255,255,255,0.6); margin: 0 2px; }
-#hp-max  { color: rgba(255,255,255,0.7); }
+.hp-sep  { color: rgba(255,255,255,0.5); margin: 0 2px; }
+#hp-max  { color: rgba(255,255,255,0.6); }
+
+/* ยังคงไว้เพื่อ backward compat */
+#hp-bar-track { display: none; }
+#hp-bar-fill  { display: none; }
+#hp-divider   { display: none; }
 
 
 /* ===== Armor HUD — อยู่ใน gun-icon-hud (armor-stack) ===== */

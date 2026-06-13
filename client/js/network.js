@@ -113,6 +113,11 @@ const Network = (() => {
       if (_cb.onHitConfirm) _cb.onHitConfirm(data);
     });
 
+    socket.on('death_recap', (data) => {
+      // เก็บ recap ไว้ก่อน — player_died จะมาเรียก showDeathScreen ต่อ
+      window._lastDeathRecap = data;
+    });
+
     socket.on('player_died', (data) => {
       if (_cb.onPlayerDied) _cb.onPlayerDied(data);
     });

@@ -265,8 +265,29 @@ function _tickPickup(dt) {
 // ===== DEATH / RESPAWN =====
 let _deathOverlay = null;
 
-function _showDeathScreen(killerName) {
+function _showDeathScreen(killerName, recap) {
   if (_deathOverlay) return;
+
+  // สร้าง recap rows
+  let recapHtml = '';
+  if (recap && recap.hits && recap.hits.length > 0) {
+    const rows = recap.hits.map(h => {
+      const zone  = h.hitZone === 'head' ? '🎯 หัว' : '🔫 ตัว';
+      const dmgCl = h.hitZone === 'head' ? 'recap-dmg-head' : 'recap-dmg-body';
+      const gun   = h.gunId || '?';
+      return `<div class="recap-row">
+        <span class="recap-attacker">${h.attackerName}</span>
+        <span class="recap-gun">${gun}</span>
+        <span class="recap-zone">${zone}</span>
+        <span class="${dmgCl}">-${h.damage}</span>
+      </div>`;
+    }).join('');
+    recapHtml = `<div class="recap-box">
+      <div class="recap-title">📋 สาเหตุการตาย</div>
+      <div class="recap-header"><span>ผู้โจมตี</span><span>อาวุธ</span><span>โดน</span><span>DMG</span></div>
+      ${rows}
+    </div>`;
+  }
 
   _deathOverlay = document.createElement('div');
   _deathOverlay.id = 'death-overlay';
@@ -275,6 +296,7 @@ function _showDeathScreen(killerName) {
       <div class="death-skull">💀</div>
       <div class="death-title">YOU DIED</div>
       ${killerName ? `<div class="death-killer">โดน <span>${killerName}</span> สังหาร</div>` : '<div class="death-killer">คุณได้รับบาดเจ็บสาหัส</div>'}
+      ${recapHtml}
       <div class="death-actions">
         <button class="death-btn death-btn-respawn" id="btn-respawn">
           <span class="death-btn-icon">🔄</span>
@@ -526,7 +548,9 @@ function initGame() {
       // [FIX] กำลังกลับ lobby → drop ของแล้วพอ ไม่ต้องแสดง death screen
       if (!window._isLeavingGame) {
         const killerName = (killerId && rp[killerId]) ? (rp[killerId].name || 'Unknown') : null;
-        _showDeathScreen(killerName);
+        // recap จะถูกเซ็ตโดย death_recap event ที่มาก่อนหน้า
+        _showDeathScreen(killerName, window._lastDeathRecap || null);
+        window._lastDeathRecap = null;
       }
     } else {
       if (rp[id]) rp[id].alive = false;
@@ -910,22 +934,26 @@ function _updateHpHud() {
   curEl.textContent = hp;
   maxEl.textContent = maxHp;
 
+  // สีเลือดตาม %
   const col = pct > 0.75 ? '#4cde4c'
             : pct > 0.50 ? '#f0e040'
             : pct > 0.25 ? '#ff8c00'
             :               '#ff3333';
-  const shadow = pct > 0.75 ? 'rgba(76,222,76,0.6)'
-               : pct > 0.50 ? 'rgba(240,224,64,0.6)'
-               : pct > 0.25 ? 'rgba(255,140,0,0.6)'
-               :               'rgba(255,51,51,0.6)';
-  curEl.style.color   = col;
-  fill.style.width    = `${Math.round(pct * 100)}%`;
-  fill.style.background  = col;
-  fill.style.boxShadow   = `0 0 5px ${shadow}`;
 
-  const borderCol = col;
-  hud.style.borderTopColor   = borderCol;
-  hud.style.borderRightColor = borderCol;
+  // อัปเดต silhouette fill — ลดจากบนลงล่าง
+  const fillRect = document.getElementById('hp-fill-rect');
+  if (fillRect) {
+    const totalH = 90;
+    const fillH  = Math.round(pct * totalH);
+    fillRect.setAttribute('y',      totalH - fillH);
+    fillRect.setAttribute('height', fillH);
+  }
+  const bloodFill = document.getElementById('hp-blood-fill');
+  if (bloodFill) bloodFill.setAttribute('fill', col);
+
+  // อัปเดตสีตัวเลข
+  curEl.style.color = col;
+
 }
 
 // ── Armor HUD ────────────────────────────────────────────────

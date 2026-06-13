@@ -122,7 +122,20 @@ onAuthStateChanged(auth, async user => {
     Reputation.init(user.uid, fb);  // โหลด Reputation จาก Firebase
     Ranking.init(user.uid, fb);     // init Ranking leaderboard
     Premium.init(user.uid, { get, ref, db });  // โหลดสถานะ Premium จาก Realtime Database
-    Dev.init(user.uid, { getDoc, doc, db: firestoreDb });       // โหลดสถานะ DEV
+    Dev.init(user.uid, { getDoc, doc, db: firestoreDb }, { ref, get, set, onValue, off, db });  // โหลดสถานะ DEV
+
+    // ── listen nameColor ของทุก user จาก users/{uid}/profile/nameColor ──
+    window._nameColors = {};
+    onValue(ref(db, 'users'), snap => {
+      if (!snap.exists()) return;
+      const result = {};
+      snap.forEach(child => {
+        const uid = child.key;
+        const nc  = child.child('profile/nameColor').val();
+        if (nc && nc.color) result[uid] = nc;
+      });
+      window._nameColors = result;
+    });
     // sync profile (ชื่อ, rep, money) ตอนเข้าล็อบบี้
     setTimeout(() => Ranking.syncProfile(), 2000);
     Shop.init(user.uid);
