@@ -960,8 +960,7 @@ function _updateHpHud() {
   const hud   = document.getElementById('hp-hud');
   const curEl = document.getElementById('hp-cur');
   const maxEl = document.getElementById('hp-max');
-  const fill  = document.getElementById('hp-bar-fill');
-  if (!hud || !curEl || !maxEl || !fill) return;
+  if (!hud || !curEl || !maxEl) return;
 
   if (!player || !player.alive || player.hp <= 0) {
     hud.style.display = 'none'; return;
