@@ -59,6 +59,47 @@ navBtns.gacha.addEventListener('click',     () => switchPanel('gacha'));
 navBtns.ranking.addEventListener('click',   () => { switchPanel('ranking'); Ranking.render(); });
 navBtns.settings.addEventListener('click',  () => { switchPanel('settings'); KeyBindUI.render(); if (typeof MusicPlayer !== 'undefined') MusicPlayer.renderSettings(); });
 
+// ── HUD Layout edit buttons ─────────────────────────────────
+const HUD_PREVIEW_IDS = [
+  'joystick-zone', 'sprint-btn', 'pickup-btn',
+  'attack-zone', 'reload-btn', 'bandage-btn',
+  'btn-ingame-bp', 'btn-ingame-shop',
+];
+
+document.getElementById('hud-layout-edit-btn').addEventListener('click', () => {
+  const inGame = !!window._isInGame;
+  const shownByPreview = [];
+
+  // ถ้าไม่ได้อยู่ในเกม ให้แสดง HUD แบบ preview ทับหน้า lobby
+  if (!inGame) {
+    HUD_PREVIEW_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (el.style.display === 'none' || el.style.display === '') {
+        el.style.display = (id === 'joystick-zone' || id === 'attack-zone') ? '' : 'flex';
+        shownByPreview.push(id);
+      }
+    });
+    document.getElementById('lobby').classList.add('hud-preview-active');
+  }
+
+  window._onHudEditClose = () => {
+    shownByPreview.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    document.getElementById('lobby').classList.remove('hud-preview-active');
+    window._onHudEditClose = null;
+  };
+
+  HUDLayoutEditor.open();
+});
+
+document.getElementById('hud-layout-reset-btn').addEventListener('click', () => {
+  HUDLayout.resetAll();
+  showToast('รีเซ็ตตำแหน่งปุ่มทั้งหมดแล้ว', 'success');
+});
+
 // render world select ทันทีที่ lobby โหลด (panel-play เป็น default active)
 WorldSelect.render();
 

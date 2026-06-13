@@ -236,6 +236,7 @@ const Weapon = (() => {
     const GUN = _getActiveGunConfig() || WEAPON_CONFIG.snp_reddevil;
     if (muzzleFlash > 0) muzzleFlash--;
     bullets = bullets.filter(b => {
+      if (b._hit) return false;
       b.trail.push({ x: b.x, y: b.y });
       if (b.trail.length > GUN.trailLen) b.trail.shift();
       b.x += b.vx;

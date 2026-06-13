@@ -107,6 +107,10 @@ function drawMuzzleFlash(ctx, player, muzzleFlash) {
   ctx.fill();
 }
 
+// ── สีกระสุน (ใช้สีเดียวกันทุกปืน) ──────────────────────────
+const BULLET_COLOR       = '#ffe066';
+const BULLET_TRAIL_COLOR = 'rgba(255,224,102,0.35)';
+
 // ── วาดกระสุนทั้งหมด ─────────────────────────────────────
 function drawBullets(ctx, bullets, player) {
   var gunId = _getEquippedGunId(player);
@@ -115,7 +119,7 @@ function drawBullets(ctx, bullets, player) {
   bullets.forEach(b => {
     b.trail.forEach((p, i) => {
       ctx.globalAlpha = (i / b.trail.length) * 0.4;
-      ctx.fillStyle   = GUN.trailColor;
+      ctx.fillStyle   = BULLET_TRAIL_COLOR;
       ctx.beginPath();
       ctx.arc(p.x, p.y, GUN.bulletR * (i / b.trail.length), 0, Math.PI * 2);
       ctx.fill();
@@ -125,7 +129,7 @@ function drawBullets(ctx, bullets, player) {
     if (!isFinite(b.x) || !isFinite(b.y)) return;
     const grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, GUN.bulletR * 1.5);
     grad.addColorStop(0,   '#fff');
-    grad.addColorStop(0.3, GUN.color);
+    grad.addColorStop(0.3, BULLET_COLOR);
     grad.addColorStop(1,   'rgba(255,0,0,0)');
     ctx.fillStyle = grad;
     ctx.beginPath();

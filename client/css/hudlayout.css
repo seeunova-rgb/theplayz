@@ -1,0 +1,83 @@
+/* ===== HUD LAYOUT EDITOR ===== */
+
+#hud-edit-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 500;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  padding-top: max(10px, env(safe-area-inset-top));
+  background: rgba(10,12,15,0.92);
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(6px);
+  font-family: 'Noto Sans Thai', sans-serif;
+}
+
+.hud-edit-title {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  flex: 1;
+}
+
+.hud-edit-btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.8);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hud-edit-done {
+  border-color: rgba(76,175,80,0.6);
+  background: rgba(76,175,80,0.18);
+  color: #c8f5cb;
+}
+
+/* เป้าหมายที่ลากได้ */
+body.hud-edit-mode .hud-edit-target {
+  outline: 2px dashed rgba(245, 197, 24, 0.7);
+  outline-offset: 3px;
+  border-radius: 50%;
+  cursor: grab;
+  touch-action: none;
+  z-index: 600 !important;
+}
+
+.hud-edit-target.hud-edit-dragging {
+  outline-color: #f5c518;
+  box-shadow: 0 0 16px rgba(245,197,24,0.6);
+  cursor: grabbing;
+  opacity: 0.9;
+}
+
+/* joystick zone เป็นกล่องสี่เหลี่ยม ไม่ใช่วงกลม */
+body.hud-edit-mode #joystick-zone.hud-edit-target {
+  border-radius: 12px;
+  background: rgba(245,197,24,0.06);
+}
+
+body.hud-edit-mode #hud-edit-bar ~ * {
+  /* no-op spacer rule */
+}
+
+/* ปิด pointer-events เดิมของ attack-zone ระหว่างแก้ไข เพื่อให้ลาก attack-base ได้ */
+body.hud-edit-mode #attack-zone {
+  pointer-events: none;
+}
+body.hud-edit-mode #attack-base.hud-edit-target {
+  pointer-events: all;
+}
+
+/* แสดง HUD ทับ lobby เมื่อ preview เพื่อจัดตำแหน่ง */
+#lobby.hud-preview-active {
+  pointer-events: none;
+}

@@ -159,6 +159,20 @@ onAuthStateChanged(auth, async user => {
       window._nameColors = colors;
       window._accounts   = accounts;
       window._nickNames  = nicks;
+
+      // ── อัปเดต Account ที่แสดงในหน้า Settings ──────────────
+      const accEl = document.getElementById('display-account');
+      if (accEl) {
+        const myAcc = accounts[user.uid] || 'general';
+        const ACCOUNT_LABEL = {
+          general: { text: 'GENERAL', color: '#ffffff' },
+          premium: { text: '⭐ PREMIUM', color: '#ffd700' },
+          dev:     { text: 'DEV', color: '#ff3333' },
+        };
+        const info = ACCOUNT_LABEL[myAcc] || ACCOUNT_LABEL.general;
+        accEl.textContent = info.text;
+        accEl.style.color = info.color;
+      }
     });
     // sync profile (ชื่อ, rep, money) ตอนเข้าล็อบบี้
     setTimeout(() => Ranking.syncProfile(), 2000);
