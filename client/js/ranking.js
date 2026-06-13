@@ -78,7 +78,7 @@ const Ranking = (() => {
         value = (raw && typeof raw === 'object') ? (raw.rep || 0) : (raw || 0);
       } else if (tabKey === 'money') value = profile.money || 0;
       else                           value = stats[tabKey] || 0;
-      rows.push({ uid: child.key, name: profile.displayName || 'Unknown', value });
+      rows.push({ uid: child.key, name: profile.nickName || profile.displayName || 'Unknown', value });
     });
 
     let result;

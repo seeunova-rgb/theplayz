@@ -62,6 +62,7 @@ const Dev = (() => {
             <button class="dev-tab" data-tab="entity">🧟 Entity</button>
             <button class="dev-tab" data-tab="cheat">🛠 Cheat</button>
             <button class="dev-tab" data-tab="namecolor">🎨 ชื่อสี</button>
+            <button class="dev-tab" data-tab="nickname">🏷 Nickname</button>
           </div>
           <button class="dev-close" id="dev-close-btn">✕</button>
         </div>
@@ -92,6 +93,7 @@ const Dev = (() => {
     if (_tab === 'entity') body.innerHTML = _htmlEntity();
     if (_tab === 'cheat')     body.innerHTML = _htmlCheat();
     if (_tab === 'namecolor') { _renderNameColor(body); return; }
+    if (_tab === 'nickname')  { _renderNickname(body); return; }
   }
 
   // ── Tab: เสกของ ───────────────────────────────────────────
@@ -564,12 +566,101 @@ const Dev = (() => {
       .catch(e => _ncHint('❌ Error: ' + e.message));
   }
 
+  // ── Tab: Nickname (แอดมินตั้งให้เท่านั้น) ──────────────────
+  function _renderNickname(body) {
+    if (!_rtdb) {
+      body.innerHTML = '<div class="dev-hint">❌ ไม่มี RTDB connection</div>';
+      return;
+    }
+    body.innerHTML = `
+      <div class="dev-section">
+        <div class="dev-label">🏷 ตั้ง Nickname ให้ผู้เล่น (แอดมินเท่านั้น)</div>
+        <div class="dev-row">
+          <input id="nick-uid" class="dev-input" placeholder="UID ผู้เล่น" style="flex:2"/>
+        </div>
+        <div class="dev-row">
+          <input id="nick-value" class="dev-input" placeholder="Nickname (รองรับภาษาไทย)" style="flex:2"/>
+        </div>
+        <div class="dev-row" style="gap:6px">
+          <button class="dev-action-btn" id="nick-set-btn" style="flex:1">✅ ตั้ง Nickname</button>
+          <button class="dev-action-btn" id="nick-clear-btn" style="flex:1;background:rgba(255,80,80,0.15)">🗑 ล้าง Nickname</button>
+        </div>
+        <div class="dev-hint" id="nick-hint"></div>
+        <div class="dev-label" style="margin-top:10px">📋 รายชื่อที่มี Nickname</div>
+        <div id="nick-list" style="font-size:11px;color:rgba(255,255,255,0.6);max-height:180px;overflow-y:auto"></div>
+      </div>`;
+
+    const { ref, get, db } = _rtdb;
+    get(ref(db, 'users')).then(snap => {
+      const listEl = document.getElementById('nick-list');
+      if (!listEl) return;
+      if (!snap.exists()) { listEl.textContent = 'ยังไม่มีข้อมูล'; return; }
+      const entries = [];
+      snap.forEach(child => {
+        const uid = child.key;
+        const nick = child.child('profile/nickName').val();
+        const name = child.child('profile/displayName').val() || uid.slice(0,8);
+        if (nick) entries.push({ uid, name, nick });
+      });
+      if (entries.length === 0) { listEl.textContent = 'ยังไม่มีข้อมูล'; return; }
+      listEl.innerHTML = entries.map(v =>
+        `<div style="display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+          <span style="color:#fff;font-weight:700">${v.nick}</span>
+          <span style="color:rgba(255,255,255,0.8);font-size:11px">(${v.name})</span>
+          <span style="color:rgba(255,255,255,0.3);font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${v.uid.slice(0,10)}…</span>
+          <button onclick="Dev.clearNickname('${v.uid}')" style="margin-left:auto;font-size:10px;background:rgba(255,60,60,0.2);border:none;color:#ff9999;border-radius:3px;padding:1px 5px;cursor:pointer">ลบ</button>
+        </div>`
+      ).join('');
+    });
+
+    document.getElementById('nick-set-btn').onclick = () => {
+      const uid  = document.getElementById('nick-uid').value.trim();
+      const nick = document.getElementById('nick-value').value.trim();
+      if (!uid) return _nickHint('❌ กรอก UID ก่อน');
+      if (!nick) return _nickHint('❌ กรอก Nickname ก่อน');
+      setNickname(uid, nick);
+    };
+    document.getElementById('nick-clear-btn').onclick = () => {
+      const uid = document.getElementById('nick-uid').value.trim();
+      if (!uid) return _nickHint('❌ กรอก UID ก่อน');
+      clearNickname(uid);
+    };
+  }
+
+  function _nickHint(msg) {
+    const el = document.getElementById('nick-hint');
+    if (el) { el.textContent = msg; setTimeout(() => { if(el) el.textContent=''; }, 3000); }
+  }
+
+  function setNickname(uid, nick) {
+    if (!_rtdb) return;
+    const { ref, set, db } = _rtdb;
+    set(ref(db, `users/${uid}/profile/nickName`), nick)
+      .then(() => {
+        _nickHint(`✅ ตั้ง Nickname แล้ว: ${nick}`);
+        if (_tab === 'nickname') _renderNickname(document.getElementById('dev-body'));
+      })
+      .catch(e => _nickHint('❌ Error: ' + e.message));
+  }
+
+  function clearNickname(uid) {
+    if (!_rtdb) return;
+    const { ref, set, db } = _rtdb;
+    set(ref(db, `users/${uid}/profile/nickName`), null)
+      .then(() => {
+        _nickHint('✅ ล้างแล้ว');
+        if (_tab === 'nickname') _renderNickname(document.getElementById('dev-body'));
+      })
+      .catch(e => _nickHint('❌ Error: ' + e.message));
+  }
+
   return {
     init, reset, isActive, onReady, toggle, open, close,
     giveItem, giveMoney, spawnZombie, spawnBoss,
     toggleGod, toggleLockHead, toggleInvisible,
     teleport, teleportCenter, setHp, setSpeed, setRegen,
     setNameColor, clearNameColor, setAccount,
+    setNickname, clearNickname,
   };
 })();
 
