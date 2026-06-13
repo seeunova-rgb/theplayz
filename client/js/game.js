@@ -946,7 +946,7 @@ function _drawDrops(ctx) {
 
     const total = items.reduce((s, i) => s + i.qty, 0);
     ctx.save();
-    ctx.font = 'bold 10px Rajdhani, 'Noto Sans Thai', sans-serif'; ctx.textAlign = 'center';
+    ctx.font = "bold 10px Rajdhani, 'Noto Sans Thai', sans-serif"; ctx.textAlign = 'center';
     ctx.fillStyle = isNearest ? '#80e080' : '#f5c518';
     ctx.strokeStyle = '#000'; ctx.lineWidth = 2;
     ctx.strokeText(`x${total}`, x, y + 22); ctx.fillText(`x${total}`, x, y + 22);
