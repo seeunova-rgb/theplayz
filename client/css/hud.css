@@ -85,6 +85,10 @@ canvas { display: block; }
   -webkit-tap-highlight-color: transparent;
   outline: none;
   z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 #sprint-btn.on {
   background: rgba(76,175,80,0.25);

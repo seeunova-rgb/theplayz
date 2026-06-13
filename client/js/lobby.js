@@ -76,11 +76,22 @@ document.getElementById('hud-layout-edit-btn').addEventListener('click', () => {
 
   // ถ้าไม่ได้อยู่ในเกม ให้แสดง HUD แบบ preview ทับหน้า lobby
   if (!inGame) {
+    // สร้าง overlay มืดทับ lobby
+    let overlay = document.getElementById('hud-edit-lobby-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'hud-edit-lobby-overlay';
+      document.body.appendChild(overlay);
+    }
+    overlay.style.display = 'block';
+
     HUD_PREVIEW_IDS.forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
-      if (el.style.display === 'none' || el.style.display === '') {
-        el.style.display = (id === 'joystick-zone' || id === 'attack-zone') ? '' : 'flex';
+      // เช็คว่า element ซ่อนอยู่จริง (computed style)
+      const hidden = el.style.display === 'none' || getComputedStyle(el).display === 'none';
+      if (hidden) {
+        el.style.display = (id === 'joystick-zone' || id === 'attack-zone') ? 'block' : 'flex';
         shownByPreview.push(id);
       }
     });
@@ -88,6 +99,10 @@ document.getElementById('hud-layout-edit-btn').addEventListener('click', () => {
   }
 
   window._onHudEditClose = () => {
+    // ซ่อน overlay
+    const overlay = document.getElementById('hud-edit-lobby-overlay');
+    if (overlay) overlay.style.display = 'none';
+
     shownByPreview.forEach(id => {
       const el = document.getElementById(id);
       if (el) el.style.display = 'none';

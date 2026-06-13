@@ -489,11 +489,7 @@
   </button>
 
   <!-- Safe Vault Button (แสดงเมื่ออยู่ใกล้ตู้เซฟ) -->
-  <button id="safe-vault-btn" style="
-    display:none; position:fixed; bottom:184px; left:16px; z-index:500;
-    width:60px; height:60px; border-radius:50%; border:2px solid #f59e0b;
-    background:#1a1a2e; color:#f59e0b; font-size:26px; cursor:pointer;
-    box-shadow:0 0 12px rgba(245,158,11,0.5);"
+  <button id="safe-vault-btn" style="display:none;"
     onclick="if(typeof SafeVault!=='undefined'){if(SafeVault.isOpen())SafeVault.closePanel();else{const p=window._player;if(p)SafeVault.openPanel(p.x,p.y);}}">
     🔒
   </button>
