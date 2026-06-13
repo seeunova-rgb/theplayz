@@ -122,6 +122,7 @@ function drawBullets(ctx, bullets, player) {
     });
 
     ctx.globalAlpha = 1;
+    if (!isFinite(b.x) || !isFinite(b.y)) return;
     const grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, GUN.bulletR * 1.5);
     grad.addColorStop(0,   '#fff');
     grad.addColorStop(0.3, GUN.color);
