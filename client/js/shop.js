@@ -155,19 +155,19 @@ const Shop = (() => {
     const fireVal   = Math.round((1200 / Math.max(cfg.fireRate, 50)) * 10);
     const reloadVal = Math.round((1 - cfg.reloadTime / 4000) * 10);
     const bars = [
-      itemStatBar('DMG',    cfg.damage,              120, '#ef5350'),
-      itemStatBar('AMMO',   cfg.maxAmmo,             30,  '#42a5f5'),
-      itemStatBar('RATE',   Math.min(fireVal, 30),   30,  '#ffa726'),
-      itemStatBar('RELOAD', Math.max(reloadVal, 1),  10,  '#66bb6a'),
+      itemStatBar('ดาเมจ',    cfg.damage,              120, '#ef5350'),
+      itemStatBar('กระสุน',   cfg.maxAmmo,             30,  '#42a5f5'),
+      itemStatBar('อัตราลั่น',   Math.min(fireVal, 30),   30,  '#ffa726'),
+      itemStatBar('รีโหลด', Math.max(reloadVal, 1),  10,  '#66bb6a'),
     ];
-    return `<div class="char-stats-wrap" style="width:100%;margin:10px 0 4px;">${bars.join('')}</div>`;
+    return `<div class="char-stats-wrap inv-stats-wrap" style="width:100%;margin:10px 0 4px;">${bars.join('')}</div>`;
   }
 
   // ── general item stat bars (armor, supply etc.) ───────────
   function generalStatBars(item) {
     const bars = [];
-    if (item.damage) bars.push(itemStatBar('DMG',   item.damage, 120, '#ef5350'));
-    if (item.ammo)   bars.push(itemStatBar('AMMO',  item.ammo,   30,  '#42a5f5'));
+    if (item.damage) bars.push(itemStatBar('ดาเมจ',   item.damage, 120, '#ef5350'));
+    if (item.ammo)   bars.push(itemStatBar('กระสุน',  item.ammo,   30,  '#42a5f5'));
     const armorVal = item.armorId && typeof ARMOR_CONFIG !== 'undefined' && ARMOR_CONFIG[item.armorId]
       ? ARMOR_CONFIG[item.armorId].armorPct
       : item.armor;
@@ -178,7 +178,7 @@ const Shop = (() => {
     if (item.heal)   bars.push(itemStatBar('HEAL',  item.heal,   100, '#66bb6a'));
     if (item.qty)    bars.push(itemStatBar('QTY',   item.qty,    20,  '#ffa726'));
     if (bars.length === 0) return '';
-    return `<div class="char-stats-wrap" style="width:100%;margin:10px 0 4px;">${bars.join('')}</div>`;
+    return `<div class="char-stats-wrap inv-stats-wrap" style="width:100%;margin:10px 0 4px;">${bars.join('')}</div>`;
   }
 
   // ── render detail panel ───────────────────────────────────

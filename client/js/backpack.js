@@ -642,15 +642,15 @@ const Backpack = (() => {
     const statBars = [];
     if (def.weaponId && typeof WEAPON_CONFIG !== 'undefined' && WEAPON_CONFIG[def.weaponId]) {
       const wc = WEAPON_CONFIG[def.weaponId];
-      statBars.push(statBar('DMG',    wc.damage,  120, '#ef5350'));
-      statBars.push(statBar('AMMO',   wc.maxAmmo, 30,  '#42a5f5'));
+      statBars.push(statBar('ดาเมจ',    wc.damage,  120, '#ef5350'));
+      statBars.push(statBar('กระสุน',   wc.maxAmmo, 30,  '#42a5f5'));
       const fireVal = Math.round((1200 / Math.max(wc.fireRate, 50)) * 10);
-      statBars.push(statBar('RATE',   Math.min(fireVal, 30), 30, '#ffa726'));
+      statBars.push(statBar('อัตราลั่น',   Math.min(fireVal, 30), 30, '#ffa726'));
       const reloadVal = Math.round((1 - wc.reloadTime / 4000) * 10);
-      statBars.push(statBar('RELOAD', Math.max(reloadVal, 1), 10, '#66bb6a'));
+      statBars.push(statBar('รีโหลด', Math.max(reloadVal, 1), 10, '#66bb6a'));
     } else {
-      if (def.damage) statBars.push(statBar('DMG',  def.damage, 120, '#ef5350'));
-      if (def.ammo)   statBars.push(statBar('AMMO', def.ammo,   30,  '#42a5f5'));
+      if (def.damage) statBars.push(statBar('ดาเมจ',  def.damage, 120, '#ef5350'));
+      if (def.ammo)   statBars.push(statBar('กระสุน', def.ammo,   30,  '#42a5f5'));
       const armorVal = def.armorId && typeof ARMOR_CONFIG !== 'undefined' && ARMOR_CONFIG[def.armorId]
         ? ARMOR_CONFIG[def.armorId].armorPct
         : def.armor;

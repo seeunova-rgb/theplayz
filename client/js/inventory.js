@@ -91,27 +91,27 @@ const Inventory = (() => {
 
       // DMG — max แยกตาม type (snp สูงสุด 240, asr สูงสุด 33)
       const dmgMax = isSNP ? 240 : 33;
-      statBars.push(itemStatBar('DMG', wc.damage, dmgMax, '#ef5350'));
+      statBars.push(itemStatBar('ดาเมจ', wc.damage, dmgMax, '#ef5350'));
 
       // AMMO — max แยกตาม type
       const ammoMax = isSNP ? 10 : 30;
-      statBars.push(itemStatBar('AMMO', wc.maxAmmo, ammoMax, '#42a5f5'));
+      statBars.push(itemStatBar('กระสุน', wc.maxAmmo, ammoMax, '#42a5f5'));
 
       // RATE — normalize ให้ fireRate ต่ำ (ยิงเร็ว) = bar สูง
       // fireRate range: 120(เร็วสุด) → 1200(ช้าสุด)
       const rateMin = 120, rateMax = 1200;
       const ratePct = Math.round((1 - (wc.fireRate - rateMin) / (rateMax - rateMin)) * 10);
-      statBars.push(itemStatBar('RATE', Math.max(ratePct, 1), 10, '#ffa726'));
+      statBars.push(itemStatBar('อัตราลั่น', Math.max(ratePct, 1), 10, '#ffa726'));
 
       // RELOAD — normalize ให้ reloadTime ต่ำ (รีโหลดเร็ว) = bar สูง
       // reloadTime range: 1800(เร็วสุด) → 3000(ช้าสุด)
       const reloadMin = 1800, reloadMax = 3000;
       const reloadPct = Math.round((1 - (wc.reloadTime - reloadMin) / (reloadMax - reloadMin)) * 10);
-      statBars.push(itemStatBar('RELOAD', Math.max(reloadPct, 1), 10, '#66bb6a'));
+      statBars.push(itemStatBar('รีโหลด', Math.max(reloadPct, 1), 10, '#66bb6a'));
     }
     if (!def.weaponId) {
-      if (def.damage) statBars.push(itemStatBar('DMG',   def.damage, 120, '#ef5350'));
-      if (def.ammo)   statBars.push(itemStatBar('AMMO',  def.ammo,   30,  '#42a5f5'));
+      if (def.damage) statBars.push(itemStatBar('ดาเมจ',   def.damage, 120, '#ef5350'));
+      if (def.ammo)   statBars.push(itemStatBar('กระสุน',  def.ammo,   30,  '#42a5f5'));
       // armor: อ่านจาก ARMOR_CONFIG ถ้ามี armorId, ไม่งั้นใช้ def.armor
       const armorVal = def.armorId && typeof ARMOR_CONFIG !== 'undefined' && ARMOR_CONFIG[def.armorId]
         ? ARMOR_CONFIG[def.armorId].armorPct
@@ -129,7 +129,7 @@ const Inventory = (() => {
       : `<div class="inv-detail-icon" style="font-size:42px">${def.icon || '📦'}</div>`;
     const statsHtml = statBars.length > 0
       ? `<div class="inv-detail-divider"></div>
-         <div class="char-stats-wrap" style="width:100%;padding:0 2px;">
+         <div class="char-stats-wrap inv-stats-wrap" style="width:100%;padding:0 2px;">
            ${statBars.join('')}
          </div>`
       : '';

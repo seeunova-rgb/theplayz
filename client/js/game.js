@@ -387,7 +387,7 @@ function _showDeathScreen(killerName, recap) {
     }).join('');
     recapHtml = `<div class="recap-box">
       <div class="recap-title">📋 สาเหตุการตาย</div>
-      <div class="recap-header"><span>ผู้โจมตี</span><span>อาวุธ</span><span>โดน</span><span>DMG</span></div>
+      <div class="recap-header"><span>ผู้โจมตี</span><span>อาวุธ</span><span>โดน</span><span>ดาเมจ</span></div>
       ${rows}
     </div>`;
   }

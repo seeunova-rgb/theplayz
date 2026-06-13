@@ -198,7 +198,7 @@ const Character = (() => {
 
         return `
           <div class="char-card ${isSelected ? 'selected' : ''}"
-               onclick="${isOwned ? `Character.selectChar('${char.id}')` : `Character.buyChar('${char.id}')`}">
+               onclick="Character.showDetail('${char.id}')">
             ${isSelected ? '<div class="char-card-badge">✓ ACTIVE</div>' : ''}
             <div class="char-card-icon">${char.iconType === 'image' ? `<img src="${char.icon}" alt="${char.name}">` : char.icon}</div>
             <div class="char-card-name">${char.name}</div>
@@ -206,8 +206,9 @@ const Character = (() => {
               ${isOwned
                 ? (isSelected
                     ? `<span class="badge-owned">EQUIPPED</span>`
-                    : `<button class="btn-char-select">SELECT</button>`)
-                : `<button class="btn-char-buy ${char.currency} ${canAfford?'':'disabled-look'}">
+                    : `<button class="btn-char-select" onclick="event.stopPropagation();Character.selectChar('${char.id}')">SELECT</button>`)
+                : `<button class="btn-char-buy ${char.currency} ${canAfford?'':'disabled-look'}"
+                     onclick="event.stopPropagation();Character.buyChar('${char.id}')">
                      ${priceIcon} ${char.price.toLocaleString()}
                    </button>`
               }
