@@ -6,7 +6,7 @@
   z-index: 500;
   display: none;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 8px;
   padding: 10px 12px;
   padding-top: max(10px, env(safe-area-inset-top));
@@ -14,13 +14,6 @@
   border-bottom: 1px solid rgba(255,255,255,0.12);
   backdrop-filter: blur(6px);
   font-family: 'Noto Sans Thai', sans-serif;
-}
-
-.hud-edit-title {
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  flex: 1;
 }
 
 .hud-edit-btn {
@@ -75,6 +68,8 @@ body.hud-edit-mode #attack-zone {
 }
 body.hud-edit-mode #attack-base.hud-edit-target {
   pointer-events: all;
+  background: rgba(239,83,80,0.3);
+  border-color: rgba(239,83,80,0.9);
 }
 
 /* แสดง HUD ทับ lobby เมื่อ preview เพื่อจัดตำแหน่ง */
@@ -104,13 +99,16 @@ body.hud-edit-mode #attack-base.hud-edit-target {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ===== HUD Edit: dark overlay ทับ lobby ===== */
+/* ===== HUD Edit: solid overlay ทับ lobby (มองง่าย ไม่เห็น lobby) ===== */
 #hud-edit-lobby-overlay {
   display: none;
   position: fixed;
   inset: 0;
   z-index: 480;   /* สูงกว่า .screen (100) และ HUD buttons (50) แต่ต่ำกว่า edit targets (600) */
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(3px);
+  background: #14181f;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
   pointer-events: none;  /* ไม่บัง pointer ของปุ่ม HUD ที่อยู่เหนือ */
 }

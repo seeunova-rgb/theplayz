@@ -19,8 +19,7 @@ const HUDLayoutEditor = (() => {
       bar = document.createElement('div');
       bar.id = 'hud-edit-bar';
       bar.innerHTML = `
-        <span class="hud-edit-title">🧩 ลากปุ่มเพื่อจัดตำแหน่ง</span>
-        <button id="hud-edit-reset" class="hud-edit-btn">รีเซ็ตทั้งหมด</button>
+        <button id="hud-edit-reset" class="hud-edit-btn">รีเซ็ตปุ่ม</button>
         <button id="hud-edit-done"  class="hud-edit-btn hud-edit-done">เสร็จสิ้น</button>
       `;
       document.body.appendChild(bar);
