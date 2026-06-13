@@ -18,6 +18,27 @@ const Ranking = (() => {
   let _cache = {};       // { tabKey: [ {rank, name, value} ] }
   let _loading = false;
 
+  const _ACCOUNT_BADGE = {
+    premium: { text: '⭐ PREMIUM', color: '#ffd700' },
+    dev:     { text: 'DEV',        color: '#ff3333' },
+  };
+
+  // ── สร้าง HTML ชื่อ (สี + RGB ไล่สี) พร้อม badge ยศ ────────
+  function _nameHtml(r) {
+    let nameStyle;
+    if (r.nameColor && r.nameColor.color === 'rgb') {
+      nameStyle = 'background:linear-gradient(90deg,#ff5050,#ffe650,#50ff7a,#50d4ff,#a050ff,#ff50d4);' +
+                  '-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700';
+    } else if (r.nameColor && r.nameColor.color) {
+      nameStyle = `color:${r.nameColor.color};font-weight:700`;
+    } else {
+      nameStyle = '';
+    }
+    const badge = r.account ? _ACCOUNT_BADGE[r.account] : null;
+    const badgeHtml = badge ? ` <span style="color:${badge.color};font-weight:700;font-size:0.8em">${badge.text}</span>` : '';
+    return `<span style="${nameStyle}">${r.name}</span>${badgeHtml}`;
+  }
+
   // ── init (เรียกจาก auth.js) ──────────────────────────────
   function init(uid, fb) {
     _uid = uid;
@@ -78,7 +99,13 @@ const Ranking = (() => {
         value = (raw && typeof raw === 'object') ? (raw.rep || 0) : (raw || 0);
       } else if (tabKey === 'money') value = profile.money || 0;
       else                           value = stats[tabKey] || 0;
-      rows.push({ uid: child.key, name: profile.nickName || profile.displayName || 'Unknown', value });
+      rows.push({
+        uid: child.key,
+        name: profile.nickName || profile.displayName || 'Unknown',
+        value,
+        nameColor: profile.nameColor || null,
+        account: profile.account || null,
+      });
     });
 
     let result;
@@ -164,7 +191,7 @@ const Ranking = (() => {
     return `
       <div class="rank-row${isMe ? ' rank-row-me' : ''}">
         <span class="rank-medal">${medal}</span>
-        <span class="rank-name">${r.name}${isMe ? ' 👤' : ''}</span>
+        <span class="rank-name">${_nameHtml(r)}${isMe ? ' 👤' : ''}</span>
         <span class="rank-value">${valFmt}</span>
       </div>`;
   }
@@ -230,7 +257,7 @@ const Ranking = (() => {
           return `
             <div class="rank-row${isMe ? ' rank-row-me' : ''}">
               <span class="rank-medal">${medal}</span>
-              <span class="rank-name">${r.name}${isMe ? ' 👤' : ''}</span>
+              <span class="rank-name">${_nameHtml(r)}${isMe ? ' 👤' : ''}</span>
               <span class="rank-value">${valFmt}</span>
             </div>`;
         }).join('');

@@ -274,9 +274,10 @@ const Gacha = (() => {
         if (typeof Sounds !== 'undefined') {
           let _lastCard = -1;
           const _cardTick = setInterval(() => {
-            const mat = stripEl.style.transform.match(/translateX\((-?[\d.]+)px\)/);
+            const mat = getComputedStyle(stripEl).transform.match(/matrix\(([^)]+)\)/);
             if (!mat) return;
-            const curX    = Math.abs(parseFloat(mat[1]));
+            const parts = mat[1].split(',').map(parseFloat);
+            const curX    = Math.abs(parts[4] || 0); // translateX
             const curCard = Math.floor(curX / ITEM_W);
             if (curCard !== _lastCard) {
               _lastCard = curCard;
