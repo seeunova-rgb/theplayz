@@ -74,12 +74,12 @@ const Inventory = (() => {
     function itemStatBar(label, val, max, color) {
       const pct = Math.min(100, Math.round((val / max) * 100));
       return `
-        <div class="char-stat-row">
-          <span class="char-stat-label">${label}</span>
-          <div class="char-stat-track">
-            <div class="char-stat-fill" style="width:${pct}%;background:${color}"></div>
+        <div class="item-stat-row">
+          <span class="item-stat-label">${label}</span>
+          <div class="item-stat-track">
+            <div class="item-stat-fill" style="width:${pct}%;background:${color}"></div>
           </div>
-          <span class="char-stat-val">${val}</span>
+          <span class="item-stat-val">${val}</span>
         </div>`;
     }
 
@@ -129,7 +129,7 @@ const Inventory = (() => {
       : `<div class="inv-detail-icon" style="font-size:42px">${def.icon || '📦'}</div>`;
     const statsHtml = statBars.length > 0
       ? `<div class="inv-detail-divider"></div>
-         <div class="char-stats-wrap inv-stats-wrap" style="width:100%;padding:0 2px;">
+         <div class="item-stats-wrap" style="width:100%;padding:0 2px;">
            ${statBars.join('')}
          </div>`
       : '';

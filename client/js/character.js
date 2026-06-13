@@ -200,8 +200,10 @@ const Character = (() => {
           <div class="char-card ${isSelected ? 'selected' : ''}"
                onclick="Character.showDetail('${char.id}')">
             ${isSelected ? '<div class="char-card-badge">✓ ACTIVE</div>' : ''}
-            <div class="char-card-icon">${char.iconType === 'image' ? `<img src="${char.icon}" alt="${char.name}">` : char.icon}</div>
-            <div class="char-card-name">${char.name}</div>
+            <div class="char-card-main">
+              <div class="char-card-icon">${char.iconType === 'image' ? `<img src="${char.icon}" alt="${char.name}">` : char.icon}</div>
+              <div class="char-card-name">${char.name}</div>
+            </div>
             <div class="char-card-footer">
               ${isOwned
                 ? (isSelected

@@ -139,12 +139,12 @@ const Shop = (() => {
   function itemStatBar(label, val, max, color) {
     const pct = Math.min(100, Math.round((val / max) * 100));
     return `
-      <div class="char-stat-row">
-        <span class="char-stat-label">${label}</span>
-        <div class="char-stat-track">
-          <div class="char-stat-fill" style="width:${pct}%;background:${color}"></div>
+      <div class="item-stat-row">
+        <span class="item-stat-label">${label}</span>
+        <div class="item-stat-track">
+          <div class="item-stat-fill" style="width:${pct}%;background:${color}"></div>
         </div>
-        <span class="char-stat-val">${val}</span>
+        <span class="item-stat-val">${val}</span>
       </div>`;
   }
 
@@ -160,7 +160,7 @@ const Shop = (() => {
       itemStatBar('อัตราลั่น',   Math.min(fireVal, 30),   30,  '#ffa726'),
       itemStatBar('รีโหลด', Math.max(reloadVal, 1),  10,  '#66bb6a'),
     ];
-    return `<div class="char-stats-wrap inv-stats-wrap" style="width:100%;margin:10px 0 4px;">${bars.join('')}</div>`;
+    return `<div class="item-stats-wrap" style="width:100%;margin:10px 0 4px;">${bars.join('')}</div>`;
   }
 
   // ── general item stat bars (armor, supply etc.) ───────────
@@ -178,7 +178,7 @@ const Shop = (() => {
     if (item.heal)   bars.push(itemStatBar('HEAL',  item.heal,   100, '#66bb6a'));
     if (item.qty)    bars.push(itemStatBar('QTY',   item.qty,    20,  '#ffa726'));
     if (bars.length === 0) return '';
-    return `<div class="char-stats-wrap inv-stats-wrap" style="width:100%;margin:10px 0 4px;">${bars.join('')}</div>`;
+    return `<div class="item-stats-wrap" style="width:100%;margin:10px 0 4px;">${bars.join('')}</div>`;
   }
 
   // ── render detail panel ───────────────────────────────────

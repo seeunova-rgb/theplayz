@@ -1,0 +1,48 @@
+/* ===== STAT_ITEMS.CSS =====
+   หลอดสถิติไอเทม/ปืน (DMG, AMMO, RATE, RELOAD, ฯลฯ)
+   ใช้ใน inventory.js, backpack.js, shop.js ผ่าน itemStatBar()/statBar()
+   ไม่เกี่ยวกับหลอดความสามารถตัวละคร (.char-abil-* ใน character.css)
+*/
+
+.item-stats-wrap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.item-stat-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.item-stat-label {
+  font-size: 9px;
+  letter-spacing: 0;
+  color: var(--muted);
+  width: 42px;
+  flex-shrink: 0;
+}
+
+.item-stat-track {
+  flex: 1;
+  height: 4px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.item-stat-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.item-stat-val {
+  font-size: 9px;
+  color: rgba(255,255,255,0.4);
+  width: 14px;
+  text-align: right;
+  flex-shrink: 0;
+}

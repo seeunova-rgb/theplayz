@@ -49,53 +49,7 @@
   text-align: center;
 }
 
-/* stat bars */
-.char-stats-wrap {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.inv-stats-wrap {
-  gap: 6px !important;
-}
-
-.char-stat-row {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.char-stat-label {
-  font-size: 9px;
-  letter-spacing: 0;
-  color: var(--muted);
-  width: 56px;
-  flex-shrink: 0;
-}
-
-.char-stat-track {
-  flex: 1;
-  height: 4px;
-  background: rgba(255,255,255,0.07);
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.char-stat-fill {
-  height: 100%;
-  border-radius: 2px;
-  transition: width 0.3s ease;
-}
-
-.char-stat-val {
-  font-size: 9px;
-  color: rgba(255,255,255,0.4);
-  width: 18px;
-  text-align: right;
-  flex-shrink: 0;
-}
+/* หลอดสถิติไอเทม/ปืน ย้ายไปอยู่ที่ stat_items.css (.item-stat-*) */
 
 /* passive wrap removed */
 
@@ -156,10 +110,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
   cursor: pointer;
   position: relative;
   transition: border-color 0.2s, background 0.2s, transform 0.15s;
+}
+
+.char-card-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
 }
 
 .char-card:hover { transform: translateY(-2px); background: rgba(255,255,255,0.06); }
@@ -191,10 +153,6 @@
   font-size: 12px;
   letter-spacing: 0.1em;
   color: var(--text);
-}
-
-  font-size: 9px;
-  letter-spacing: 0.12em;
 }
 
 .char-card-desc {

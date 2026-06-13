@@ -62,7 +62,7 @@
   // ── โหลด CSS ─────────────────────────────────────────────────
   var _v = (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.port === '1106')
     ? Date.now() : '1';
-  ['base', 'auth', 'lobby', 'inventory', 'game', 'hud', 'character', 'bottom'].forEach(function (n) {
+  ['base', 'auth', 'lobby', 'inventory', 'game', 'hud', 'character', 'stat_items', 'bottom'].forEach(function (n) {
     var link = document.createElement('link');
     link.rel  = 'stylesheet';
     link.href = 'css/' + n + '.css?v=' + _v;
