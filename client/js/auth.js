@@ -6,7 +6,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
          signOut, onAuthStateChanged, updateProfile }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getDatabase, ref, get, set, onValue, off }
+import { getDatabase, ref, get, set, update, onValue, off }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 import { getFirestore, doc, getDoc }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -112,7 +112,7 @@ onAuthStateChanged(auth, async user => {
     document.getElementById('display-name').textContent = user.displayName || user.email;
     // [FIX MULTIPLAYER] เก็บชื่อไว้ให้ network.js ส่งไปด้วยทุก frame
     window._playerName = user.displayName || user.email || 'Player';
-    const fb = { ref, get, set, onValue, off, db };
+    const fb = { ref, get, set, update, onValue, off, db };
 
     // ── Loading: LOGIN → LOBBY ───────────────────────────
     const done = await Loading.show('LOGIN', 'LOBBY', 1800);

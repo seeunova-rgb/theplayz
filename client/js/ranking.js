@@ -49,7 +49,7 @@ const Ranking = (() => {
       const rep    = (repObj && typeof repObj.rep === 'number') ? repObj.rep : 0;
       const money  = (typeof Money !== 'undefined') ? (Money.get().money || 0) : 0;
       const r      = _fb.ref(_fb.db, `users/${_uid}/profile`);
-      await _fb.set(r, { displayName: name, reputation: rep, money });
+      await _fb.update(r, { displayName: name, reputation: rep, money });
     } catch(e) { console.warn('Ranking.syncProfile:', e); }
   }
 
