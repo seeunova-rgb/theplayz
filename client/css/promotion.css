@@ -3,7 +3,7 @@
   flex-direction: column;
   height: 100%;
   overflow: hidden;
-  padding: 6px 6px 6px;
+  padding: 6px;
   gap: 0;
 }
 
@@ -94,45 +94,51 @@
   letter-spacing: 0.05em;
   color: var(--text);
   text-transform: none;
-  padding-right: 0;
+  text-align: center;
 }
 
-/* ไอเทมเรียงแนวนอน ไม่ตัดบรรทัด */
+/* ไอเทมเรียงแนวนอน */
 .promo-items {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  gap: 4px;
+  gap: 3px;
   flex: 1;
   align-items: center;
+  width: 100%;
   overflow: hidden;
 }
 
-/* แต่ละไอเทม: รูปบน จำนวนล่าง */
+/* แต่ละไอเทม: flex: 1 ให้กระจายเต็มความกว้าง */
 .promo-item {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 2px;
   background: rgba(255,255,255,0.10);
   border-radius: 4px;
-  padding: 4px 5px;
-  flex-shrink: 0;
+  padding: 4px 2px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .promo-item-imgs {
   display: flex;
   align-items: center;
-  gap: 0;
+  justify-content: center;
 }
 
+/* รูปใน SET ชิดกัน */
 .promo-item-img {
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
   object-fit: contain;
   image-rendering: auto;
   filter: drop-shadow(0 0 2px rgba(0,0,0,0.6));
   margin-right: -10px;
+  flex-shrink: 0;
 }
 
 .promo-item-img:last-child {
@@ -140,24 +146,24 @@
 }
 
 .promo-item-single {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   margin-right: 0 !important;
 }
 
 .promo-item-emoji {
-  font-size: 28px;
+  font-size: 26px;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
 }
 
 .promo-char-img {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: 3px;
 }
 
