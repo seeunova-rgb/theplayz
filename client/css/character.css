@@ -406,3 +406,115 @@
   transform: scale(0.96);
 }
 
+
+/* ── ACTION BUTTON (SELECT / EQUIPPED) — บรรทัดเดียวกัน ฟอนต์เท่ากัน ── */
+.btn-char-action {
+  width: 100%;
+  padding: 6px 0;
+  border-radius: 4px;
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s, transform 0.1s;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.btn-char-action.select {
+  background: rgba(76,175,80,0.15);
+  border-color: var(--green);
+  color: var(--green2);
+}
+.btn-char-action.select:hover {
+  background: rgba(76,175,80,0.3);
+  transform: scale(1.03);
+}
+
+.btn-char-action.equipped {
+  background: rgba(76,175,80,0.08);
+  border-color: rgba(76,175,80,0.4);
+  color: rgba(76,175,80,0.7);
+  cursor: default;
+}
+
+/* ── CHARACTER DETAIL MODAL ── */
+#char-detail-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.char-detail-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.72);
+  backdrop-filter: blur(3px);
+}
+
+.char-detail-panel {
+  position: relative;
+  background: #0e1117;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 24px 20px 20px;
+  width: min(320px, 88vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.7);
+}
+
+.char-detail-close {
+  position: absolute;
+  top: 10px; right: 12px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.45);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+.char-detail-close:hover { color: #fff; }
+
+.char-detail-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.char-detail-name {
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.12em;
+  color: #fff;
+}
+
+.char-detail-stats {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 0;
+}
+
+.char-detail-action {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.char-detail-action .btn-char-action,
+.char-detail-action .btn-char-buy {
+  width: 100%;
+  padding: 9px 0;
+  font-size: 13px;
+}

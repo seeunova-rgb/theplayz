@@ -240,6 +240,57 @@ const Character = (() => {
     }
   }
 
+  // ── show character detail (modal) ────────────────────────
+
+  function showDetail(id) {
+    const char = CHARACTERS.find(c => c.id === id);
+    if (!char) return;
+
+    // ลบ modal เก่าถ้ามี
+    const old = document.getElementById('char-detail-modal');
+    if (old) old.remove();
+
+    const isOwned    = ownedChars.has(char.id);
+    const isSelected = char.id === selectedId;
+    const bars       = getAbilityBars(char);
+    const { money, point } = Money.get();
+    const canAfford  = char.currency === 'money' ? money >= char.price : point >= char.price;
+    const priceIcon  = char.currency === 'money' ? '💵' : '💎';
+
+    const barsHtml = bars.map(b => abilityBar(b.icon, b.label, b.pct, b.valLabel, b.color)).join('');
+
+    let actionBtn = '';
+    if (isOwned) {
+      if (isSelected) {
+        actionBtn = `<button class="btn-char-action equipped" disabled>✓ EQUIPPED</button>`;
+      } else {
+        actionBtn = `<button class="btn-char-action select" onclick="Character.selectChar('${char.id}');document.getElementById('char-detail-modal').remove()">SELECT</button>`;
+      }
+    } else {
+      actionBtn = `<button class="btn-char-buy ${char.currency} ${canAfford?'':'disabled-look'}"
+        onclick="Character.buyChar('${char.id}');document.getElementById('char-detail-modal').remove()">
+        ${priceIcon} ${char.price.toLocaleString()}
+      </button>`;
+    }
+
+    const iconHtml = char.iconType === 'image'
+      ? `<img src="${char.icon}" alt="${char.name}" style="width:64px;height:64px;object-fit:contain;">`
+      : `<span style="font-size:48px;">${char.icon}</span>`;
+
+    const modal = document.createElement('div');
+    modal.id = 'char-detail-modal';
+    modal.innerHTML = `
+      <div class="char-detail-backdrop" onclick="document.getElementById('char-detail-modal').remove()"></div>
+      <div class="char-detail-panel">
+        <button class="char-detail-close" onclick="document.getElementById('char-detail-modal').remove()">✕</button>
+        <div class="char-detail-icon">${iconHtml}</div>
+        <div class="char-detail-name">${char.name}</div>
+        <div class="char-detail-stats">${barsHtml}</div>
+        <div class="char-detail-action">${actionBtn}</div>
+      </div>`;
+    document.body.appendChild(modal);
+  }
+
   // ── init ──────────────────────────────────────────────────
 
   function init(userId, fb) {
@@ -264,6 +315,7 @@ const Character = (() => {
     render,
     buyChar,
     selectChar,
+    showDetail,
     getSelected,
     getActiveColor,
     getActivePassive,

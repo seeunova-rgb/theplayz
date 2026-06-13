@@ -88,12 +88,16 @@ document.getElementById('hud-layout-edit-btn').addEventListener('click', () => {
     HUD_PREVIEW_IDS.forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
-      // เช็คว่า element ซ่อนอยู่จริง (computed style)
-      const hidden = el.style.display === 'none' || getComputedStyle(el).display === 'none';
-      if (hidden) {
-        el.style.display = (id === 'joystick-zone' || id === 'attack-zone') ? 'block' : 'flex';
-        shownByPreview.push(id);
+      // บันทึก display เดิม แล้วบังคับแสดงทุกปุ่ม
+      const prevDisplay = el.style.display;
+      if (id === 'attack-zone') {
+        el.style.display = 'flex';   // attack-zone ต้องเป็น flex
+      } else if (id === 'joystick-zone') {
+        el.style.display = '';       // ใช้ CSS default (position:fixed ซ่อนผ่าน display:none)
+      } else {
+        el.style.display = 'flex';
       }
+      shownByPreview.push({ id, prevDisplay });
     });
     document.getElementById('lobby').classList.add('hud-preview-active');
   }
@@ -103,9 +107,9 @@ document.getElementById('hud-layout-edit-btn').addEventListener('click', () => {
     const overlay = document.getElementById('hud-edit-lobby-overlay');
     if (overlay) overlay.style.display = 'none';
 
-    shownByPreview.forEach(id => {
+    shownByPreview.forEach(({ id, prevDisplay }) => {
       const el = document.getElementById(id);
-      if (el) el.style.display = 'none';
+      if (el) el.style.display = prevDisplay !== undefined ? prevDisplay : 'none';
     });
     document.getElementById('lobby').classList.remove('hud-preview-active');
     window._onHudEditClose = null;

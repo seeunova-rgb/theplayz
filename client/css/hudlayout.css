@@ -109,8 +109,8 @@ body.hud-edit-mode #attack-base.hud-edit-target {
   display: none;
   position: fixed;
   inset: 0;
-  z-index: 90;
-  background: rgba(0, 0, 0, 0.72);
-  backdrop-filter: blur(2px);
-  pointer-events: none;
+  z-index: 480;   /* สูงกว่า .screen (100) และ HUD buttons (50) แต่ต่ำกว่า edit targets (600) */
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(3px);
+  pointer-events: none;  /* ไม่บัง pointer ของปุ่ม HUD ที่อยู่เหนือ */
 }
