@@ -303,8 +303,8 @@ const SafeVault = (() => {
         </div>
         <div class="vault-body">
           <div class="vault-section">
-            <div class="vault-sec-title">🎒 กระเป๋า (คลิกเพื่อเก็บ)</div>
-            <div class="vault-grid" id="vault-bp-grid">
+            <div class="vault-sec-title">🎒 กระเป๋า <small>(คลิกเพื่อเก็บ)</small></div>
+            <div class="vault-grid-wrap" id="vault-bp-grid">
               ${bpItems.length === 0 ? '<div class="vault-empty">กระเป๋าว่าง</div>'
                 : bpItems.map((slot, idx) => {
                     const def = _findDef(slot.id);
@@ -315,10 +315,10 @@ const SafeVault = (() => {
                   }).join('')}
             </div>
           </div>
-          <div class="vault-arrows"><div class="vault-arrow-hint">← →</div><div class="vault-arrow-sub">คลิกเพื่อย้าย</div></div>
+          <div class="vault-divider"></div>
           <div class="vault-section">
-            <div class="vault-sec-title">🔒 ตู้เซฟ (${safeItems.length}/${VAULT_MAX})</div>
-            <div class="vault-grid" id="vault-safe-grid">
+            <div class="vault-sec-title">🔒 ตู้เซฟ <small>(${safeItems.length}/${VAULT_MAX})</small></div>
+            <div class="vault-grid-wrap" id="vault-safe-grid">
               ${safeItems.length === 0 ? '<div class="vault-empty">ตู้เซฟว่าง</div>'
                 : safeItems.map((slot, idx) => {
                     const def = _findDef(slot.id);
@@ -343,17 +343,24 @@ const SafeVault = (() => {
         #vault-panel { position:fixed; inset:0; z-index:9000; display:flex; align-items:center; justify-content:center; }
         .vault-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.6); }
         .vault-box { position:relative; background:#1a1a2e; border:2px solid #f59e0b; border-radius:10px;
-                     padding:10px 12px; width:min(560px,94vw); max-height:90vh; overflow-y:auto;
-                     color:#fff; font-family:sans-serif; box-sizing:border-box; }
+                     padding:10px 12px; width:min(620px,96vw); max-height:88vh;
+                     color:#fff; font-family:sans-serif; box-sizing:border-box;
+                     display:flex; flex-direction:column; }
         .vault-header { display:flex; justify-content:space-between; align-items:center;
-                        font-size:14px; font-weight:700; color:#f59e0b; margin-bottom:8px; }
+                        font-size:14px; font-weight:700; color:#f59e0b; margin-bottom:8px; flex-shrink:0; }
         .vault-close { background:none; border:none; color:#fff; font-size:16px; cursor:pointer; padding:0 2px; }
         .vault-close:hover { color:#f59e0b; }
-        .vault-body { display:flex; gap:8px; align-items:flex-start; }
-        .vault-section { flex:1; min-width:0; }
-        .vault-sec-title { font-size:11px; color:#94a3b8; margin-bottom:5px; font-weight:600; }
-        .vault-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:4px;
-                      background:#0f172a; border-radius:6px; padding:6px; }
+        .vault-body { display:flex; gap:0; align-items:stretch; flex:1; min-height:0; }
+        .vault-section { flex:1; min-width:0; display:flex; flex-direction:column; }
+        .vault-sec-title { font-size:11px; color:#94a3b8; margin-bottom:5px; font-weight:600; flex-shrink:0; }
+        .vault-sec-title small { color:#64748b; font-weight:400; }
+        .vault-grid-wrap { flex:1; overflow-y:auto; background:#0f172a; border-radius:6px; padding:6px;
+                           display:grid; grid-template-columns:repeat(4,1fr); gap:4px;
+                           align-content:start; }
+        .vault-grid-wrap::-webkit-scrollbar { width:4px; }
+        .vault-grid-wrap::-webkit-scrollbar-track { background:#0f172a; border-radius:6px; }
+        .vault-grid-wrap::-webkit-scrollbar-thumb { background:#334155; border-radius:2px; }
+        .vault-divider { width:1px; background:#2d3a4a; flex-shrink:0; margin:20px 8px 0; }
         .vault-empty { grid-column:1/-1; text-align:center; color:#475569; font-size:11px;
                        display:flex; align-items:center; justify-content:center; min-height:40px; }
         .vault-cell { position:relative; background:#1e293b; border:1px solid #334155;
@@ -364,10 +371,7 @@ const SafeVault = (() => {
         .vault-cell.bp-cell:hover { border-color:#22c55e; background:#14261f; }
         .vault-icon { font-size:18px; line-height:1; }
         .vault-qty { position:absolute; bottom:1px; right:3px; font-size:9px; color:#f59e0b; font-weight:700; }
-        .vault-arrows { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; padding:0 2px; color:#64748b; flex-shrink:0; }
-        .vault-arrow-hint { font-size:14px; }
-        .vault-arrow-sub { font-size:9px; text-align:center; line-height:1.2; }
-        .vault-footer { margin-top:8px; display:flex; justify-content:center; }
+        .vault-footer { margin-top:8px; display:flex; justify-content:center; flex-shrink:0; }
         .vault-btn-pickup { background:#374151; color:#9ca3af; border:1px solid #4b5563;
                             border-radius:6px; padding:5px 14px; cursor:pointer; font-size:11px; }
         .vault-btn-pickup:hover { background:#4b5563; color:#fff; }
