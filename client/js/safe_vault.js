@@ -344,7 +344,7 @@ const SafeVault = (() => {
         #vault-panel { position:fixed; inset:0; z-index:9000; display:flex; align-items:center; justify-content:center; }
         .vault-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.6); }
         .vault-box { position:relative; background:#1a1a2e; border:2px solid #f59e0b; border-radius:12px;
-                     padding:16px; min-width:520px; max-width:90vw; color:#fff; font-family:sans-serif; }
+                     padding:16px; min-width:700px; max-width:95vw; color:#fff; font-family:sans-serif; }
         .vault-header { display:flex; justify-content:space-between; align-items:center;
                         font-size:18px; font-weight:700; color:#f59e0b; margin-bottom:12px; }
         .vault-close { background:none; border:none; color:#fff; font-size:20px; cursor:pointer; }
@@ -352,17 +352,17 @@ const SafeVault = (() => {
         .vault-body { display:flex; gap:16px; align-items:flex-start; }
         .vault-section { flex:1; }
         .vault-sec-title { font-size:12px; color:#94a3b8; margin-bottom:8px; font-weight:600; }
-        .vault-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px;
-                      min-height:80px; background:#0f172a; border-radius:8px; padding:8px; }
+        .vault-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:8px;
+                      min-height:80px; background:#0f172a; border-radius:8px; padding:10px; }
         .vault-empty { grid-column:1/-1; text-align:center; color:#475569; font-size:12px;
                        display:flex; align-items:center; justify-content:center; min-height:60px; }
         .vault-cell { position:relative; background:#1e293b; border:1px solid #334155;
-                      border-radius:6px; padding:6px; cursor:pointer; user-select:none;
+                      border-radius:6px; padding:8px; cursor:pointer; user-select:none;
                       display:flex; flex-direction:column; align-items:center; justify-content:center;
-                      min-height:60px; transition:border-color .15s, background .15s; }
+                      min-height:72px; transition:border-color .15s, background .15s; }
         .vault-cell:hover { border-color:#f59e0b; background:#2d3a4a; }
         .vault-cell.bp-cell:hover { border-color:#22c55e; background:#14261f; }
-        .vault-icon { font-size:24px; line-height:1; }
+        .vault-icon { font-size:28px; line-height:1; }
         .vault-qty { position:absolute; bottom:2px; right:4px; font-size:11px; color:#f59e0b; font-weight:700; }
         .vault-arrows { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:0 4px; color:#64748b; }
         .vault-arrow-hint { font-size:20px; }

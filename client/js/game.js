@@ -212,24 +212,63 @@ function _tryPickupNear() {
     if (dist < PICKUP_RANGE && dist < nearDist) { nearDist = dist; nearest = d; }
   });
   if (!nearest) return;
+
+  // เช็คกระเป๋าก่อน emit — ป้องกันเก็บของตอน bag เต็ม
+  if (typeof Backpack !== 'undefined') {
+    const items = nearest.items || [];
+    const hasNonStackable = items.some(({ id }) => {
+      const def = Backpack.findDef && Backpack.findDef(id);
+      return def && !def.stackable;
+    });
+    const hasNewStackable = items.some(({ id }) => {
+      const def = Backpack.findDef && Backpack.findDef(id);
+      return def && def.stackable && !Backpack.hasInItems(id);
+    });
+    const wouldNeedSlot = hasNonStackable || hasNewStackable;
+    const currentItems = Backpack.getItems ? Backpack.getItems() : [];
+    if (wouldNeedSlot && currentItems.length >= Backpack.ITEMS_MAX) {
+      if (typeof window.showToast === 'function')
+        window.showToast(`🎒 กระเป๋าเต็มแล้ว! (${Backpack.ITEMS_MAX} ช่อง)`, 'error');
+      return;
+    }
+  }
+
   Network.sendPickup(nearest.dropId);
 }
 
 function _applyPickup(items) {
   if (!items || !items.length) return;
+  const added = [];
+  const skipped = [];
+
   items.forEach(({ id, qty }) => {
     if (typeof Backpack !== 'undefined') {
-      Backpack.addItem(id, qty);
+      const res = Backpack.addItem(id, qty);
+      if (res === 'full') {
+        skipped.push({ id, qty });
+      } else {
+        added.push({ id, qty });
+      }
+    } else {
+      added.push({ id, qty });
     }
   });
-  const defs = items.map(({ id, qty }) => {
-    if (typeof Backpack !== 'undefined' && Backpack.findDef) {
-      const def = Backpack.findDef(id);
-      return def ? `${def.name} ×${qty}` : `${id} ×${qty}`;
-    }
-    return `${id} ×${qty}`;
-  });
-  if (typeof window.showToast === 'function') window.showToast(`📦 เก็บได้: ${defs.join(', ')}`, 'success');
+
+  if (added.length > 0) {
+    const defs = added.map(({ id, qty }) => {
+      if (typeof Backpack !== 'undefined' && Backpack.findDef) {
+        const def = Backpack.findDef(id);
+        return def ? `${def.name} ×${qty}` : `${id} ×${qty}`;
+      }
+      return `${id} ×${qty}`;
+    });
+    if (typeof window.showToast === 'function') window.showToast(`📦 เก็บได้: ${defs.join(', ')}`, 'success');
+  }
+
+  if (skipped.length > 0) {
+    if (typeof window.showToast === 'function')
+      window.showToast(`🎒 กระเป๋าเต็มแล้ว! ของบางชิ้นเก็บไม่ได้ (${Backpack.ITEMS_MAX} ช่อง)`, 'error');
+  }
 }
 
 // ===== HOLD-TO-PICKUP SYSTEM =====
