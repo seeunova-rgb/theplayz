@@ -1,7 +1,7 @@
 // ===== SOCKET.JS =====
 // จัดการ Socket.io events — แยก room ตาม worldId
 
-const { players, WORLD, WORLD_IDS, socketWorld, world_drops, newDropId, saveDrops } = require('./gameState');
+const { players, WORLD, WORLD_IDS, socketWorld, world_drops, newDropId, saveDrops, placed_safes, saveSafes } = require('./gameState');
 const { randomColor } = require('./utils');
 
 // ── โหลด weapon config สำหรับ validate bullet ────────────────────────────
@@ -435,6 +435,35 @@ function initSocket(io) {
         y:        p.y,
         ownerId:  socket.id,
       });
+    });
+
+
+    // ── Safe Vault: วางตู้เซฟ ─────────────────────────────────
+    socket.on('place_safe', ({ uid, worldId, x, y, safeId }) => {
+      if (!uid || !WORLD_IDS.includes(worldId) || !safeId) return;
+      const key = `${uid}_${safeId}`;
+      placed_safes[key] = { uid, worldId, x, y, safeId, placedAt: Date.now() };
+      saveSafes();
+      io.to(worldId).emit('safe_placed', { uid, worldId, x, y, safeId });
+    });
+
+    // ── Safe Vault: เก็บตู้เซฟคืน ────────────────────────────
+    socket.on('pickup_safe', ({ uid, worldId, safeId }) => {
+      if (!uid || !safeId) return;
+      const key = `${uid}_${safeId}`;
+      const safe = placed_safes[key];
+      if (!safe) return;
+      delete placed_safes[key];
+      saveSafes();
+      io.to(worldId || safe.worldId).emit('safe_removed', { uid, safeId });
+    });
+
+    // ── Safe Vault: ดึงข้อมูลตู้เซฟทั้งหมดใน world นี้ ──────
+    socket.on('get_safes', ({ worldId }) => {
+      if (!WORLD_IDS.includes(worldId)) return;
+      const safesInWorld = Object.values(placed_safes)
+        .filter(s => s.worldId === worldId);
+      socket.emit('safes_data', { worldId, safes: safesInWorld });
     });
 
     // ── disconnect ────────────────────────────────────────────

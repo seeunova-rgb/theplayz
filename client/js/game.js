@@ -857,6 +857,7 @@ function draw() {
   _drawDrops(ctx);
   // ── วาดตู้เซฟส่วนตัว ───────────────────────────────────
   if (typeof SafeVault !== 'undefined') {
+    SafeVault.drawOtherSafes(ctx, camera.x, camera.y);
     SafeVault.drawSafe(ctx, camera.x, camera.y, player.x, player.y);
   }
   drawPlayer(ctx, player);
@@ -1202,7 +1203,7 @@ window.addEventListener('keydown', (e) => {
       SafeVault.closePanel();
     } else if (player.alive) {
       if (SafeVault.nearSafe(player.x, player.y)) {
-        SafeVault.openPanel();
+        SafeVault.openPanel(player.x, player.y);
       }
     }
   }

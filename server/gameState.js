@@ -44,4 +44,32 @@ loadDrops();
 
 function newDropId() { return 'drop_' + randomUUID(); }
 
-module.exports = { players, WORLD, WORLD_IDS, socketWorld, world_drops, newDropId, saveDrops };
+module.exports = { players, WORLD, WORLD_IDS, socketWorld, world_drops, newDropId, saveDrops, placed_safes, saveSafes };
+
+// ── Safe Vault Positions ──────────────────────────────────────
+// { uid: { worldId, x, y, placedAt } }
+const SAFE_FILE = path.join(__dirname, 'safes_save.json');
+const placed_safes = {};
+
+function loadSafes() {
+  try {
+    if (fs.existsSync(SAFE_FILE)) {
+      const data = JSON.parse(fs.readFileSync(SAFE_FILE, 'utf8'));
+      Object.assign(placed_safes, data);
+      console.log(`Loaded ${Object.keys(placed_safes).length} placed safes from save.`);
+    }
+  } catch(e) {
+    console.log('Could not load safes save:', e.message);
+  }
+}
+
+function saveSafes() {
+  try {
+    fs.writeFileSync(SAFE_FILE, JSON.stringify(placed_safes, null, 2));
+  } catch(e) {
+    console.log('Could not save safes:', e.message);
+  }
+}
+
+loadSafes();
+module.exports = { players, WORLD, WORLD_IDS, socketWorld, world_drops, newDropId, saveDrops, placed_safes, saveSafes };

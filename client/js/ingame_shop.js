@@ -34,8 +34,21 @@ const InGameShop = (() => {
   // ── buy → Backpack ────────────────────────────────────────
   function buy() {
     if (!_selectedItem) return;
-    const item  = _selectedItem;
-    const price = _getPrice(item) * _buyQty;
+    const item = _selectedItem;
+
+    // เช็คช่องว่างก่อนตัดเงิน
+    const fitQty = Backpack.canFitBuy(item.id, _buyQty);
+    if (fitQty <= 0) {
+      window.showToast('❌ กระเป๋าเต็ม! ไม่มีช่องว่าง', 'error');
+      return;
+    }
+    // ถ้าช่องว่างไม่พอซื้อทั้งหมด → ซื้อแค่ที่ใส่ได้
+    const actualQty = fitQty;
+    const price     = _getPrice(item) * actualQty;
+
+    if (fitQty < _buyQty) {
+      window.showToast(`⚠️ กระเป๋าว่างแค่ ${fitQty} ช่อง จะซื้อ ${fitQty} ชิ้น`, 'info');
+    }
 
     // ตัดเงิน
     const ok = Money.spend(item.currency, price);
@@ -44,19 +57,18 @@ const InGameShop = (() => {
       return;
     }
 
-    // เพิ่มเข้า Backpack — ถ้าของ stack เข้า EQUIP ได้ (เช่น ยา) และตรงกับที่สวมอยู่ → รวมเข้า EQUIP เลย
-    const result = Backpack.addItemBuy(item.id, _buyQty);
-    if (result === 'full') {
-      // คืนเงิน
+    // เพิ่มเข้า Backpack
+    const res = Backpack.addItemBuy(item.id, actualQty);
+    if (res.result === 'full' || res.added === 0) {
+      // ไม่น่าเกิด แต่ป้องกันไว้ — คืนเงิน
       Money.earn(item.currency, price);
-      window.showToast('กระเป๋าเต็ม!', 'error');
+      window.showToast('❌ กระเป๋าเต็ม!', 'error');
       return;
     }
     if (typeof Backpack.render === 'function') Backpack.render();
 
-    const qty = _buyQty;
     _buyQty = 1;
-    window.showToast(`ซื้อ ${item.name} ×${qty} เข้ากระเป๋า ✓`, 'success');
+    window.showToast(`✅ ซื้อ ${item.name} ×${res.added} เข้ากระเป๋า`, 'success');
     renderWallet();
     renderDetail();
   }
@@ -167,6 +179,12 @@ const InGameShop = (() => {
       ? wallet.money >= totalPrice
       : wallet.point >= totalPrice;
     const priceIcon  = item.currency === 'money' ? '💵' : '💎';
+    const fitQty     = Backpack.canFitBuy(item.id, _buyQty);
+    const slotInfo   = fitQty >= _buyQty
+      ? 'ของจะเข้ากระเป๋าทันที'
+      : fitQty === 0
+        ? '❌ กระเป๋าเต็ม!'
+        : `⚠️ รับได้แค่ ${fitQty}/${_buyQty} ชิ้น`;
 
     panel.innerHTML = `
       <div class="igs-detail-icon">${item.icon}</div>
@@ -181,7 +199,7 @@ const InGameShop = (() => {
               ${canAfford ? 'onclick="InGameShop.buy()"' : 'disabled'}>
         BUY${_buyQty > 1 ? ` ×${_buyQty}` : ''}
       </button>
-      <div class="igs-hint">ของจะเข้ากระเป๋าทันที</div>`;
+      <div class="igs-hint">${slotInfo}</div>`;
   }
 
   // ── render wallet ─────────────────────────────────────────

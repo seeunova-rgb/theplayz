@@ -106,16 +106,49 @@ const Backpack = (() => {
 
   // ── addItemBuy (เพิ่มของที่ซื้อ → equip ก่อน ถ้า stack ได้และตรงกับที่สวมอยู่ ──
   //    ไม่งั้นเข้า items grid ตามปกติ)
-  // returns: 'added' | 'full'
+  // รองรับ non-stackable qty > 1 โดยใส่ทีละ slot
+  // returns: { result: 'added'|'full'|'partial', added: N, canFit: N }
   function addItemBuy(itemId, qty = 1) {
-    const def       = findDef(itemId);
-    const slot      = getEquipSlot(def);
+    const def  = findDef(itemId);
+    const slot = getEquipSlot(def);
+
+    // stackable + สวมอยู่แล้ว → รวมเข้า equip slot ทันที
     if (slot && _equipCanStack(slot) && equip[slot] === itemId) {
       equipQty[slot] = (equipQty[slot] || 0) + qty;
       save();
-      return 'added';
+      return { result: 'added', added: qty, canFit: qty };
     }
-    return addItem(itemId, qty);
+
+    // stackable ทั่วไป → addItem ครั้งเดียว
+    if (canStack(def)) {
+      const r = addItem(itemId, qty);
+      return { result: r, added: r === 'added' ? qty : 0, canFit: qty };
+    }
+
+    // non-stackable (ปืน/เกราะ/หมวก) → ใส่ทีละ slot
+    const freeSlots = ITEMS_MAX - items.length;
+    const canFit    = Math.min(qty, freeSlots);
+    if (canFit <= 0) return { result: 'full', added: 0, canFit: 0 };
+
+    for (let i = 0; i < canFit; i++) {
+      items.push({ id: itemId, qty: 1 });
+    }
+    save();
+    return {
+      result:  canFit < qty ? 'partial' : 'added',
+      added:   canFit,
+      canFit,
+    };
+  }
+
+  // ── canFitBuy: เช็คว่าซื้อ qty ได้กี่ชิ้น (ก่อนซื้อจริง) ──
+  // returns จำนวนที่ใส่ได้จริง (0 = เต็ม)
+  function canFitBuy(itemId, qty = 1) {
+    const def  = findDef(itemId);
+    const slot = getEquipSlot(def);
+    if (slot && _equipCanStack(slot) && equip[slot] === itemId) return qty; // equip slot ไม่มีลิมิต
+    if (canStack(def)) return qty; // stackable ไม่มีลิมิต slot
+    return Math.min(qty, ITEMS_MAX - items.length); // non-stackable: เช็คช่องว่าง
   }
 
   // ── addItemFromStash (lobby: ดึงจาก Stash → BP) ──────────
@@ -134,7 +167,12 @@ const Backpack = (() => {
   // ── removeItem (items grid → ออก) ────────────────────────
   function removeItem(itemId, qty = 1, slotIdx = -1) {
     let idx = slotIdx >= 0 ? slotIdx : items.findIndex(s => s.id === itemId);
-    if (idx === -1) return false;
+    if (idx === -1 || idx >= items.length || !items[idx]) return false;
+    // ถ้า slotIdx ระบุมาแต่ item ไม่ตรง id → fallback หา index ใหม่
+    if (slotIdx >= 0 && items[idx].id !== itemId) {
+      idx = items.findIndex(s => s.id === itemId);
+      if (idx === -1) return false;
+    }
     items[idx].qty -= qty;
     if (items[idx].qty <= 0) items.splice(idx, 1);
     save();
@@ -989,7 +1027,7 @@ const Backpack = (() => {
     init, load, save, render, renderPanel,
     togglePanel, openPanel, closePanel,
     showItemInfo,
-    addItem, addItemBuy, addItemFromStash, removeItem,
+    addItem, addItemBuy, addItemFromStash, canFitBuy, removeItem,
     toggleEquip, equipItem, unequipSlot,
     clickEquipSlot, clickItemSlot,
     dropBPItemOnStash, dropEquipOnStash,

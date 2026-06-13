@@ -292,6 +292,9 @@ const Network = (() => {
     socket.emit('player_sound', { id });
   }
 
+  // ── direct emit (for external modules) ──────────────────
+  function emit(event, data) { if (socket) socket.emit(event, data); }
+
   // ── register callbacks ──────────────────────────────────
 
   function on(event, fn) { _cb[event] = fn; }
@@ -323,6 +326,7 @@ const Network = (() => {
     once,
     getRemotePlayers: () => remotePlayers,
     getMyId:          () => myId,
+    emit,
   };
 })();
 
