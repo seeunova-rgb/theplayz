@@ -409,7 +409,8 @@ const SafeVault = (() => {
     ctx.strokeStyle  = isMine ? '#f59e0b' : '#64748b';
     ctx.lineWidth    = 2;
     ctx.beginPath();
-    ctx.roundRect(sx - half, sy - half, SAFE_SIZE, SAFE_SIZE, 6);
+    // ใช้ rect แทน roundRect เพื่อรองรับ browser เก่า
+    ctx.rect(sx - half, sy - half, SAFE_SIZE, SAFE_SIZE);
     ctx.fill();
     ctx.stroke();
     ctx.shadowBlur = 0;
