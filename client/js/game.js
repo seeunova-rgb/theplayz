@@ -844,7 +844,7 @@ function draw() {
     const selfRep  = (typeof Reputation !== 'undefined' && Reputation.get) ? Reputation.get().rep : 0;
     ctx.save();
     ctx.translate(player.x, player.y);
-    _drawNameWithRep(ctx, selfName, selfRep, 0, topY - 14, Network.getMyId());
+    _drawNameWithRep(ctx, selfName, selfRep, 0, topY - 14, window._uid || Network.getMyId());
     ctx.restore();
   }
 
@@ -1124,7 +1124,7 @@ function drawRemotePlayer(ctx, rp) {
   const topY = -bh / 2;
 
   // nametag (พร้อมรูป rep)
-  _drawNameWithRep(ctx, fakePlayer.name, rp.reputation, 0, topY - 14, rp.id);
+  _drawNameWithRep(ctx, fakePlayer.name, rp.reputation, 0, topY - 14, rp.uid || rp.id);
 
   // HP bar
   const barW  = r * 2.5;

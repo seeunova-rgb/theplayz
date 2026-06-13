@@ -72,6 +72,7 @@ const Network = (() => {
     const _joinName   = window._playerName   || 'Player';
     const _joinColor  = window._playerColor  || '#2563EB';
     const _joinCharId = window._playerCharId || 'default';
+    const _joinUid    = window._uid          || null;
     socket.emit('join_world', {
       worldId,
       spawnX:  _spawnPos.x,
@@ -79,6 +80,7 @@ const Network = (() => {
       name:    _joinName,
       color:   _joinColor,
       charId:  _joinCharId,
+      uid:     _joinUid,
     });
 
 
@@ -199,6 +201,7 @@ const Network = (() => {
         name:    window._playerName   || 'Player',
         color:   window._playerColor  || '#2563EB',
         charId:  window._playerCharId || 'default',
+        uid:     window._uid          || null,
       });
     });
 

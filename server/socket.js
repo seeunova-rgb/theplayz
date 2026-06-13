@@ -47,7 +47,7 @@ function initSocket(io) {
     console.log(`Connected: ${socket.id}`);
 
     // ── join world room ─────────────────────────────────────
-    socket.on('join_world', ({ worldId, spawnX, spawnY, name, color, charId }) => {
+    socket.on('join_world', ({ worldId, spawnX, spawnY, name, color, charId, uid }) => {
       const wid = WORLD_IDS.includes(worldId) ? worldId : 'safezone';
 
       socket.join(wid);
@@ -58,6 +58,7 @@ function initSocket(io) {
 
       players[wid][socket.id] = {
         id:           socket.id,
+        uid:          (typeof uid === 'string' && uid.trim()) ? uid.trim() : null,
         worldId:      wid,
         x:            sx,
         y:            sy,
