@@ -35,7 +35,7 @@ body {
   background: var(--dark);
   display: flex; flex-direction: column;
   z-index: 100;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Rajdhani', 'Noto Sans Thai', sans-serif;
   color: var(--text);
   overflow: hidden;
   overscroll-behavior: none;

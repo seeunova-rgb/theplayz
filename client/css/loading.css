@@ -46,7 +46,7 @@
 
 /* Logo */
 #loading-screen .ls-logo {
-  font-family: 'Black Ops One', sans-serif;
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
   font-size: clamp(36px, 8vw, 64px);
   line-height: 1;
   position: relative;
@@ -59,7 +59,7 @@
 
 /* Transition label  e.g.  LOGIN → LOBBY */
 #loading-screen .ls-label {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Rajdhani', 'Noto Sans Thai', sans-serif;
   font-size: clamp(11px, 2.5vw, 14px);
   letter-spacing: 0.25em;
   color: var(--muted);
@@ -127,14 +127,14 @@
   align-items: center;
 }
 #loading-screen .ls-pct-num {
-  font-family: 'Black Ops One', sans-serif;
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
   font-size: clamp(22px, 5vw, 36px);
   color: var(--green2);
   line-height: 1;
   tabular-nums: true;
 }
 #loading-screen .ls-pct-unit {
-  font-family: 'Black Ops One', sans-serif;
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
   font-size: clamp(11px, 2.5vw, 15px);
   color: var(--muted);
   align-self: flex-end;
@@ -143,7 +143,7 @@
 
 /* Status text */
 #loading-screen .ls-status {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Rajdhani', 'Noto Sans Thai', sans-serif;
   font-size: clamp(10px, 2vw, 13px);
   color: var(--muted);
   letter-spacing: 0.18em;

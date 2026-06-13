@@ -34,7 +34,7 @@
   gap: 20px;
   background: rgba(0,0,0,0.82);
   backdrop-filter: blur(8px);
-  font-family: 'Black Ops One', sans-serif;
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
   pointer-events: all;
 }
 #back-overlay.active { display: flex; }
@@ -115,7 +115,7 @@
 
 /* ── Hint ── */
 .back-hint {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Rajdhani', 'Noto Sans Thai', sans-serif;
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.16em;
@@ -133,7 +133,7 @@
   border: 1.5px solid rgba(255,255,255,0.22);
   border-radius: 50px;
   color: rgba(255,255,255,0.75);
-  font-family: 'Black Ops One', sans-serif;
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
   font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -225,7 +225,7 @@
   flex-shrink: 0;
 }
 .igbp-title {
-  font-family: 'Black Ops One', sans-serif;
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
   font-size: 11px;
   letter-spacing: 0.16em;
   color: rgba(255,255,255,0.75);
@@ -432,7 +432,7 @@
   filter: drop-shadow(0 0 8px rgba(255,255,255,0.15));
 }
 .igbp-info-name {
-  font-family: 'Black Ops One', sans-serif;
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
   font-size: 8.5px;
   letter-spacing: 0.06em;
   color: rgba(255,255,255,0.9);
@@ -500,7 +500,7 @@
   font-size: 16px;
   font-weight: 700;
   color: #81c784;
-  font-family: 'Black Ops One', sans-serif;
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
   line-height: 1;
 }
 
@@ -743,11 +743,16 @@
   display: flex; align-items: center; justify-content: center;
 }
 .igs-qty-num {
-  min-width: 28px;
+  min-width: 36px;
   text-align: center;
   font-size: 13px;
   font-weight: 700;
   color: #fff;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
 }
 .igs-price {
   font-size: 13px;

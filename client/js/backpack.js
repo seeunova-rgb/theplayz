@@ -104,6 +104,20 @@ const Backpack = (() => {
     return 'added';
   }
 
+  // ── addItemBuy (เพิ่มของที่ซื้อ → equip ก่อน ถ้า stack ได้และตรงกับที่สวมอยู่ ──
+  //    ไม่งั้นเข้า items grid ตามปกติ)
+  // returns: 'added' | 'full'
+  function addItemBuy(itemId, qty = 1) {
+    const def       = findDef(itemId);
+    const slot      = getEquipSlot(def);
+    if (slot && _equipCanStack(slot) && equip[slot] === itemId) {
+      equipQty[slot] = (equipQty[slot] || 0) + qty;
+      save();
+      return 'added';
+    }
+    return addItem(itemId, qty);
+  }
+
   // ── addItemFromStash (lobby: ดึงจาก Stash → BP) ──────────
   // ต่างจาก addItem คือตรวจสอบ Stash ด้วย
   // returns: 'added' | 'full' | 'no_stock'
@@ -950,7 +964,7 @@ const Backpack = (() => {
     init, load, save, render, renderPanel,
     togglePanel, openPanel, closePanel,
     showItemInfo,
-    addItem, addItemFromStash, removeItem,
+    addItem, addItemBuy, addItemFromStash, removeItem,
     toggleEquip, equipItem, unequipSlot,
     clickEquipSlot, clickItemSlot,
     dropBPItemOnStash, dropEquipOnStash,

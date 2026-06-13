@@ -15,7 +15,7 @@
 
 /* ── Title ── */
 .ws-title {
-  font-family: 'Black Ops One', sans-serif;
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
   font-size: clamp(11px, 2.5vw, 14px);
   letter-spacing: 0.3em;
   color: var(--muted);
@@ -74,7 +74,7 @@
 /* tag badge */
 .ws-tag {
   display: inline-block;
-  font-family: 'Black Ops One', sans-serif;
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
   font-size: 10px;
   letter-spacing: 0.18em;
   padding: 2px 7px;
@@ -95,7 +95,7 @@
   line-height: 1;
 }
 .ws-name {
-  font-family: 'Black Ops One', sans-serif;
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
   font-size: clamp(16px, 3.5vw, 22px);
   line-height: 1;
   color: var(--text);
@@ -103,7 +103,7 @@
 
 /* description */
 .ws-desc {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Rajdhani', 'Noto Sans Thai', sans-serif;
   font-size: clamp(11px, 2vw, 13px);
   color: var(--muted);
   line-height: 1.45;
@@ -126,7 +126,7 @@
   flex-shrink: 0;
 }
 .ws-online-text {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Rajdhani', 'Noto Sans Thai', sans-serif;
   font-size: 11px;
   letter-spacing: 0.12em;
   color: var(--green2);
@@ -140,7 +140,7 @@
 }
 
 .btn-ws-join {
-  font-family: 'Black Ops One', sans-serif;
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
   font-size: clamp(14px, 2.8vw, 16px);
   letter-spacing: 0.2em;
   padding: 12px 48px;
@@ -179,7 +179,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Rajdhani', 'Noto Sans Thai', sans-serif;
   font-size: 11px;
   letter-spacing: 0.12em;
   color: var(--muted);

@@ -22,16 +22,15 @@
 }
 
 #hp-count {
-  font-family: "Black Ops One", sans-serif;
-  font-size: 11px;
+  font-family: "Black Ops One", 'Noto Sans Thai', sans-serif;
+  font-size: 13px;
   color: #fff;
   text-shadow: 0 1px 3px rgba(0,0,0,0.9);
   letter-spacing: 1px;
   line-height: 1;
 }
-#hp-cur  { color: #fff; }
-.hp-sep  { color: rgba(255,255,255,0.5); margin: 0 2px; }
-#hp-max  { color: rgba(255,255,255,0.6); }
+#hp-pct  { color: #4cde4c; }
+.hp-sep  { color: rgba(255,255,255,0.6); margin-left: 1px; font-size: 10px; }
 
 /* ยังคงไว้เพื่อ backward compat */
 #hp-bar-track { display: none; }
@@ -60,7 +59,7 @@
 }
 
 .armor-slot-pct {
-  font-family: "Black Ops One", sans-serif;
+  font-family: "Black Ops One", 'Noto Sans Thai', sans-serif;
   font-size: 9px;
   color: #80e080;
   line-height: 1;
@@ -105,7 +104,7 @@
 
 /* กระสุน (บนสุด) */
 #ammo-count {
-  font-family: "Black Ops One", sans-serif;
+  font-family: "Black Ops One", 'Noto Sans Thai', sans-serif;
   font-size: 11px;
   color: #ff4444;
   line-height: 1;
@@ -137,14 +136,14 @@
   width: 100%;
 }
 #gun-dmg-row .stat-label {
-  font-family: "Rajdhani", sans-serif;
+  font-family: "Rajdhani", 'Noto Sans Thai', sans-serif;
   font-size: 7px;
   font-weight: 700;
   color: rgba(255,255,255,0.45);
   letter-spacing: 0.5px;
 }
 #gun-dmg-row .stat-num {
-  font-family: "Black Ops One", sans-serif;
+  font-family: "Black Ops One", 'Noto Sans Thai', sans-serif;
   font-size: 10px;
   color: rgba(200,255,200,0.9);
 }

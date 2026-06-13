@@ -24,7 +24,7 @@ const Shop = (() => {
   // ── helpers ───────────────────────────────────────────────
   function getItems(catId) {
     const key = CAT_MAP[catId]?.key;
-    return (SHOP_ITEMS[key] || []);
+    return (SHOP_ITEMS[key] || []).filter(i => getPrice(i) > 0);
   }
 
   function getPrice(item) {

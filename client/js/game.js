@@ -113,19 +113,26 @@ function _drawNameWithRep(ctx, name, repVal, x, y, playerId) {
 
   // ── ชื่อสี จาก RTDB (Dev กำหนดเอง) ───────────────────────
   const nameColorData = playerId && window._nameColors && window._nameColors[playerId];
-  const nameColor     = nameColorData ? nameColorData.color : '#ffffff';
+  let nameColor;
+  if (nameColorData && nameColorData.color === 'rgb') {
+    // สี RGB ไล่ hue ไปเรื่อยๆ ตามเวลา
+    const hue = (Date.now() / 20) % 360;
+    nameColor = `hsl(${hue}, 100%, 60%)`;
+  } else {
+    nameColor = nameColorData ? nameColorData.color : '#ffffff';
+  }
 
   // ── badge จาก account ──────────────────────────────────────
   const account = playerId && window._accounts && window._accounts[playerId];
   const badge   = account ? _ACCOUNT_BADGE[account] : null;
 
-  ctx.font         = `bold ${Math.max(10, CONFIG.PLAYER_R * 0.6)}px Rajdhani, sans-serif`;
+  ctx.font         = `bold ${Math.max(10, CONFIG.PLAYER_R * 0.6)}px Rajdhani, 'Noto Sans Thai', sans-serif`;
   ctx.textAlign    = 'left';
   ctx.textBaseline = 'bottom';
 
   const fontSize     = Math.max(10, CONFIG.PLAYER_R * 0.6);
   const badgeFontSize = Math.max(8, CONFIG.PLAYER_R * 0.45);
-  ctx.font = `bold ${fontSize}px Rajdhani, sans-serif`;
+  ctx.font = `bold ${fontSize}px Rajdhani, 'Noto Sans Thai', sans-serif`;
 
   const textW  = ctx.measureText(name).width;
   const hasIcon = icon && icon.complete && icon.naturalWidth > 0;
@@ -134,9 +141,9 @@ function _drawNameWithRep(ctx, name, repVal, x, y, playerId) {
   let badgeW = 0;
   const badgeGap = 5;
   if (badge) {
-    ctx.font = `bold ${badgeFontSize}px Rajdhani, sans-serif`;
+    ctx.font = `bold ${badgeFontSize}px Rajdhani, 'Noto Sans Thai', sans-serif`;
     badgeW = ctx.measureText(badge.text).width + badgeGap;
-    ctx.font = `bold ${fontSize}px Rajdhani, sans-serif`;
+    ctx.font = `bold ${fontSize}px Rajdhani, 'Noto Sans Thai', sans-serif`;
   }
 
   const totalW = textW + (hasIcon ? iconSize + gap : 0) + badgeW;
@@ -152,7 +159,7 @@ function _drawNameWithRep(ctx, name, repVal, x, y, playerId) {
     drawX += iconSize + gap;
   }
 
-  ctx.font        = `bold ${fontSize}px Rajdhani, sans-serif`;
+  ctx.font        = `bold ${fontSize}px Rajdhani, 'Noto Sans Thai', sans-serif`;
   ctx.strokeStyle = 'rgba(0,0,0,0.7)';
   ctx.lineWidth   = 3;
   ctx.strokeText(name, drawX, y);
@@ -163,7 +170,7 @@ function _drawNameWithRep(ctx, name, repVal, x, y, playerId) {
   // วาด badge [PREMIUM] หรือ [DEV] ท้ายชื่อ
   if (badge) {
     drawX += badgeGap;
-    ctx.font = `bold ${badgeFontSize}px Rajdhani, sans-serif`;
+    ctx.font = `bold ${badgeFontSize}px Rajdhani, 'Noto Sans Thai', sans-serif`;
     ctx.strokeStyle = 'rgba(0,0,0,0.8)';
     ctx.lineWidth   = 3;
     ctx.strokeText(badge.text, drawX, y);
@@ -858,7 +865,7 @@ function draw() {
   _dmgNums.forEach(n => {
     ctx.save();
     ctx.globalAlpha  = n.alpha;
-    ctx.font         = `bold ${n.size}px Rajdhani, sans-serif`;
+    ctx.font         = `bold ${n.size}px Rajdhani, 'Noto Sans Thai', sans-serif`;
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
     ctx.strokeStyle  = 'rgba(0,0,0,0.7)';
@@ -873,7 +880,7 @@ function draw() {
   _rewardNums.forEach(n => {
     ctx.save();
     ctx.globalAlpha  = n.alpha;
-    ctx.font         = `bold ${n.size}px Rajdhani, sans-serif`;
+    ctx.font         = `bold ${n.size}px Rajdhani, 'Noto Sans Thai', sans-serif`;
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
     ctx.strokeStyle  = 'rgba(0,0,0,0.85)';
@@ -939,7 +946,7 @@ function _drawDrops(ctx) {
 
     const total = items.reduce((s, i) => s + i.qty, 0);
     ctx.save();
-    ctx.font = 'bold 10px Rajdhani, sans-serif'; ctx.textAlign = 'center';
+    ctx.font = 'bold 10px Rajdhani, 'Noto Sans Thai', sans-serif'; ctx.textAlign = 'center';
     ctx.fillStyle = isNearest ? '#80e080' : '#f5c518';
     ctx.strokeStyle = '#000'; ctx.lineWidth = 2;
     ctx.strokeText(`x${total}`, x, y + 22); ctx.fillText(`x${total}`, x, y + 22);
@@ -958,9 +965,8 @@ function _roundRect(ctx, x, y, w, h, r) {
 // ── HP HUD ───────────────────────────────────────────────────
 function _updateHpHud() {
   const hud   = document.getElementById('hp-hud');
-  const curEl = document.getElementById('hp-cur');
-  const maxEl = document.getElementById('hp-max');
-  if (!hud || !curEl || !maxEl) return;
+  const pctEl = document.getElementById('hp-pct');
+  if (!hud || !pctEl) return;
 
   if (!player || !player.alive || player.hp <= 0) {
     hud.style.display = 'none'; return;
@@ -970,9 +976,9 @@ function _updateHpHud() {
   const hp    = Math.max(0, Math.ceil(player.hp    ?? 0));
   const maxHp = Math.max(1, player.maxHp ?? 100);
   const pct   = hp / maxHp;
+  const pctRounded = Math.round(pct * 100);
 
-  curEl.textContent = hp;
-  maxEl.textContent = maxHp;
+  pctEl.textContent = pctRounded;
 
   // สีเลือดตาม %
   const col = pct > 0.75 ? '#4cde4c'
@@ -991,8 +997,8 @@ function _updateHpHud() {
   const bloodFill = document.getElementById('hp-blood-fill');
   if (bloodFill) bloodFill.setAttribute('fill', col);
 
-  // อัปเดตสีตัวเลข
-  curEl.style.color = col;
+  // อัปเดตสีตัวเลขเปอร์เซ็นต์
+  pctEl.style.color = col;
 
 }
 

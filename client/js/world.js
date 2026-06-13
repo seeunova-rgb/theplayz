@@ -463,7 +463,7 @@ function drawWorld(ctx) {
     ctx.beginPath(); ctx.arc(sz.x, sz.y, sz.r, 0, Math.PI * 2); ctx.stroke();
     ctx.setLineDash([]); ctx.globalAlpha = 1;
     ctx.fillStyle   = '#4caf50'; ctx.globalAlpha = 0.90;
-    ctx.font        = 'bold 32px Rajdhani'; ctx.textAlign = 'center';
+    ctx.font        = "bold 32px Rajdhani, 'Noto Sans Thai', sans-serif"; ctx.textAlign = 'center';
     ctx.fillText('⛔ SAFE ZONE — ห้ามยิง', sz.x, sz.y - sz.r - 14);
     ctx.globalAlpha = 1; ctx.textAlign = 'left';
   }
@@ -535,7 +535,7 @@ function drawMinimap(ctx, canvas, player) {
   ctx.strokeRect(mx, my, mw, mh);
 
   ctx.fillStyle = 'rgba(255,255,255,0.4)';
-  ctx.font      = '9px Rajdhani'; ctx.textAlign = 'center';
+  ctx.font      = "9px Rajdhani, 'Noto Sans Thai', sans-serif"; ctx.textAlign = 'center';
   ctx.fillText((wid || 'world').toUpperCase(), mx + mw / 2, my + mh + 12);
   ctx.textAlign = 'left';
 }

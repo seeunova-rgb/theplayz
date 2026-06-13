@@ -34,7 +34,7 @@
 }
 
 .char-preview-name {
-  font-family: 'Black Ops One', sans-serif;
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
   font-size: 14px;
   letter-spacing: 0.1em;
   color: var(--text);
@@ -116,7 +116,7 @@
   border: none;
   border-bottom: 2px solid transparent;
   color: var(--muted);
-  font-family: 'Black Ops One', sans-serif;
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
   font-size: 12px;
   letter-spacing: 0.1em;
   cursor: pointer;
@@ -173,7 +173,7 @@
   font-size: 8px;
   background: var(--green);
   color: #000;
-  font-family: 'Black Ops One', sans-serif;
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
   padding: 2px 5px;
   border-radius: 3px;
   letter-spacing: 0.08em;
@@ -183,7 +183,7 @@
 .char-card-icon img { width: 40px; height: 40px; object-fit: contain; display: block; margin: 0 auto; }
 
 .char-card-name {
-  font-family: 'Black Ops One', sans-serif;
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
   font-size: 12px;
   letter-spacing: 0.1em;
   color: var(--text);
@@ -213,7 +213,7 @@
   border: 1px solid var(--green);
   border-radius: 4px;
   color: var(--green2);
-  font-family: 'Black Ops One', sans-serif;
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
   font-size: 10px;
   letter-spacing: 0.1em;
   cursor: pointer;
@@ -256,7 +256,7 @@
   font-size: 9px;
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Black Ops One', sans-serif;
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
 }
 
 .skin-swatch {
@@ -267,7 +267,7 @@
 }
 
 .skin-card-icon  { font-size: 20px; line-height: 1; }
-.skin-card-name  { font-family: 'Black Ops One', sans-serif; font-size: 11px; letter-spacing: 0.1em; color: var(--text); }
+.skin-card-name  { font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif; font-size: 11px; letter-spacing: 0.1em; color: var(--text); }
 
 
 .skin-card-footer {
@@ -318,7 +318,7 @@
 
 .char-abil-label {
   font-size: 10px;
-  font-family: 'Black Ops One', sans-serif;
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
   letter-spacing: 0.08em;
   color: var(--text);
   flex: 1;
@@ -326,7 +326,7 @@
 
 .char-abil-val {
   font-size: 11px;
-  font-family: 'Black Ops One', sans-serif;
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
   letter-spacing: 0.06em;
   color: rgba(255,255,255,0.75);
   flex-shrink: 0;
@@ -372,7 +372,7 @@
   width: 100%;
   padding: 6px 0;
   border-radius: 4px;
-  font-family: 'Black Ops One', sans-serif;
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
   font-size: 11px;
   letter-spacing: 0.1em;
   cursor: pointer;

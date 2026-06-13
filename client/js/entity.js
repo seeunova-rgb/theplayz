@@ -306,7 +306,7 @@ const Entity = (() => {
 
     _drawHPBar(ctx, r, ent.hp, ent.maxHp, bh);
 
-    ctx.fillStyle = '#88ff88'; ctx.font = 'bold 10px Rajdhani, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillStyle = '#88ff88'; ctx.font = 'bold 10px Rajdhani, 'Noto Sans Thai', sans-serif'; ctx.textAlign = 'center';
     ctx.fillText('ZOMBIE', 0, by - 8);
 
     ctx.restore();
@@ -410,9 +410,9 @@ const Entity = (() => {
 
     _drawHPBar(ctx, r, ent.hp, ent.maxHp, bh, '#ff2200');
 
-    ctx.fillStyle = '#ff4400'; ctx.font = 'bold 14px Rajdhani, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillStyle = '#ff4400'; ctx.font = 'bold 14px Rajdhani, 'Noto Sans Thai', sans-serif'; ctx.textAlign = 'center';
     ctx.fillText('☠ BOSS', 0, by - 18);
-    ctx.fillStyle = '#fff'; ctx.font = 'bold 10px Rajdhani, sans-serif';
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 10px Rajdhani, 'Noto Sans Thai', sans-serif';
     ctx.fillText(`${ent.hp} / ${ent.maxHp}`, 0, by - 7);
 
     ctx.restore();

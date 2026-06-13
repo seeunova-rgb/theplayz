@@ -450,6 +450,7 @@ const Dev = (() => {
         </div>
         <div class="dev-row" style="gap:6px">
           <input id="nc-color" type="color" value="#ffffff" style="width:40px;height:32px;border:none;background:none;cursor:pointer;padding:0"/>
+          <button class="dev-action-btn" id="nc-rgb-btn" style="flex:1;background:linear-gradient(90deg,#ff5050,#ffe650,#50ff7a,#50d4ff,#a050ff,#ff50d4);color:#fff;font-weight:700">🌈 RGB ไล่สี</button>
         </div>
         <div class="dev-row" style="gap:6px">
           <button class="dev-action-btn" id="nc-set-btn" style="flex:1">✅ ตั้งค่าสีชื่อ</button>
@@ -481,15 +482,22 @@ const Dev = (() => {
         if (nc && nc.color) entries.push({ uid, name, ...nc });
       });
       if (entries.length === 0) { listEl.textContent = 'ยังไม่มีข้อมูล'; return; }
-      listEl.innerHTML = entries.map(v =>
-        `<div style="display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
-          <span style="width:12px;height:12px;border-radius:2px;background:${v.color};display:inline-block;flex-shrink:0"></span>
-          <span style="color:${v.color};font-weight:700">${v.label || ''}</span>
+      listEl.innerHTML = entries.map(v => {
+        const isRgb = v.color === 'rgb';
+        const swatch = isRgb
+          ? 'background:linear-gradient(90deg,#ff5050,#ffe650,#50ff7a,#50d4ff,#a050ff,#ff50d4)'
+          : `background:${v.color}`;
+        const nameStyle = isRgb
+          ? 'background:linear-gradient(90deg,#ff5050,#ffe650,#50ff7a,#50d4ff,#a050ff,#ff50d4);-webkit-background-clip:text;background-clip:text;color:transparent'
+          : `color:${v.color}`;
+        return `<div style="display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+          <span style="width:12px;height:12px;border-radius:2px;${swatch};display:inline-block;flex-shrink:0"></span>
+          <span style="${nameStyle};font-weight:700">${v.label || ''}</span>
           <span style="color:rgba(255,255,255,0.8);font-size:11px">${v.name}</span>
           <span style="color:rgba(255,255,255,0.3);font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${v.uid.slice(0,10)}…</span>
           <button onclick="Dev.clearNameColor('${v.uid}')" style="margin-left:auto;font-size:10px;background:rgba(255,60,60,0.2);border:none;color:#ff9999;border-radius:3px;padding:1px 5px;cursor:pointer">ลบ</button>
-        </div>`
-      ).join('');
+        </div>`;
+      }).join('');
     });
 
     document.getElementById('nc-set-btn').onclick = () => {
@@ -497,6 +505,11 @@ const Dev = (() => {
       const color = document.getElementById('nc-color').value;
       if (!uid) return _ncHint('❌ กรอก UID ก่อน');
       setNameColor(uid, color);
+    };
+    document.getElementById('nc-rgb-btn').onclick = () => {
+      const uid = document.getElementById('nc-uid').value.trim();
+      if (!uid) return _ncHint('❌ กรอก UID ก่อน');
+      setNameColor(uid, 'rgb');
     };
     document.getElementById('nc-clear-btn').onclick = () => {
       const uid = document.getElementById('nc-uid').value.trim();

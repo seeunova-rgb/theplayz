@@ -24,7 +24,7 @@ const InGameShop = (() => {
 
   // ── helpers ───────────────────────────────────────────────
   function _getItems(catId) {
-    return (SHOP_ITEMS[CAT_KEY_MAP[catId]] || []);
+    return (SHOP_ITEMS[CAT_KEY_MAP[catId]] || []).filter(i => _getPrice(i) > 0);
   }
 
   function _getPrice(item) {
@@ -44,18 +44,20 @@ const InGameShop = (() => {
       return;
     }
 
-    // เพิ่มเข้า Backpack โดยตรง (ไม่ผ่าน Stash)
-    const result = Backpack.addItem(item.id, _buyQty);
+    // เพิ่มเข้า Backpack — ถ้าของ stack เข้า EQUIP ได้ (เช่น ยา) และตรงกับที่สวมอยู่ → รวมเข้า EQUIP เลย
+    const result = Backpack.addItemBuy(item.id, _buyQty);
     if (result === 'full') {
       // คืนเงิน
       Money.earn(item.currency, price);
       window.showToast('กระเป๋าเต็ม!', 'error');
       return;
     }
+    if (typeof Backpack.render === 'function') Backpack.render();
 
     const qty = _buyQty;
     _buyQty = 1;
     window.showToast(`ซื้อ ${item.name} ×${qty} เข้ากระเป๋า ✓`, 'success');
+    renderWallet();
     renderDetail();
   }
 
@@ -63,6 +65,46 @@ const InGameShop = (() => {
   function setQty(delta) {
     _buyQty = Math.min(MAX_QTY, Math.max(1, _buyQty + delta));
     renderDetail();
+  }
+
+  function setQtyDirect(val) {
+    const n = parseInt(val, 10);
+    _buyQty = isNaN(n) || n < 1 ? 1 : Math.min(MAX_QTY, n);
+    renderDetail();
+  }
+
+  function openQtyPopup() {
+    const old = document.getElementById('bp-qty-popup');
+    if (old) old.remove();
+    const pop = document.createElement('div');
+    pop.id = 'bp-qty-popup';
+    pop.innerHTML = `
+      <div class="bp-qty-backdrop"></div>
+      <div class="bp-qty-box">
+        <div class="bp-qty-title">ระบุจำนวน</div>
+        <div class="bp-qty-avail">ซื้อ <b>${_selectedItem?.name || ''}</b></div>
+        <div class="bp-qty-row">
+          <button class="bp-qty-btn" id="bp-qty-minus">−</button>
+          <input class="bp-qty-input" id="bp-qty-val" type="number" min="1" value="${_buyQty}">
+          <button class="bp-qty-btn" id="bp-qty-plus">+</button>
+        </div>
+        <div class="bp-qty-actions">
+          <button class="bp-qty-cancel" id="bp-qty-cancel">ยกเลิก</button>
+          <button class="bp-qty-confirm" id="bp-qty-ok">ยืนยัน</button>
+        </div>
+      </div>`;
+    document.body.appendChild(pop);
+    const inp = document.getElementById('bp-qty-val');
+    const clamp = () => { inp.value = Math.min(MAX_QTY, Math.max(1, parseInt(inp.value) || 1)); };
+    document.getElementById('bp-qty-minus').addEventListener('click', () => { inp.value = Math.max(1, (parseInt(inp.value)||1) - 1); });
+    document.getElementById('bp-qty-plus').addEventListener('click',  () => { inp.value = Math.min(MAX_QTY, (parseInt(inp.value)||1) + 1); });
+    inp.addEventListener('blur', clamp);
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { clamp(); doConfirm(); } });
+    function doConfirm() { clamp(); _buyQty = parseInt(inp.value) || 1; pop.remove(); renderDetail(); }
+    function doCancel()  { pop.remove(); }
+    document.getElementById('bp-qty-ok').addEventListener('click', doConfirm);
+    document.getElementById('bp-qty-cancel').addEventListener('click', doCancel);
+    pop.querySelector('.bp-qty-backdrop').addEventListener('click', doCancel);
   }
 
   // ── select ────────────────────────────────────────────────
@@ -131,7 +173,7 @@ const InGameShop = (() => {
       <div class="igs-detail-name">${item.name}</div>
       <div class="igs-qty-row">
         <button class="igs-qty-btn" onclick="InGameShop.setQty(-1)">−</button>
-        <span class="igs-qty-num">${_buyQty}</span>
+        <button class="igs-qty-num" onclick="InGameShop.openQtyPopup()">${_buyQty}</button>
         <button class="igs-qty-btn" onclick="InGameShop.setQty(1)">+</button>
       </div>
       <div class="igs-price ${item.currency}">${priceIcon} ${totalPrice.toLocaleString()}</div>
@@ -215,7 +257,7 @@ const InGameShop = (() => {
     });
   }
 
-  return { init, open, close, toggle, buy, setQty, selectItem, switchCat, render };
+  return { init, open, close, toggle, buy, setQty, setQtyDirect, openQtyPopup, selectItem, switchCat, render };
 })();
 
 window.InGameShop = InGameShop;
