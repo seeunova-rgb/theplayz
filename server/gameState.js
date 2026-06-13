@@ -16,7 +16,6 @@ const socketWorld = {};
 const world_drops = {};
 WORLD_IDS.forEach(id => { world_drops[id] = []; });
 
-// โหลด drops จากไฟล์ตอน server start
 function loadDrops() {
   try {
     if (fs.existsSync(SAVE_FILE)) {
@@ -31,7 +30,6 @@ function loadDrops() {
   }
 }
 
-// บันทึก drops ลงไฟล์
 function saveDrops() {
   try {
     fs.writeFileSync(SAVE_FILE, JSON.stringify(world_drops));
@@ -44,10 +42,8 @@ loadDrops();
 
 function newDropId() { return 'drop_' + randomUUID(); }
 
-module.exports = { players, WORLD, WORLD_IDS, socketWorld, world_drops, newDropId, saveDrops, placed_safes, saveSafes };
-
 // ── Safe Vault Positions ──────────────────────────────────────
-// { uid: { worldId, x, y, placedAt } }
+// { uid_safeId: { uid, safeId, worldId, x, y, placedAt } }
 const SAFE_FILE = path.join(__dirname, 'safes_save.json');
 const placed_safes = {};
 
@@ -72,4 +68,5 @@ function saveSafes() {
 }
 
 loadSafes();
+
 module.exports = { players, WORLD, WORLD_IDS, socketWorld, world_drops, newDropId, saveDrops, placed_safes, saveSafes };
