@@ -276,7 +276,7 @@ const SafeVault = (() => {
 
   function withdrawItem(itemId, qty, slotIdx) {
     if (!_ready || !_openSafeId) return;
-    if (Backpack?.addItem(itemId, qty) === 'full') { window.showToast('❌ กระเป๋าเต็ม!', 'error'); return; }
+    if (Backpack?.addItemNoStack(itemId, qty) === 'full') { window.showToast('❌ กระเป๋าเต็ม!', 'error'); return; }
     _removeFromVault(_openSafeId, itemId, qty, slotIdx);
     Backpack?.render?.();
     _render();
@@ -343,7 +343,7 @@ const SafeVault = (() => {
         #vault-panel { position:fixed; inset:0; z-index:9000; display:flex; align-items:center; justify-content:center; }
         .vault-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.6); }
         .vault-box { position:relative; background:#1a1a2e; border:2px solid #f59e0b; border-radius:10px;
-                     padding:10px 12px; width:min(620px,96vw); max-height:88vh;
+                     padding:10px 12px; width:min(620px,96vw); height:min(560px,88vh); max-height:88vh;
                      color:#fff; font-family:sans-serif; box-sizing:border-box;
                      display:flex; flex-direction:column; }
         .vault-header { display:flex; justify-content:space-between; align-items:center;
