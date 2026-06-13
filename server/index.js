@@ -37,47 +37,6 @@ app.use(express.static(path.join(__dirname, '../client'), {
 
 initSocket(io);
 
-// ── Migrate endpoint (ลบออกหลังใช้เสร็จ) ─────────────────
-app.get('/admin/migrate-profiles', async (req, res) => {
-  try {
-    const authUsers = await admin.auth().listUsers();
-    const results = { ok: 0, skip: 0, err: 0, log: [] };
-
-    for (const user of authUsers.users) {
-      const uid = user.uid;
-      const displayName = user.displayName || '';
-      const profileRef = adminDb.ref(`users/${uid}/profile`);
-      const snap = await profileRef.once('value');
-      const data = snap.val() || {};
-
-      const hasAccount   = data.account   != null;
-      const hasNameColor = data.nameColor  != null;
-
-      if (hasAccount && hasNameColor) {
-        results.skip++;
-        results.log.push(`skip ${uid.slice(0,10)}`);
-        continue;
-      }
-
-      try {
-        if (!hasAccount)   await adminDb.ref(`users/${uid}/profile/account`).set('general');
-        if (!hasNameColor) await adminDb.ref(`users/${uid}/profile/nameColor`).set({ color: '#ffffff' });
-        if (!data.displayName && displayName) {
-          await adminDb.ref(`users/${uid}/profile/displayName`).set(displayName);
-        }
-        results.ok++;
-        results.log.push(`ok ${uid.slice(0,10)} (${displayName})`);
-      } catch(e) {
-        results.err++;
-        results.log.push(`err ${uid.slice(0,10)}: ${e.message}`);
-      }
-    }
-
-    res.json({ total: authUsers.users.length, ...results });
-  } catch(e) {
-    res.status(500).json({ error: e.message });
-  }
-});
 
 // ── กัน crash ─────────────────────────────────────────────
 process.on('uncaughtException', (err) => {
