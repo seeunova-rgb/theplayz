@@ -43,13 +43,16 @@ const Ranking = (() => {
   async function syncProfile() {
     if (!_fb || !_uid) return;
     try {
-      const nameEl = document.getElementById('display-name');
-      const name   = nameEl ? nameEl.textContent : 'Unknown';
       const repObj = (typeof Reputation !== 'undefined') ? Reputation.get() : { rep: 0 };
       const rep    = (repObj && typeof repObj.rep === 'number') ? repObj.rep : 0;
       const money  = (typeof Money !== 'undefined') ? (Money.get().money || 0) : 0;
       const r      = _fb.ref(_fb.db, `users/${_uid}/profile`);
-      await _fb.update(r, { displayName: name, reputation: rep, money });
+      // อ่านชื่อจาก DB ก่อน ถ้ามีอยู่แล้วให้ใช้ของ DB (ไม่ overwrite)
+      const snap   = await _fb.get(r);
+      const dbName = snap.exists() ? snap.val().displayName : null;
+      const upd    = { reputation: rep, money };
+      if (!dbName) upd.displayName = window._playerName || 'Unknown';
+      await _fb.update(r, upd);
     } catch(e) { console.warn('Ranking.syncProfile:', e); }
   }
 
