@@ -134,31 +134,31 @@
 }
 
 .promo-item-img {
-  width: 20px;
-  height: 20px;
+  width: 32px;
+  height: 32px;
   object-fit: contain;
   image-rendering: auto;
   filter: drop-shadow(0 0 2px rgba(0,0,0,0.8));
 }
 
 .promo-item-single {
-  width: 22px;
-  height: 22px;
+  width: 34px;
+  height: 34px;
 }
 
 .promo-item-emoji {
-  font-size: 18px;
+  font-size: 28px;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
+  width: 34px;
+  height: 34px;
 }
 
 .promo-char-img {
-  width: 24px;
-  height: 24px;
+  width: 36px;
+  height: 36px;
   border-radius: 3px;
 }
 
@@ -169,7 +169,7 @@
 }
 
 .promo-item-qty {
-  font-size: 9px;
+  font-size: 10px;
   color: var(--green2);
   font-weight: 700;
   letter-spacing: 0.04em;
