@@ -636,12 +636,37 @@ const Backpack = (() => {
     el.innerHTML = `
       ${iconHtml}
       <div class="igbp-info-name">${def.name}</div>
+      ${def.desc ? `<div class="igbp-info-desc" style="font-size:11px;color:#94a3b8;text-align:center;margin:4px 0">${def.desc}</div>` : ''}
       ${statsHtml}
       <div class="igbp-info-divider"></div>
       <div class="igbp-info-qty-row">
         <span class="igbp-info-qty-label">IN BAG</span>
         <span class="igbp-info-qty-num">${inBP}</span>
-      </div>`;
+      </div>
+      ${def.isSafe ? `
+        <button id="igbp-place-safe-btn" style="
+          margin-top:10px; width:100%; padding:8px; border-radius:8px;
+          background:#f59e0b; color:#000; border:none; font-weight:700;
+          font-size:13px; cursor:pointer;">
+          📦 วางตู้เซฟ
+        </button>` : ''}
+    `;
+
+    // hook ปุ่มวางตู้เซฟ
+    const placeSafeBtn = document.getElementById('igbp-place-safe-btn');
+    if (placeSafeBtn) {
+      placeSafeBtn.addEventListener('click', () => {
+        if (typeof SafeVault === 'undefined' || typeof player === 'undefined') return;
+        const itemIdx = items.findIndex(s => s.id === 'personal_safe');
+        if (itemIdx === -1) { _toast('ไม่พบตู้เซฟในกระเป๋า', 'error'); return; }
+        const ok = SafeVault.placeSafe(player.x, player.y);
+        if (ok) {
+          removeItem('personal_safe', 1, itemIdx);
+          _infoItemId = null;
+          renderPanel();
+        }
+      });
+    }
   }
 
   // drag state ของ in-game panel (แยก var เพื่อไม่ชนกับ lobby drag)
@@ -977,6 +1002,11 @@ const Backpack = (() => {
     getEquipSlot, findDef, canStack, isWeapon,
     getSupplyQty, consumeFromItems,
     countInBP,
+    removeItemById: (itemId) => {
+      const idx = items.findIndex(s => s.id === itemId);
+      if (idx === -1) return false;
+      return removeItem(itemId, 1, idx);
+    },
     EQUIP_SLOTS, EQUIP_META, ITEMS_MAX,
   };
 })();

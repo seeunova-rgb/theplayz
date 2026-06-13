@@ -278,6 +278,17 @@ function _tickPickup(dt) {
   const nearest = _getNearestDrop();
   const btnEl   = document.getElementById('pickup-btn');
 
+  // ── อัปเดตปุ่มตู้เซฟ ──────────────────────────────────
+  const safeBtn = document.getElementById('safe-vault-btn');
+  if (safeBtn && typeof SafeVault !== 'undefined' && player.alive) {
+    const nearVault = SafeVault.nearSafe(player.x, player.y);
+    safeBtn.style.display = nearVault ? 'flex' : 'none';
+    safeBtn.style.alignItems = 'center';
+    safeBtn.style.justifyContent = 'center';
+  } else if (safeBtn) {
+    safeBtn.style.display = 'none';
+  }
+
   if (!nearest) {
     if (btnEl) btnEl.style.display = 'none';
     if (_pickupHolding) { _pickupHoldTimer = 0; _pickupTarget = null; }
@@ -844,6 +855,10 @@ function draw() {
   if (typeof Entity !== 'undefined') Entity.draw(ctx);
 
   _drawDrops(ctx);
+  // ── วาดตู้เซฟส่วนตัว ───────────────────────────────────
+  if (typeof SafeVault !== 'undefined') {
+    SafeVault.drawSafe(ctx, camera.x, camera.y, player.x, player.y);
+  }
   drawPlayer(ctx, player);
 
   // ── วาด nametag ของตัวเอง (พร้อมรูป rep) ─────────────────
@@ -1180,6 +1195,17 @@ window.stopPickupHold  = stopPickupHold;
 window.addEventListener('keydown', (e) => {
   const k = (typeof KeyBinds !== 'undefined') ? KeyBinds.get('pickup').toLowerCase() : 'e';
   if (e.key.toLowerCase() === k) startPickupHold();
+
+  // [SAFE_VAULT] กด F — เปิดตู้เซฟ / วางตู้เซฟ
+  if (e.key.toLowerCase() === 'f' && typeof SafeVault !== 'undefined') {
+    if (SafeVault.isOpen()) {
+      SafeVault.closePanel();
+    } else if (player.alive) {
+      if (SafeVault.nearSafe(player.x, player.y)) {
+        SafeVault.openPanel();
+      }
+    }
+  }
 });
 window.addEventListener('keyup', (e) => {
   const k = (typeof KeyBinds !== 'undefined') ? KeyBinds.get('pickup').toLowerCase() : 'e';

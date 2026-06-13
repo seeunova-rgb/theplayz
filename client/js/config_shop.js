@@ -21,5 +21,6 @@ var GAME_CONFIG = {
 
   // ── supply ──
   PRICE_AMMO_BOX:       15,   // money
+  PRICE_PERSONAL_SAFE:  999999999,
 
 };

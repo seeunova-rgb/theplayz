@@ -138,6 +138,7 @@ onAuthStateChanged(auth, async user => {
     Clan.init(user.uid, fb);        // init Clan system
     Premium.init(user.uid, { get, ref, db });  // โหลดสถานะ Premium จาก Realtime Database
     Dev.init(user.uid, { getDoc, doc, db: firestoreDb }, { ref, get, set, onValue, off, db });  // โหลดสถานะ DEV
+    if (typeof SafeVault !== 'undefined') SafeVault.init(user.uid, fb);  // ตู้เซฟส่วนตัว
 
     // ── listen nameColor + account ของทุก user ──────────────
     window._nameColors = {};  // { uid: { color } }

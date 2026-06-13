@@ -28,7 +28,7 @@ window.showScreenWithLoading = async function(name, from, to, duration) {
 
 // ── nav panels ────────────────────────────────────────────
 
-const panels = { play: 'panel-play', shop: 'panel-shop', inventory: 'panel-inventory', character: 'panel-character', gacha: 'panel-gacha', ranking: 'panel-ranking', clan: 'panel-clan', settings: 'panel-settings' };
+const panels = { play: 'panel-play', shop: 'panel-shop', inventory: 'panel-inventory', character: 'panel-character', gacha: 'panel-gacha', ranking: 'panel-ranking', clan: 'panel-clan', promotion: 'panel-promotion', settings: 'panel-settings' };
 const navBtns = {
   play:      document.getElementById('nav-play'),
   shop:      document.getElementById('nav-shop'),
@@ -37,6 +37,7 @@ const navBtns = {
   gacha:     document.getElementById('nav-gacha'),
   ranking:   document.getElementById('nav-ranking'),
   clan:      document.getElementById('nav-clan'),
+  promotion: document.getElementById('nav-promotion'),
   settings:  document.getElementById('nav-settings'),
 };
 
@@ -59,6 +60,7 @@ navBtns.character.addEventListener('click', () => switchPanel('character'));
 navBtns.gacha.addEventListener('click',     () => switchPanel('gacha'));
 navBtns.ranking.addEventListener('click',   () => { switchPanel('ranking'); Ranking.render(); });
 navBtns.clan.addEventListener('click',      () => { switchPanel('clan'); Clan.render(); });
+navBtns.promotion.addEventListener('click', () => switchPanel('promotion'));
 navBtns.settings.addEventListener('click',  () => { switchPanel('settings'); KeyBindUI.render(); if (typeof MusicPlayer !== 'undefined') MusicPlayer.renderSettings(); });
 
 // ── HUD Layout edit buttons ─────────────────────────────────

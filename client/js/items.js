@@ -164,5 +164,17 @@ const SHOP_ITEMS = {
       noStackBP:  false,
       equip:      null,
     },
+    {
+      id:         'personal_safe',
+      name:       'PERSONAL SAFE',
+      icon:       '🔒',
+      currency:   'money',
+      price:      () => GAME_CONFIG.PRICE_PERSONAL_SAFE ?? 500,
+      consumable: true,
+      noStackBP:  false,
+      equip:      null,
+      isSafe:     true,   // flag พิเศษ — ใช้วางตู้เซฟในแผนที่
+      desc:       'วางตู้เซฟส่วนตัวในแผนที่ได้ (ยกเว้น Safezone) เพื่อเก็บของไว้ชั่วคราว',
+    },
   ],
 };
