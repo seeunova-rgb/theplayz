@@ -44,10 +44,7 @@ const Ranking = (() => {
     if (!_fb || !_uid) return;
     try {
       const nameEl = document.getElementById('display-name');
-      const name   = (window._playerName && window._playerName.trim())
-                     || (nameEl ? nameEl.textContent.trim() : '')
-                     || 'Unknown';
-      if (!name || name === 'Unknown' && !window._playerName) return; // ไม่ overwrite ถ้าชื่อยังไม่โหลด
+      const name   = nameEl ? nameEl.textContent : 'Unknown';
       const repObj = (typeof Reputation !== 'undefined') ? Reputation.get() : { rep: 0 };
       const rep    = (repObj && typeof repObj.rep === 'number') ? repObj.rep : 0;
       const money  = (typeof Money !== 'undefined') ? (Money.get().money || 0) : 0;
