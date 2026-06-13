@@ -1,7 +1,7 @@
 // ===== SERVICE WORKER — THEPLAYZ =====
 // Cache Version: เปลี่ยนตัวเลขนี้ทุกครั้งที่ deploy โค้ดใหม่
 // เพื่อให้ผู้เล่นได้รับไฟล์อัปเดตแทนไฟล์เก่าจาก cache
-const CACHE_NAME = 'theplayz-v1.2.11';
+const CACHE_NAME = 'theplayz-v1.2.12';
 
 // ── รายการไฟล์ static ที่ cache ตั้งแต่ติดตั้ง ──────────────────
 // (ไฟล์เหล่านี้โหลดเร็วขึ้นมากเพราะมาจาก cache แทน network)

@@ -8,9 +8,11 @@ const { initSocket } = require('./socket');
 // ── Firebase Admin (ใช้ env variable แทนไฟล์ JSON) ───────
 const admin = require('firebase-admin');
 if (!admin.apps.length) {
-  // Railway อาจเก็บ newline จริงใน private_key — escape ก่อน parse
-  const envVal = process.env.FIREBASE_SERVICE_ACCOUNT;
-  const serviceAccount = JSON.parse(envVal.replace(/\r?\n/g, "\\n").replace(/\\\\n/g, "\\n"));
+  const envRaw = process.env.FIREBASE_SERVICE_ACCOUNT;
+  // fix newlines inside private_key value only
+  const envFixed = envRaw.replace(/"private_key"\s*:\s*"([^"]*(?:\\"[^"]*)*)"/g,
+    m => m.replace(/\n/g, '\\n'));
+  const serviceAccount = JSON.parse(envFixed);
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: 'https://theplayz-game-default-rtdb.asia-southeast1.firebasedatabase.app',
