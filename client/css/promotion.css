@@ -3,20 +3,22 @@
   flex-direction: column;
   height: 100%;
   overflow: hidden;
-  padding: 12px;
-  gap: 10px;
+  padding: 6px 12px 12px;
+  gap: 6px;
 }
 
 .promo-header {
   text-align: center;
   flex-shrink: 0;
+  line-height: 1;
 }
 
 .promo-title {
   font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
-  font-size: 15px;
-  letter-spacing: 0.15em;
+  font-size: 14px;
+  letter-spacing: 0.1em;
   color: var(--text);
+  line-height: 1.1;
 }
 
 .promo-subtitle {
@@ -130,15 +132,17 @@
 .promo-item-imgs {
   display: flex;
   align-items: center;
-  gap: 0px;
+  gap: 0;
+  margin: 0 -2px;
 }
 
 .promo-item-img {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   object-fit: contain;
   image-rendering: auto;
   filter: drop-shadow(0 0 2px rgba(0,0,0,0.8));
+  margin: 0 -1px;
 }
 
 .promo-item-single {
