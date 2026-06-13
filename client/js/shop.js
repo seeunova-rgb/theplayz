@@ -136,15 +136,15 @@ const Shop = (() => {
   }
 
   // ── stat bar helper (ใช้ style เดียวกับ character.js) ───────
-  function itemStatBar(label, val, max, color) {
-    const pct = Math.min(100, Math.round((val / max) * 100));
+  function itemStatBar(label, val, max, color, valLabel) {
+    const pct = Math.min(100, Math.max(0, Math.round((val / max) * 100)));
     return `
       <div class="item-stat-row">
         <span class="item-stat-label">${label}</span>
         <div class="item-stat-track">
           <div class="item-stat-fill" style="width:${pct}%;background:${color}"></div>
         </div>
-        <span class="item-stat-val">${val}</span>
+        <span class="item-stat-val">${valLabel !== undefined ? valLabel : val}</span>
       </div>`;
   }
 
@@ -152,13 +152,14 @@ const Shop = (() => {
   function weaponStatBars(weaponId) {
     const cfg = (typeof WEAPON_CONFIG !== 'undefined') && WEAPON_CONFIG[weaponId];
     if (!cfg) return '';
-    const fireVal   = Math.round((1200 / Math.max(cfg.fireRate, 50)) * 10);
-    const reloadVal = Math.round((1 - cfg.reloadTime / 4000) * 10);
+    const ratePct = Math.round((1 - cfg.fireRate / 1500) * 100);
+    const reloadMin = 1000, reloadMax = 5000;
+    const reloadPct = Math.round((1 - (cfg.reloadTime - reloadMin) / (reloadMax - reloadMin)) * 100);
     const bars = [
-      itemStatBar('ดาเมจ',    cfg.damage,              120, '#ef5350'),
-      itemStatBar('กระสุน',   cfg.maxAmmo,             30,  '#42a5f5'),
-      itemStatBar('อัตราลั่น',   Math.min(fireVal, 30),   30,  '#ffa726'),
-      itemStatBar('รีโหลด', Math.max(reloadVal, 1),  10,  '#66bb6a'),
+      itemStatBar('ดาเมจ',   cfg.damage,  300, '#ef5350'),
+      itemStatBar('กระสุน',  cfg.maxAmmo, 100, '#42a5f5'),
+      itemStatBar('อัตราลั่น', ratePct,    100, '#ffa726', cfg.fireRate),
+      itemStatBar('รีโหลด',  reloadPct,   100, '#66bb6a', (cfg.reloadTime / 1000).toFixed(1)),
     ];
     return `<div class="item-stats-wrap" style="width:100%;margin:10px 0 4px;">${bars.join('')}</div>`;
   }

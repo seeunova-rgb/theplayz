@@ -627,27 +627,28 @@ const Backpack = (() => {
 
     const inBP = countInBP(_infoItemId);
 
-    function statBar(label, val, max, color) {
-      const pct = Math.min(100, Math.round((val / max) * 100));
+    function statBar(label, val, max, color, valLabel) {
+      const pct = Math.min(100, Math.max(0, Math.round((val / max) * 100)));
       return `
         <div class="igbp-stat-row">
           <span class="igbp-stat-label">${label}</span>
           <div class="igbp-stat-track">
             <div class="igbp-stat-fill" style="width:${pct}%;background:${color}"></div>
           </div>
-          <span class="igbp-stat-val">${val}</span>
+          <span class="igbp-stat-val">${valLabel !== undefined ? valLabel : val}</span>
         </div>`;
     }
 
     const statBars = [];
     if (def.weaponId && typeof WEAPON_CONFIG !== 'undefined' && WEAPON_CONFIG[def.weaponId]) {
       const wc = WEAPON_CONFIG[def.weaponId];
-      statBars.push(statBar('ดาเมจ',    wc.damage,  120, '#ef5350'));
-      statBars.push(statBar('กระสุน',   wc.maxAmmo, 30,  '#42a5f5'));
-      const fireVal = Math.round((1200 / Math.max(wc.fireRate, 50)) * 10);
-      statBars.push(statBar('อัตราลั่น',   Math.min(fireVal, 30), 30, '#ffa726'));
-      const reloadVal = Math.round((1 - wc.reloadTime / 4000) * 10);
-      statBars.push(statBar('รีโหลด', Math.max(reloadVal, 1), 10, '#66bb6a'));
+      statBars.push(statBar('ดาเมจ', wc.damage, 300, '#ef5350'));
+      statBars.push(statBar('กระสุน', wc.maxAmmo, 100, '#42a5f5'));
+      const ratePct = Math.round((1 - wc.fireRate / 1500) * 100);
+      statBars.push(statBar('อัตราลั่น', ratePct, 100, '#ffa726', wc.fireRate));
+      const reloadMin = 1000, reloadMax = 5000;
+      const reloadPct = Math.round((1 - (wc.reloadTime - reloadMin) / (reloadMax - reloadMin)) * 100);
+      statBars.push(statBar('รีโหลด', reloadPct, 100, '#66bb6a', (wc.reloadTime / 1000).toFixed(1)));
     } else {
       if (def.damage) statBars.push(statBar('ดาเมจ',  def.damage, 120, '#ef5350'));
       if (def.ammo)   statBars.push(statBar('กระสุน', def.ammo,   30,  '#42a5f5'));

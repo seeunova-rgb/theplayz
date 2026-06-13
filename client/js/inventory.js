@@ -71,43 +71,37 @@ const Inventory = (() => {
     const inBP = Backpack.countInBP(itemId);
 
     // ── stat bar helper (เหมือน character.js) ────────────────
-    function itemStatBar(label, val, max, color) {
-      const pct = Math.min(100, Math.round((val / max) * 100));
+    function itemStatBar(label, val, max, color, valLabel) {
+      const pct = Math.min(100, Math.max(0, Math.round((val / max) * 100)));
       return `
         <div class="item-stat-row">
           <span class="item-stat-label">${label}</span>
           <div class="item-stat-track">
             <div class="item-stat-fill" style="width:${pct}%;background:${color}"></div>
           </div>
-          <span class="item-stat-val">${val}</span>
+          <span class="item-stat-val">${valLabel !== undefined ? valLabel : val}</span>
         </div>`;
     }
 
     // สร้าง stat bars ตามประเภทไอเทม
     const statBars = [];
     if (def.weaponId && typeof WEAPON_CONFIG !== 'undefined' && WEAPON_CONFIG[def.weaponId]) {
-      const wc    = WEAPON_CONFIG[def.weaponId];
-      const isSNP = def.weaponId.startsWith('snp');
+      const wc = WEAPON_CONFIG[def.weaponId];
 
-      // DMG — max แยกตาม type (snp สูงสุด 240, asr สูงสุด 33)
-      const dmgMax = isSNP ? 240 : 33;
-      statBars.push(itemStatBar('ดาเมจ', wc.damage, dmgMax, '#ef5350'));
+      // ดาเมจ — หลอด 0-300 (300+ = เต็มหลอด)
+      statBars.push(itemStatBar('ดาเมจ', wc.damage, 300, '#ef5350'));
 
-      // AMMO — max แยกตาม type
-      const ammoMax = isSNP ? 10 : 30;
-      statBars.push(itemStatBar('กระสุน', wc.maxAmmo, ammoMax, '#42a5f5'));
+      // กระสุน — หลอด 0-100 (ยิ่งเยอะยิ่งเต็ม)
+      statBars.push(itemStatBar('กระสุน', wc.maxAmmo, 100, '#42a5f5'));
 
-      // RATE — normalize ให้ fireRate ต่ำ (ยิงเร็ว) = bar สูง
-      // fireRate range: 120(เร็วสุด) → 1200(ช้าสุด)
-      const rateMin = 120, rateMax = 1200;
-      const ratePct = Math.round((1 - (wc.fireRate - rateMin) / (rateMax - rateMin)) * 10);
-      statBars.push(itemStatBar('อัตราลั่น', Math.max(ratePct, 1), 10, '#ffa726'));
+      // อัตราลั่น — หลอด 0-1500 (fireRate ยิ่งน้อย = บาร์ยิ่งยาว, แสดงค่า fireRate จริง)
+      const ratePct = Math.round((1 - wc.fireRate / 1500) * 100);
+      statBars.push(itemStatBar('อัตราลั่น', ratePct, 100, '#ffa726', wc.fireRate));
 
-      // RELOAD — normalize ให้ reloadTime ต่ำ (รีโหลดเร็ว) = bar สูง
-      // reloadTime range: 1800(เร็วสุด) → 3000(ช้าสุด)
-      const reloadMin = 1800, reloadMax = 3000;
-      const reloadPct = Math.round((1 - (wc.reloadTime - reloadMin) / (reloadMax - reloadMin)) * 10);
-      statBars.push(itemStatBar('รีโหลด', Math.max(reloadPct, 1), 10, '#66bb6a'));
+      // รีโหลด — หลอด 1000-5000 (reloadTime ยิ่งน้อย = บาร์ยิ่งยาว, แสดงเป็นวินาที เช่น 1.0, 4.5)
+      const reloadMin = 1000, reloadMax = 5000;
+      const reloadPct = Math.round((1 - (wc.reloadTime - reloadMin) / (reloadMax - reloadMin)) * 100);
+      statBars.push(itemStatBar('รีโหลด', reloadPct, 100, '#66bb6a', (wc.reloadTime / 1000).toFixed(1)));
     }
     if (!def.weaponId) {
       if (def.damage) statBars.push(itemStatBar('ดาเมจ',   def.damage, 120, '#ef5350'));
