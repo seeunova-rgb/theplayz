@@ -3,36 +3,27 @@
   flex-direction: column;
   height: 100%;
   overflow: hidden;
-  padding: 6px 12px 12px;
-  gap: 6px;
+  padding: 6px 6px 6px;
+  gap: 0;
 }
 
 .promo-header {
-  text-align: center;
-  flex-shrink: 0;
-  line-height: 1;
+  display: none;
 }
 
 .promo-title {
-  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
-  font-size: 14px;
-  letter-spacing: 0.1em;
-  color: var(--text);
-  line-height: 1.1;
+  display: none;
 }
 
 .promo-subtitle {
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: 0.08em;
-  margin-top: 2px;
+  display: none;
 }
 
 .promo-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  gap: 8px;
+  gap: 6px;
   flex: 1;
   min-height: 0;
   overflow: hidden;
@@ -111,7 +102,7 @@
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  gap: 2px;
+  gap: 4px;
   flex: 1;
   align-items: center;
   overflow: hidden;
@@ -123,9 +114,9 @@
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  background: rgba(255,255,255,0.03);
+  background: rgba(255,255,255,0.10);
   border-radius: 4px;
-  padding: 3px 4px;
+  padding: 4px 5px;
   flex-shrink: 0;
 }
 
@@ -136,12 +127,12 @@
 }
 
 .promo-item-img {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   object-fit: contain;
   image-rendering: auto;
-  filter: drop-shadow(0 0 2px rgba(0,0,0,0.8));
-  margin-right: -6px;
+  filter: drop-shadow(0 0 2px rgba(0,0,0,0.6));
+  margin-right: -10px;
 }
 
 .promo-item-img:last-child {
@@ -151,6 +142,7 @@
 .promo-item-single {
   width: 36px;
   height: 36px;
+  margin-right: 0 !important;
 }
 
 .promo-item-emoji {
@@ -159,13 +151,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
 }
 
 .promo-char-img {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 3px;
 }
 
