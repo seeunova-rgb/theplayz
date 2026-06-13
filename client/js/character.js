@@ -29,12 +29,6 @@ const Character = (() => {
     } else {
       _loadLocal();
     }
-    // migrate data เก่า: 'ranger' → 'default'
-    if (selectedId === 'ranger') selectedId = 'default';
-    if (ownedChars.has('ranger')) {
-      ownedChars.delete('ranger');
-      ownedChars.add('default');
-    }
     ownedChars.add('default');
     render();
   }

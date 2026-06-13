@@ -10,19 +10,20 @@
   gap: 8px;
   padding: 10px 12px;
   padding-top: max(10px, env(safe-area-inset-top));
-  background: rgba(10,12,15,0.92);
-  border-bottom: 1px solid rgba(255,255,255,0.12);
-  backdrop-filter: blur(6px);
+  background: transparent;
+  border-bottom: none;
+  pointer-events: none;
   font-family: 'Noto Sans Thai', sans-serif;
 }
 
 .hud-edit-btn {
+  pointer-events: all;
   padding: 8px 14px;
   border-radius: 8px;
   font-size: 12px;
   font-weight: 700;
   border: 1px solid rgba(255,255,255,0.18);
-  background: rgba(255,255,255,0.06);
+  background: rgba(10,12,15,0.92);
   color: rgba(255,255,255,0.8);
   cursor: pointer;
   touch-action: manipulation;
@@ -65,6 +66,7 @@ body.hud-edit-mode #hud-edit-bar ~ * {
 /* ปิด pointer-events เดิมของ attack-zone ระหว่างแก้ไข เพื่อให้ลาก attack-base ได้ */
 body.hud-edit-mode #attack-zone {
   pointer-events: none;
+  z-index: 600;
 }
 body.hud-edit-mode #attack-base.hud-edit-target {
   pointer-events: all;
