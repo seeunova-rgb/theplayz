@@ -133,7 +133,6 @@
   display: flex;
   align-items: center;
   gap: 0;
-  margin: 0 -2px;
 }
 
 .promo-item-img {
@@ -142,7 +141,11 @@
   object-fit: contain;
   image-rendering: auto;
   filter: drop-shadow(0 0 2px rgba(0,0,0,0.8));
-  margin: 0 -1px;
+  margin-right: -6px;
+}
+
+.promo-item-img:last-child {
+  margin-right: 0;
 }
 
 .promo-item-single {
