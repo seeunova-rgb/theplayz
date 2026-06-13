@@ -450,11 +450,16 @@ const Dev = (() => {
         </div>
         <div class="dev-row" style="gap:6px">
           <input id="nc-color" type="color" value="#ffffff" style="width:40px;height:32px;border:none;background:none;cursor:pointer;padding:0"/>
-          <input id="nc-label" class="dev-input" placeholder="ป้ายกำกับ เช่น Dev, VIP, Admin" style="flex:2"/>
         </div>
         <div class="dev-row" style="gap:6px">
-          <button class="dev-action-btn" id="nc-set-btn" style="flex:1">✅ ตั้งค่า</button>
-          <button class="dev-action-btn" id="nc-clear-btn" style="flex:1;background:rgba(255,80,80,0.15)">🗑 ล้าง</button>
+          <button class="dev-action-btn" id="nc-set-btn" style="flex:1">✅ ตั้งค่าสีชื่อ</button>
+          <button class="dev-action-btn" id="nc-clear-btn" style="flex:1;background:rgba(255,80,80,0.15)">🗑 ล้างสีชื่อ</button>
+        </div>
+        <div class="dev-label" style="margin-top:8px">🏅 ยศ (account)</div>
+        <div class="dev-row" style="gap:6px">
+          <button class="dev-action-btn" id="nc-acc-general" style="flex:1;background:rgba(150,150,150,0.2)">⬜ General</button>
+          <button class="dev-action-btn" id="nc-acc-premium" style="flex:1;background:rgba(255,215,0,0.15);color:#ffd700">⭐ Premium</button>
+          <button class="dev-action-btn" id="nc-acc-dev"     style="flex:1;background:rgba(255,50,50,0.15);color:#ff5555">🔴 Dev</button>
         </div>
         <div class="dev-hint" id="nc-hint"></div>
         <div class="dev-label" style="margin-top:10px">📋 รายชื่อที่มีสี</div>
@@ -490,15 +495,21 @@ const Dev = (() => {
     document.getElementById('nc-set-btn').onclick = () => {
       const uid   = document.getElementById('nc-uid').value.trim();
       const color = document.getElementById('nc-color').value;
-      const label = document.getElementById('nc-label').value.trim();
       if (!uid) return _ncHint('❌ กรอก UID ก่อน');
-      setNameColor(uid, color, label);
+      setNameColor(uid, color);
     };
     document.getElementById('nc-clear-btn').onclick = () => {
       const uid = document.getElementById('nc-uid').value.trim();
       if (!uid) return _ncHint('❌ กรอก UID ก่อน');
       clearNameColor(uid);
     };
+    ['general','premium','dev'].forEach(acc => {
+      document.getElementById(`nc-acc-${acc}`).onclick = () => {
+        const uid = document.getElementById('nc-uid').value.trim();
+        if (!uid) return _ncHint('❌ กรอก UID ก่อน');
+        setAccount(uid, acc);
+      };
+    });
   }
 
   function _ncHint(msg) {
@@ -506,12 +517,24 @@ const Dev = (() => {
     if (el) { el.textContent = msg; setTimeout(() => { if(el) el.textContent=''; }, 3000); }
   }
 
-  function setNameColor(uid, color, label) {
+  function setNameColor(uid, color) {
     if (!_rtdb) return;
     const { ref, set, db } = _rtdb;
-    set(ref(db, `users/${uid}/profile/nameColor`), { color, label: label || '' })
+    set(ref(db, `users/${uid}/profile/nameColor`), { color })
       .then(() => {
-        _ncHint(`✅ ตั้งค่าแล้ว: ${label} (${color})`);
+        _ncHint(`✅ ตั้งสีชื่อแล้ว: ${color}`);
+        if (_tab === 'namecolor') _renderNameColor(document.getElementById('dev-body'));
+      })
+      .catch(e => _ncHint('❌ Error: ' + e.message));
+  }
+
+  function setAccount(uid, account) {
+    if (!_rtdb) return;
+    const { ref, set, db } = _rtdb;
+    set(ref(db, `users/${uid}/profile/account`), account)
+      .then(() => {
+        const label = { general: 'General', premium: '⭐ Premium', dev: '🔴 Dev' }[account] || account;
+        _ncHint(`✅ ตั้งยศแล้ว: ${label}`);
         if (_tab === 'namecolor') _renderNameColor(document.getElementById('dev-body'));
       })
       .catch(e => _ncHint('❌ Error: ' + e.message));
@@ -533,7 +556,7 @@ const Dev = (() => {
     giveItem, giveMoney, spawnZombie, spawnBoss,
     toggleGod, toggleLockHead, toggleInvisible,
     teleport, teleportCenter, setHp, setSpeed, setRegen,
-    setNameColor, clearNameColor,
+    setNameColor, clearNameColor, setAccount,
   };
 })();
 

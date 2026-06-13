@@ -19,7 +19,8 @@ const Premium = (() => {
   async function _load(get, ref, db) {
     try {
       const snap = await get(ref(db, `users/${_uid}/profile/account`));
-      _active = snap.exists() && snap.val() === 'premium';
+      const val = snap.exists() ? snap.val() : 'general';
+      _active = (val === 'premium' || val === 'dev');
     } catch (e) {
       console.warn('[Premium] load failed:', e);
       _active = false;

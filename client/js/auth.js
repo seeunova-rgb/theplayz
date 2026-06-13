@@ -124,17 +124,22 @@ onAuthStateChanged(auth, async user => {
     Premium.init(user.uid, { get, ref, db });  // โหลดสถานะ Premium จาก Realtime Database
     Dev.init(user.uid, { getDoc, doc, db: firestoreDb }, { ref, get, set, onValue, off, db });  // โหลดสถานะ DEV
 
-    // ── listen nameColor ของทุก user จาก users/{uid}/profile/nameColor ──
-    window._nameColors = {};
+    // ── listen nameColor + account ของทุก user ──────────────
+    window._nameColors = {};  // { uid: { color } }
+    window._accounts   = {};  // { uid: "general"|"premium"|"dev" }
     onValue(ref(db, 'users'), snap => {
       if (!snap.exists()) return;
-      const result = {};
+      const colors   = {};
+      const accounts = {};
       snap.forEach(child => {
         const uid = child.key;
         const nc  = child.child('profile/nameColor').val();
-        if (nc && nc.color) result[uid] = nc;
+        const acc = child.child('profile/account').val();
+        if (nc && nc.color) colors[uid] = nc;
+        if (acc) accounts[uid] = acc;
       });
-      window._nameColors = result;
+      window._nameColors = colors;
+      window._accounts   = accounts;
     });
     // sync profile (ชื่อ, rep, money) ตอนเข้าล็อบบี้
     setTimeout(() => Ranking.syncProfile(), 2000);

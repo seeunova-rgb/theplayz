@@ -99,19 +99,47 @@ function _getRepIcon(imgName) {
 
 // วาด nametag พร้อมรูป rep ไว้หน้าชื่อ (ใช้กับทั้งตัวเองและผู้เล่นอื่น)
 // คืนค่าไม่มี — วาดลง ctx ที่ position ปัจจุบัน (translate มาแล้ว)
-function _drawNameWithRep(ctx, name, repVal, x, y) {
+// badge config ตาม account
+const _ACCOUNT_BADGE = {
+  premium: { text: 'PREMIUM', color: '#ffd700' },
+  dev:     { text: 'DEV',     color: '#ff3333' },
+};
+
+function _drawNameWithRep(ctx, name, repVal, x, y, playerId) {
   const tier = (typeof Reputation !== 'undefined' && Reputation.getTier) ? Reputation.getTier(repVal) : null;
   const icon = tier && tier.img ? _getRepIcon(tier.img) : null;
   const iconSize = 14;
   const gap = 4;
 
+  // ── ชื่อสี จาก RTDB (Dev กำหนดเอง) ───────────────────────
+  const nameColorData = playerId && window._nameColors && window._nameColors[playerId];
+  const nameColor     = nameColorData ? nameColorData.color : '#ffffff';
+
+  // ── badge จาก account ──────────────────────────────────────
+  const account = playerId && window._accounts && window._accounts[playerId];
+  const badge   = account ? _ACCOUNT_BADGE[account] : null;
+
   ctx.font         = `bold ${Math.max(10, CONFIG.PLAYER_R * 0.6)}px Rajdhani, sans-serif`;
   ctx.textAlign    = 'left';
   ctx.textBaseline = 'bottom';
-  const textW = ctx.measureText(name).width;
 
+  const fontSize     = Math.max(10, CONFIG.PLAYER_R * 0.6);
+  const badgeFontSize = Math.max(8, CONFIG.PLAYER_R * 0.45);
+  ctx.font = `bold ${fontSize}px Rajdhani, sans-serif`;
+
+  const textW  = ctx.measureText(name).width;
   const hasIcon = icon && icon.complete && icon.naturalWidth > 0;
-  const totalW  = textW + (hasIcon ? iconSize + gap : 0);
+
+  // คำนวณ badge width
+  let badgeW = 0;
+  const badgeGap = 5;
+  if (badge) {
+    ctx.font = `bold ${badgeFontSize}px Rajdhani, sans-serif`;
+    badgeW = ctx.measureText(`[${badge.text}]`).width + badgeGap;
+    ctx.font = `bold ${fontSize}px Rajdhani, sans-serif`;
+  }
+
+  const totalW = textW + (hasIcon ? iconSize + gap : 0) + badgeW;
   let drawX = x - totalW / 2;
 
   if (hasIcon) {
@@ -124,11 +152,24 @@ function _drawNameWithRep(ctx, name, repVal, x, y) {
     drawX += iconSize + gap;
   }
 
+  ctx.font        = `bold ${fontSize}px Rajdhani, sans-serif`;
   ctx.strokeStyle = 'rgba(0,0,0,0.7)';
   ctx.lineWidth   = 3;
   ctx.strokeText(name, drawX, y);
-  ctx.fillStyle   = '#ffffff';
+  ctx.fillStyle   = nameColor;
   ctx.fillText(name, drawX, y);
+  drawX += textW;
+
+  // วาด badge [PREMIUM] หรือ [DEV] ท้ายชื่อ
+  if (badge) {
+    drawX += badgeGap;
+    ctx.font = `bold ${badgeFontSize}px Rajdhani, sans-serif`;
+    ctx.strokeStyle = 'rgba(0,0,0,0.8)';
+    ctx.lineWidth   = 3;
+    ctx.strokeText(`[${badge.text}]`, drawX, y);
+    ctx.fillStyle   = badge.color;
+    ctx.fillText(`[${badge.text}]`, drawX, y);
+  }
 }
 
 // ===== SOUNDS =====
@@ -803,7 +844,7 @@ function draw() {
     const selfRep  = (typeof Reputation !== 'undefined' && Reputation.get) ? Reputation.get().rep : 0;
     ctx.save();
     ctx.translate(player.x, player.y);
-    _drawNameWithRep(ctx, selfName, selfRep, 0, topY - 14);
+    _drawNameWithRep(ctx, selfName, selfRep, 0, topY - 14, Network.getMyId());
     ctx.restore();
   }
 
@@ -1084,7 +1125,7 @@ function drawRemotePlayer(ctx, rp) {
   const topY = -bh / 2;
 
   // nametag (พร้อมรูป rep)
-  _drawNameWithRep(ctx, fakePlayer.name, rp.reputation, 0, topY - 14);
+  _drawNameWithRep(ctx, fakePlayer.name, rp.reputation, 0, topY - 14, rp.id);
 
   // HP bar
   const barW  = r * 2.5;
