@@ -176,3 +176,6 @@ var WEAPON_CONFIG = {
     sounds: { fire: 'snp_1', reload: null },
   },
 };
+
+// Node.js export (ใช้โดย server/socket.js)
+if (typeof module !== 'undefined') module.exports = { WEAPON_CONFIG };
