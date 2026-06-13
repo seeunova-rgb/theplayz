@@ -27,67 +27,53 @@
   border-radius: 6px;
   display: flex;
   flex-direction: column;
-  padding: 8px;
-  gap: 5px;
+  align-items: center;
+  padding: 8px 6px 8px;
+  gap: 6px;
   position: relative;
   overflow: hidden;
   transition: border-color 0.2s, background 0.2s;
 }
 
-/* ลบเส้นสีบนหัวออกทั้งหมด */
 .promo-card::before { display: none; }
-.promo-card-silver::before { display: none; }
-.promo-card-gold::before { display: none; }
 
 .promo-card-elite {
   border-color: rgba(249,168,37,0.3);
   background: rgba(249,168,37,0.04);
 }
 
-.promo-card-badge {
-  position: absolute;
-  top: 5px; right: 5px;
-  background: rgba(76,175,80,0.15);
-  border: 1px solid rgba(76,175,80,0.35);
-  color: #fff;
-  font-family: 'Black Ops One', sans-serif;
-  font-size: 9px;
-  letter-spacing: 0.05em;
-  padding: 1px 5px;
-  border-radius: 3px;
-}
-
 .promo-card-title {
   font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
   font-size: 9px;
   letter-spacing: 0.05em;
-  color: #fff;
-  text-transform: none;
+  color: #aaa;
   text-align: center;
+  width: 100%;
 }
 
-/* ไอเทมเรียงแนวนอน */
+/* ไอเทมเรียงแนวนอน — กึ่งกลาง */
 .promo-items {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  gap: 3px;
+  gap: 4px;
   flex: 1;
-  align-items: stretch;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   overflow: hidden;
 }
 
-/* แต่ละไอเทม: ความสูงเท่ากันทั้งหมด */
+/* แต่ละไอเทม: รูปบน qty ล่าง ตรงกลาง */
 .promo-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  background: rgba(255,255,255,0.10);
+  gap: 3px;
+  background: rgba(255,255,255,0.08);
   border-radius: 4px;
-  padding: 4px 2px;
+  padding: 5px 4px;
   flex: 1;
   min-width: 0;
   overflow: hidden;
@@ -101,12 +87,11 @@
 
 /* รูปใน SET ชิดกัน */
 .promo-item-img {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   object-fit: contain;
-  image-rendering: auto;
   filter: drop-shadow(0 0 2px rgba(0,0,0,0.6));
-  margin-right: -10px;
+  margin-right: -8px;
   flex-shrink: 0;
 }
 
@@ -114,41 +99,36 @@
   margin-right: 0;
 }
 
-/* ปืนสไน / ไอเทมเดี่ยว: ใหญ่เต็มกรอบ */
+/* ปืนสไน / ไอเทมเดี่ยว */
 .promo-item-single {
-  width: 52px;
-  height: 52px;
+  width: 44px;
+  height: 44px;
   margin-right: 0 !important;
 }
 
 .promo-item-emoji {
-  font-size: 32px;
+  font-size: 26px;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
 }
 
 .promo-char-img {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 3px;
+  margin-right: 0 !important;
 }
 
-.promo-item-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
+/* qty อยู่ใต้รูป — ตรงกลาง */
 .promo-item-qty {
   font-size: 10px;
   color: #fff;
   font-weight: 700;
   letter-spacing: 0.04em;
   white-space: nowrap;
+  text-align: center;
 }
 
 .promo-char-label {
@@ -156,53 +136,25 @@
   font-size: 9px;
   font-weight: 700;
   white-space: nowrap;
-}
-
-.promo-price {
-  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  color: #fff;
   text-align: center;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  padding-top: 5px;
-  flex-shrink: 0;
 }
 
-/* footer: price + buy button */
-.promo-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  padding-top: 5px;
-  flex-shrink: 0;
-  gap: 6px;
-}
-
-.promo-price {
-  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  color: #fff;
-  flex: 1;
-  text-align: left;
-  border-top: none;
-  padding-top: 0;
-}
-
+/* ปุ่มซื้อ — รวมราคา, เต็มความกว้าง, กึ่งกลาง */
 .promo-buy-btn {
+  width: 100%;
   background: #4caf50;
   color: #000;
   border: none;
-  border-radius: 4px;
-  font-family: 'Noto Sans Thai', sans-serif;
+  border-radius: 5px;
+  font-family: 'Noto Sans Thai', 'Black Ops One', sans-serif;
   font-size: 11px;
   font-weight: 700;
-  padding: 4px 12px;
+  padding: 6px 8px;
   cursor: pointer;
   flex-shrink: 0;
   transition: background 0.15s;
+  text-align: center;
+  letter-spacing: 0.03em;
 }
 
 .promo-buy-btn:hover {
@@ -211,21 +163,4 @@
 
 .promo-buy-btn:active {
   background: #388e3c;
-}
-
-/* qty อยู่บรรทัดเดียวกับรูป */
-.promo-item {
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 4px 4px;
-}
-
-.promo-item-qty,
-.promo-char-label {
-  white-space: nowrap;
-  font-size: 10px;
-  font-weight: 700;
-  color: #fff;
 }

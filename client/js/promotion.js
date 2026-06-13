@@ -4,11 +4,6 @@
 const Promotion = (() => {
 
   // ── ข้อมูลแต่ละโปรโมชั่น ──────────────────────────────────
-  // SET = head_lucifer + body_lucifer + asr_lucifer (1 ชุด)
-  // EA  = snp_lucifer (1 ชิ้น)
-  // lock = ไอเทมล็อก (ยังไม่ได้ใช้ในระบบ ข้ามไป)
-  // char = ปลดล็อก yagi
-
   const PACKS = {
     50: {
       items: [
@@ -67,10 +62,17 @@ const Promotion = (() => {
     const pack = PACKS[price];
     if (!pack) return;
 
+    // ตรวจสอบว่า Stash พร้อมใช้งาน
+    if (typeof Stash === 'undefined') {
+      window.showToast('ระบบยังไม่พร้อม กรุณาลองใหม่', 'error');
+      return;
+    }
+
     // ตัด point
     const ok = Money.spend('point', price);
     if (!ok) {
-      window.showToast('Point ไม่พอ!', 'error');
+      const remaining = Money.get().point;
+      window.showToast(`Point ไม่พอ! (มี ${remaining.toLocaleString()} Point)`, 'error');
       return;
     }
 
@@ -79,16 +81,18 @@ const Promotion = (() => {
       Stash.add(id, qty);
     });
 
-    // ปลดล็อก character (ถ้ามี) — inject โดยตรงผ่าน buyChar แต่ราคา 0
-    // ใช้วิธี: ถ้า Character มี giveChar ใช้เลย ถ้าไม่มีใช้ workaround
+    // แจ้ง Inventory ให้ re-render
+    if (typeof Inventory !== 'undefined') {
+      Inventory.renderStash?.();
+    }
+
+    // ปลดล็อก character (ถ้ามี)
     if (pack.chars) {
       pack.chars.forEach(charId => {
         if (typeof Character !== 'undefined') {
-          // ถ้า Character มี giveChar (ถ้าเพิ่มไว้)
           if (typeof Character.giveChar === 'function') {
             Character.giveChar(charId);
           } else {
-            // workaround: ให้ point ชั่วคราวแล้วซื้อ
             const charDef = (typeof CHARACTERS !== 'undefined')
               ? CHARACTERS.find(c => c.id === charId)
               : null;
@@ -101,7 +105,12 @@ const Promotion = (() => {
       });
     }
 
-    window.showToast(`ซื้อโปรโมชั่น ${price.toLocaleString()} Point สำเร็จ! ✓`, 'success');
+    // แสดง Point ที่เหลืออยู่
+    const remaining = Money.get().point;
+    window.showToast(
+      `✓ ซื้อโปรโมชั่น ${price.toLocaleString()} Point สำเร็จ! | Point คงเหลือ: ${remaining.toLocaleString()}`,
+      'success'
+    );
   }
 
   return { buy };
