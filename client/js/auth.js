@@ -135,6 +135,7 @@ onAuthStateChanged(auth, async user => {
     Stash.init(user.uid, fb);       // โหลดคลังไอเทมจาก Firebase
     Reputation.init(user.uid, fb);  // โหลด Reputation จาก Firebase
     Ranking.init(user.uid, fb);     // init Ranking leaderboard
+    Clan.init(user.uid, fb);        // init Clan system
     Premium.init(user.uid, { get, ref, db });  // โหลดสถานะ Premium จาก Realtime Database
     Dev.init(user.uid, { getDoc, doc, db: firestoreDb }, { ref, get, set, onValue, off, db });  // โหลดสถานะ DEV
 

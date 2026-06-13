@@ -1,0 +1,277 @@
+/* ===== CLAN PANEL ===== */
+
+.clan-wrap {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.clan-title {
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
+  font-size: 18px;
+  color: #ffd700;
+  letter-spacing: 2px;
+}
+
+/* ── create card ───────────────────────────────────────── */
+.clan-create-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.clan-create-title {
+  font-family: 'Rajdhani', 'Noto Sans Thai', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 1px;
+}
+
+.clan-create-row {
+  display: flex;
+  gap: 8px;
+}
+
+.clan-input {
+  flex: 1;
+  background: rgba(0,0,0,0.3);
+  border: 1.5px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  padding: 9px 12px;
+  color: #fff;
+  font-family: 'Rajdhani', 'Noto Sans Thai', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+}
+.clan-input:focus {
+  border-color: rgba(255,215,0,0.5);
+}
+
+.clan-input-tag {
+  flex: 0 0 80px;
+  text-transform: uppercase;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+.clan-create-error {
+  color: #ff5555;
+  font-size: 12px;
+  font-family: 'Rajdhani', 'Noto Sans Thai', sans-serif;
+  min-height: 14px;
+}
+
+.clan-create-btn {
+  align-self: flex-start;
+  background: rgba(255,215,0,0.12);
+  border: 1.5px solid rgba(255,215,0,0.5);
+  color: #ffd700;
+  font-family: 'Rajdhani', 'Noto Sans Thai', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+.clan-create-btn:active { transform: scale(0.96); }
+.clan-create-btn:disabled { opacity: 0.5; }
+
+/* ── browse list ───────────────────────────────────────── */
+.clan-browse-title {
+  font-family: 'Rajdhani', 'Noto Sans Thai', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+.clan-browse-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.clan-browse-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.clan-browse-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.clan-browse-name {
+  font-family: 'Rajdhani', 'Noto Sans Thai', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.9);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.clan-browse-count {
+  font-family: 'Rajdhani', 'Noto Sans Thai', sans-serif;
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+}
+
+.clan-join-btn {
+  flex-shrink: 0;
+  background: rgba(76,175,80,0.12);
+  border: 1.5px solid rgba(76,175,80,0.5);
+  color: #81c784;
+  font-family: 'Rajdhani', 'Noto Sans Thai', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 7px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.clan-join-btn:active { transform: scale(0.95); }
+.clan-join-btn:disabled {
+  opacity: 0.4;
+  border-color: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.4);
+}
+
+/* ── my-clan view ──────────────────────────────────────── */
+.clan-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: rgba(255,215,0,0.06);
+  border: 1px solid rgba(255,215,0,0.25);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.clan-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.clan-name {
+  font-family: 'Black Ops One', 'Noto Sans Thai', sans-serif;
+  font-size: 15px;
+  color: #ffd700;
+  letter-spacing: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.clan-meta {
+  font-family: 'Rajdhani', 'Noto Sans Thai', sans-serif;
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+}
+
+.clan-leave-btn {
+  flex-shrink: 0;
+  background: rgba(239,83,80,0.12);
+  border: 1.5px solid rgba(239,83,80,0.5);
+  color: #ef9a9a;
+  font-family: 'Rajdhani', 'Noto Sans Thai', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
+}
+.clan-leave-btn:active { transform: scale(0.95); }
+
+.clan-members-title {
+  font-family: 'Rajdhani', 'Noto Sans Thai', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+.clan-members-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.clan-member-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
+.clan-member-me {
+  background: rgba(255,215,0,0.08);
+  border-color: rgba(255,215,0,0.35);
+}
+
+.clan-member-role {
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+  font-size: 13px;
+}
+
+.clan-member-name {
+  flex: 1;
+  font-family: 'Rajdhani', 'Noto Sans Thai', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.clan-kick-btn {
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.6);
+  font-family: 'Rajdhani', 'Noto Sans Thai', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.clan-kick-btn:active { transform: scale(0.93); }
