@@ -106,17 +106,18 @@
 
 .promo-items {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: 4px;
   flex: 1;
   min-height: 0;
-  justify-content: center;
+  align-content: center;
 }
 
 .promo-item {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   background: rgba(255,255,255,0.03);
   border-radius: 4px;
   padding: 4px 6px;
@@ -161,7 +162,6 @@
 .promo-item-info {
   display: flex;
   flex-direction: column;
-  flex: 1;
   min-width: 0;
 }
 
@@ -170,12 +170,14 @@
   color: var(--green2);
   font-weight: 700;
   letter-spacing: 0.04em;
+  white-space: nowrap;
 }
 
 .promo-char-label {
   color: #ba68c8;
   font-size: 10px;
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .promo-price {
