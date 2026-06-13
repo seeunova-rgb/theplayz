@@ -420,14 +420,7 @@ const SafeVault = (() => {
         ctx.font = 'bold 10px sans-serif';
         ctx.fillText(`${cnt}`, sx + half - 6, sy - half + 6);
       }
-      if (playerX !== undefined) {
-        const dist = Math.sqrt((playerX - s.x)**2 + (playerY - s.y)**2);
-        if (dist < PLACE_RANGE * 1.5) {
-          ctx.fillStyle = '#f59e0b';
-          ctx.font = 'bold 11px sans-serif';
-          ctx.fillText('กด [F] เปิดตู้เซฟ', sx, sy - half - 10);
-        }
-      }
+
     }
     ctx.restore();
   }

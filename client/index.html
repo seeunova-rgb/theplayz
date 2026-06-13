@@ -318,7 +318,7 @@
     width:60px; height:60px; border-radius:50%; border:2px solid #f59e0b;
     background:#1a1a2e; color:#f59e0b; font-size:26px; cursor:pointer;
     box-shadow:0 0 12px rgba(245,158,11,0.5);"
-    onclick="if(typeof SafeVault!=='undefined'){if(SafeVault.isOpen())SafeVault.closePanel();else SafeVault.openPanel();}">
+    onclick="if(typeof SafeVault!=='undefined'){if(SafeVault.isOpen())SafeVault.closePanel();else{const p=window._player;if(p)SafeVault.openPanel(p.x,p.y);}}">
     🔒
   </button>
   <div id="attack-zone" style="display:none;">
