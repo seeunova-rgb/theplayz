@@ -67,7 +67,7 @@ navBtns.settings.addEventListener('click',  () => { switchPanel('settings'); Key
 const HUD_PREVIEW_IDS = [
   'joystick-zone', 'sprint-btn', 'pickup-btn',
   'attack-zone', 'reload-btn', 'bandage-btn',
-  'btn-ingame-bp', 'btn-ingame-shop',
+  'btn-ingame-bp', 'btn-ingame-shop', 'safe-vault-btn',
 ];
 
 document.getElementById('hud-layout-edit-btn').addEventListener('click', () => {

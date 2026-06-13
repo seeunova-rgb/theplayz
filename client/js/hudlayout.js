@@ -16,6 +16,7 @@ const HUDLayout = (() => {
     'bandage-btn':   { label: '💊 ใช้ยา',           group: 'right' },
     'btn-ingame-bp':   { label: '🎒 กระเป๋า',        group: 'top'   },
     'btn-ingame-shop': { label: '🛒 ร้านค้า',        group: 'top'   },
+    'safe-vault-btn':  { label: '🔒 ตู้เซฟ',          group: 'mid'   },
   };
 
   let _offsets = {};
