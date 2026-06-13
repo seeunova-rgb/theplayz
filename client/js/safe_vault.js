@@ -155,7 +155,6 @@ const SafeVault = (() => {
   function placeSafe(playerX, playerY) {
     if (!_ready) { window.showToast('ระบบตู้เซฟยังโหลดไม่เสร็จ', 'error'); return false; }
     const wid = window._selectedWorldId || 'safezone';
-    if (wid === 'safezone') { window.showToast('❌ วางตู้เซฟใน Safezone ไม่ได้!', 'error'); return false; }
     if (_inSafezone(playerX, playerY)) { window.showToast('❌ ห้ามวางตู้เซฟในเขตปลอดภัย!', 'error'); return false; }
 
     const safeId = _newSafeId();
@@ -343,33 +342,34 @@ const SafeVault = (() => {
       style.textContent = `
         #vault-panel { position:fixed; inset:0; z-index:9000; display:flex; align-items:center; justify-content:center; }
         .vault-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.6); }
-        .vault-box { position:relative; background:#1a1a2e; border:2px solid #f59e0b; border-radius:12px;
-                     padding:16px; min-width:700px; max-width:95vw; color:#fff; font-family:sans-serif; }
+        .vault-box { position:relative; background:#1a1a2e; border:2px solid #f59e0b; border-radius:10px;
+                     padding:10px 12px; width:min(560px,94vw); max-height:90vh; overflow-y:auto;
+                     color:#fff; font-family:sans-serif; box-sizing:border-box; }
         .vault-header { display:flex; justify-content:space-between; align-items:center;
-                        font-size:18px; font-weight:700; color:#f59e0b; margin-bottom:12px; }
-        .vault-close { background:none; border:none; color:#fff; font-size:20px; cursor:pointer; }
+                        font-size:14px; font-weight:700; color:#f59e0b; margin-bottom:8px; }
+        .vault-close { background:none; border:none; color:#fff; font-size:16px; cursor:pointer; padding:0 2px; }
         .vault-close:hover { color:#f59e0b; }
-        .vault-body { display:flex; gap:16px; align-items:flex-start; }
-        .vault-section { flex:1; }
-        .vault-sec-title { font-size:12px; color:#94a3b8; margin-bottom:8px; font-weight:600; }
-        .vault-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:8px;
-                      min-height:80px; background:#0f172a; border-radius:8px; padding:10px; }
-        .vault-empty { grid-column:1/-1; text-align:center; color:#475569; font-size:12px;
-                       display:flex; align-items:center; justify-content:center; min-height:60px; }
+        .vault-body { display:flex; gap:8px; align-items:flex-start; }
+        .vault-section { flex:1; min-width:0; }
+        .vault-sec-title { font-size:11px; color:#94a3b8; margin-bottom:5px; font-weight:600; }
+        .vault-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:4px;
+                      background:#0f172a; border-radius:6px; padding:6px; }
+        .vault-empty { grid-column:1/-1; text-align:center; color:#475569; font-size:11px;
+                       display:flex; align-items:center; justify-content:center; min-height:40px; }
         .vault-cell { position:relative; background:#1e293b; border:1px solid #334155;
-                      border-radius:6px; padding:8px; cursor:pointer; user-select:none;
+                      border-radius:5px; padding:4px 2px; cursor:pointer; user-select:none;
                       display:flex; flex-direction:column; align-items:center; justify-content:center;
-                      min-height:72px; transition:border-color .15s, background .15s; }
+                      min-height:44px; transition:border-color .15s, background .15s; }
         .vault-cell:hover { border-color:#f59e0b; background:#2d3a4a; }
         .vault-cell.bp-cell:hover { border-color:#22c55e; background:#14261f; }
-        .vault-icon { font-size:28px; line-height:1; }
-        .vault-qty { position:absolute; bottom:2px; right:4px; font-size:11px; color:#f59e0b; font-weight:700; }
-        .vault-arrows { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:0 4px; color:#64748b; }
-        .vault-arrow-hint { font-size:20px; }
-        .vault-arrow-sub { font-size:10px; text-align:center; line-height:1.2; }
-        .vault-footer { margin-top:12px; display:flex; justify-content:center; }
+        .vault-icon { font-size:18px; line-height:1; }
+        .vault-qty { position:absolute; bottom:1px; right:3px; font-size:9px; color:#f59e0b; font-weight:700; }
+        .vault-arrows { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; padding:0 2px; color:#64748b; flex-shrink:0; }
+        .vault-arrow-hint { font-size:14px; }
+        .vault-arrow-sub { font-size:9px; text-align:center; line-height:1.2; }
+        .vault-footer { margin-top:8px; display:flex; justify-content:center; }
         .vault-btn-pickup { background:#374151; color:#9ca3af; border:1px solid #4b5563;
-                            border-radius:8px; padding:8px 20px; cursor:pointer; font-size:13px; }
+                            border-radius:6px; padding:5px 14px; cursor:pointer; font-size:11px; }
         .vault-btn-pickup:hover { background:#4b5563; color:#fff; }
       `;
       document.head.appendChild(style);
