@@ -5,10 +5,11 @@ const { Server } = require('socket.io');
 const path = require('path');
 const { initSocket } = require('./socket');
 
-// ── Firebase Admin (สำหรับ migration) ────────────────────
+// ── Firebase Admin (ใช้ env variable แทนไฟล์ JSON) ───────
 const admin = require('firebase-admin');
-const serviceAccount = require('./serviceAccountKey.json');
 if (!admin.apps.length) {
+  const raw = process.env.FIREBASE_SERVICE_ACCOUNT.replace(/\\n/g, "\n");
+  const serviceAccount = JSON.parse(raw);
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: 'https://theplayz-game-default-rtdb.asia-southeast1.firebasedatabase.app',
@@ -22,7 +23,7 @@ const io = new Server(server, {
   cors: { origin: '*' }
 });
 
-// serve client files — ไม่ cache JS/CSS เพื่อให้ได้ไฟล์ใหม่เสมอ
+// serve client files
 app.use(express.static(path.join(__dirname, '../client'), {
   etag: false,
   lastModified: false,
@@ -36,7 +37,7 @@ initSocket(io);
 // ── Migrate endpoint (ลบออกหลังใช้เสร็จ) ─────────────────
 app.get('/admin/migrate-profiles', async (req, res) => {
   try {
-    const authUsers = await admin.auth().listUsers();  // ดึง user ทั้งหมดจาก Auth
+    const authUsers = await admin.auth().listUsers();
     const results = { ok: 0, skip: 0, err: 0, log: [] };
 
     for (const user of authUsers.users) {
@@ -51,7 +52,7 @@ app.get('/admin/migrate-profiles', async (req, res) => {
 
       if (hasAccount && hasNameColor) {
         results.skip++;
-        results.log.push(`⬜ skip  ${uid.slice(0,10)}…`);
+        results.log.push(`skip ${uid.slice(0,10)}`);
         continue;
       }
 
@@ -62,23 +63,20 @@ app.get('/admin/migrate-profiles', async (req, res) => {
           await adminDb.ref(`users/${uid}/profile/displayName`).set(displayName);
         }
         results.ok++;
-        results.log.push(`✅ ok    ${uid.slice(0,10)}… (${displayName})`);
+        results.log.push(`ok ${uid.slice(0,10)} (${displayName})`);
       } catch(e) {
         results.err++;
-        results.log.push(`❌ err   ${uid.slice(0,10)}… ${e.message}`);
+        results.log.push(`err ${uid.slice(0,10)}: ${e.message}`);
       }
     }
 
-    res.json({
-      total: authUsers.users.length,
-      ...results,
-    });
+    res.json({ total: authUsers.users.length, ...results });
   } catch(e) {
     res.status(500).json({ error: e.message });
   }
 });
 
-// ── กัน server crash จาก exception เดี่ยวๆ ใน socket event handlers ──
+// ── กัน crash ─────────────────────────────────────────────
 process.on('uncaughtException', (err) => {
   console.error('[UNCAUGHT EXCEPTION]', err);
 });
