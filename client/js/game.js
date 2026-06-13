@@ -106,6 +106,11 @@ const _ACCOUNT_BADGE = {
 };
 
 function _drawNameWithRep(ctx, name, repVal, x, y, playerId) {
+  // ── ใช้ nickName (แอดมินกำหนด) แทนชื่อ ถ้ามี ──────────────
+  if (playerId && window._nickNames && window._nickNames[playerId]) {
+    name = window._nickNames[playerId];
+  }
+
   const tier = (typeof Reputation !== 'undefined' && Reputation.getTier) ? Reputation.getTier(repVal) : null;
   const icon = tier && tier.img ? _getRepIcon(tier.img) : null;
   const iconSize = 14;

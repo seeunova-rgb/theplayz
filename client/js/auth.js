@@ -94,7 +94,10 @@ btnReg.addEventListener('click', async () => {
   setLoading(btnReg, true);
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
-    await updateProfile(cred.user, { displayName: name });
+    // หมายเหตุ: updateProfile() ของ Firebase Auth เซฟภาษาไทย (multi-byte) ไม่ได้
+    // จึงเก็บ displayName ลง Realtime Database ตรงๆ แทน
+    await set(ref(db, `users/${cred.user.uid}/profile/displayName`), name);
+    window._playerName = name;
   } catch (e) {
     showError('reg-error', errMsg(e.code));
     setLoading(btnReg, false);
@@ -110,10 +113,17 @@ document.getElementById('btn-logout').addEventListener('click', () => signOut(au
 onAuthStateChanged(auth, async user => {
   if (user) {
     document.getElementById('display-name').textContent = user.displayName || user.email;
-    // [FIX MULTIPLAYER] เก็บชื่อไว้ให้ network.js ส่งไปด้วยทุก frame
-    window._playerName = user.displayName || user.email || 'Player';
     window._uid = user.uid;
     const fb = { ref, get, set, update, onValue, off, db };
+
+    // ── ใช้ nickName (ถ้าแอดมินตั้งให้) แทน displayName ──────
+    window._playerName = user.displayName || user.email || 'Player';
+    try {
+      const myNickSnap = await get(ref(db, `users/${user.uid}/profile/nickName`));
+      if (myNickSnap.exists() && myNickSnap.val()) {
+        window._playerName = myNickSnap.val();
+      }
+    } catch (e) { console.warn('โหลด nickName ไม่สำเร็จ:', e); }
 
     // ── Loading: LOGIN → LOBBY ───────────────────────────
     const done = await Loading.show('LOGIN', 'LOBBY', 1800);
@@ -128,19 +138,24 @@ onAuthStateChanged(auth, async user => {
     // ── listen nameColor + account ของทุก user ──────────────
     window._nameColors = {};  // { uid: { color } }
     window._accounts   = {};  // { uid: "general"|"premium"|"dev" }
+    window._nickNames  = {};  // { uid: "nickname" }
     onValue(ref(db, 'users'), snap => {
       if (!snap.exists()) return;
       const colors   = {};
       const accounts = {};
+      const nicks    = {};
       snap.forEach(child => {
-        const uid = child.key;
-        const nc  = child.child('profile/nameColor').val();
-        const acc = child.child('profile/account').val();
+        const uid  = child.key;
+        const nc   = child.child('profile/nameColor').val();
+        const acc  = child.child('profile/account').val();
+        const nick = child.child('profile/nickName').val();
         if (nc && nc.color) colors[uid] = nc;
         if (acc) accounts[uid] = acc;
+        if (nick) nicks[uid] = nick;
       });
       window._nameColors = colors;
       window._accounts   = accounts;
+      window._nickNames  = nicks;
     });
     // sync profile (ชื่อ, rep, money) ตอนเข้าล็อบบี้
     setTimeout(() => Ranking.syncProfile(), 2000);
