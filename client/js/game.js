@@ -101,8 +101,8 @@ function _getRepIcon(imgName) {
 // คืนค่าไม่มี — วาดลง ctx ที่ position ปัจจุบัน (translate มาแล้ว)
 // badge config ตาม account
 const _ACCOUNT_BADGE = {
-  premium: { text: 'PREMIUM', color: '#ffd700' },
-  dev:     { text: 'DEV',     color: '#ff3333' },
+  premium: { text: '⭐',  color: '#ffd700' },
+  dev:     { text: 'DEV', color: '#ff3333' },
 };
 
 function _drawNameWithRep(ctx, name, repVal, x, y, playerId) {
@@ -135,7 +135,7 @@ function _drawNameWithRep(ctx, name, repVal, x, y, playerId) {
   const badgeGap = 5;
   if (badge) {
     ctx.font = `bold ${badgeFontSize}px Rajdhani, sans-serif`;
-    badgeW = ctx.measureText(`[${badge.text}]`).width + badgeGap;
+    badgeW = ctx.measureText(badge.text).width + badgeGap;
     ctx.font = `bold ${fontSize}px Rajdhani, sans-serif`;
   }
 
@@ -166,9 +166,9 @@ function _drawNameWithRep(ctx, name, repVal, x, y, playerId) {
     ctx.font = `bold ${badgeFontSize}px Rajdhani, sans-serif`;
     ctx.strokeStyle = 'rgba(0,0,0,0.8)';
     ctx.lineWidth   = 3;
-    ctx.strokeText(`[${badge.text}]`, drawX, y);
+    ctx.strokeText(badge.text, drawX, y);
     ctx.fillStyle   = badge.color;
-    ctx.fillText(`[${badge.text}]`, drawX, y);
+    ctx.fillText(badge.text, drawX, y);
   }
 }
 

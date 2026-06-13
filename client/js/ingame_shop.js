@@ -160,7 +160,7 @@ const InGameShop = (() => {
 
   // ── open / close / toggle ─────────────────────────────────
   function open() {
-    if (!Premium.isActive()) {
+    if (!Premium.isActive() && !Dev.isActive()) {
       window.showToast('เฉพาะสมาชิก Premium เท่านั้น 💎', 'error');
       return;
     }
