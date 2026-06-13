@@ -88,9 +88,12 @@ btnReg.addEventListener('click', async () => {
   const name  = document.getElementById('reg-name').value.trim();
   const email = document.getElementById('reg-email').value.trim();
   const pass  = document.getElementById('reg-pass').value;
+  const passConfirm = document.getElementById('reg-pass-confirm').value;
   showError('reg-error', '');
-  if (!name || !email || !pass) return showError('reg-error', 'กรอกข้อมูลให้ครบ');
+  if (!name || !email || !pass || !passConfirm) return showError('reg-error', 'กรอกข้อมูลให้ครบ');
+  if (!/^[A-Za-z0-9_]+$/.test(name)) return showError('reg-error', 'ชื่อ (Display Name) ต้องเป็นภาษาอังกฤษ/ตัวเลขเท่านั้น');
   if (pass.length < 6) return showError('reg-error', 'รหัสผ่านอย่างน้อย 6 ตัว');
+  if (pass !== passConfirm) return showError('reg-error', 'รหัสผ่านไม่ตรงกัน');
   setLoading(btnReg, true);
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
