@@ -1,6 +1,29 @@
 // ===== items.js =====
 const SHOP_ITEMS = {
   weapon: [
+    // ── LUCIFER ──
+    {
+      id:         'snp_lucifer',
+      name:       'SNP LUCIFER',
+      icon:       '<img src="assets/items/snp_lucifer.png" style="width:56px;height:auto;object-fit:contain;image-rendering:auto;">',
+      currency:   'point',
+      price:      () => 0,
+      consumable: true,
+      noStackBP:  true,
+      equip:      { type: 'weapon', img: 'assets/items/snp_lucifer.png' },
+      weaponId:   'snp_lucifer',
+    },
+    {
+      id:         'asr_lucifer',
+      name:       'ASR LUCIFER',
+      icon:       '<img src="assets/items/asr_lucifer.png" style="width:56px;height:auto;object-fit:contain;image-rendering:auto;">',
+      currency:   'point',
+      price:      () => 0,
+      consumable: true,
+      noStackBP:  true,
+      equip:      { type: 'weapon', img: 'assets/items/asr_lucifer.png' },
+      weaponId:   'asr_lucifer',
+    },
     // ── EVIL ──
     {
       id:         'snp_evil',
@@ -61,6 +84,18 @@ const SHOP_ITEMS = {
     },
   ],
   armor: [
+    // ── LUCIFER ──
+    {
+      id:         'body_lucifer',
+      name:       'BODY LUCIFER',
+      icon:       '<img src="assets/items/body_lucifer.png" style="width:56px;height:auto;object-fit:contain;image-rendering:auto;">',
+      currency:   'point',
+      price:      () => 0,
+      consumable: true,
+      noStackBP:  true,
+      equip:      { type: 'armor', img: 'assets/items/body_lucifer.png' },
+      armorId:    'body_lucifer',
+    },
     // ── EVIL ──
     {
       id:         'body_evil',
@@ -101,6 +136,18 @@ const SHOP_ITEMS = {
     },
   ],
   helmet: [
+    // ── LUCIFER ──
+    {
+      id:         'head_lucifer',
+      name:       'HEAD LUCIFER',
+      icon:       '<img src="assets/items/head_lucifer.png" style="width:56px;height:auto;object-fit:contain;image-rendering:auto;">',
+      currency:   'point',
+      price:      () => 0,
+      consumable: true,
+      noStackBP:  true,
+      equip:      { type: 'helmet', img: 'assets/items/head_lucifer.png' },
+      armorId:    'head_lucifer',
+    },
     // ── EVIL ──
     {
       id:         'head_evil',
