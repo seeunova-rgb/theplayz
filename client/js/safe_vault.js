@@ -158,12 +158,6 @@ const SafeVault = (() => {
     if (wid === 'safezone') { window.showToast('❌ วางตู้เซฟใน Safezone ไม่ได้!', 'error'); return false; }
     if (_inSafezone(playerX, playerY)) { window.showToast('❌ ห้ามวางตู้เซฟในเขตปลอดภัย!', 'error'); return false; }
 
-    // ตัดไอเทม personal_safe จาก Backpack
-    if (typeof Backpack === 'undefined' || !Backpack.removeItemById('personal_safe')) {
-      window.showToast('❌ ไม่มีไอเทมตู้เซฟ!', 'error');
-      return false;
-    }
-
     const safeId = _newSafeId();
     const safe   = { safeId, worldId: wid, x: playerX, y: playerY, placedAt: Date.now() };
     _mysafes.set(safeId, safe);
@@ -399,8 +393,9 @@ const SafeVault = (() => {
 
   // ── draw ──────────────────────────────────────────────────
   function _drawOneSafe(ctx, s, camX, camY, playerX, playerY, isMine) {
-    const sx   = s.x - camX;
-    const sy   = s.y - camY;
+    // ctx ถูก translate(-camera) มาแล้ว → ใช้ world coords โดยตรง
+    const sx   = s.x;
+    const sy   = s.y;
     const half = SAFE_SIZE / 2;
     ctx.save();
     ctx.shadowColor  = isMine ? '#f59e0b' : '#94a3b8';
